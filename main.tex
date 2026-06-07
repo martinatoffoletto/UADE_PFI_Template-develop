@@ -52,13 +52,13 @@
 % \parbox[b] es para poner texto sobre el bottom
 \newpagestyle{ruled}{
 	\sethead{\includegraphics[width=3.7cm]{./images/UADE_LARGE}}
-			{\parbox[b]{0.43\textwidth}{\raggedright\MakeUppercase{Título de la PFI}}} % El parámetro 0.43 puede modificarse para tener más espacio en la columan del medio, y que así el título de la tesis entre mejor.
+			{\parbox[b]{0.43\textwidth}{\raggedright\MakeUppercase{DePaso --- Plataforma de logística urbana colaborativa}}}
 			{
 				\raisebox{1.5ex}{%
 					\parbox[b]{0.26\textwidth}{\raggedleft
 					\begin{tabular}{r}
-						Curry, Haskell \\
-						Howard, William Alvin
+						Toffoletto, Martina O. \\
+						Basaez, Candela P.
 					\end{tabular}
 					}
 				}
@@ -126,6 +126,10 @@
   {}{}
 
 \usepackage{pdfcomment}
+\usepackage{pgfgantt}
+\usepackage{pdflscape}
+\usepackage{booktabs}
+\usepackage{graphicx}
 \usepackage[spanish,es-nodecimaldot]{babel}
 \usepackage{csquotes}
 \addto\captionsspanish{
@@ -222,6 +226,7 @@
 \usepackage{hyperref}
 \hypersetup{
     colorlinks,
+    linkcolor=black,
     citecolor=red
 }
 % Para la entrega final:
@@ -252,15 +257,11 @@
 ]{cover/caratula_DePaso.pdf}
 \clearpage
 	\input{chapters/title}
-	\input{chapters/acknowledgments}
-	\newpage
-	\input{chapters/summary}
-	\newpage
-	\input{chapters/abstract}
 	\newpage
 	\tableofcontents
 	\input{chapters/chapter01}
 	\input{chapters/chapter02}
+	\input{chapters/chapter03}
 	\input{chapters/conclusion}
 
 	\addcontentsline{toc}{chapter}{Bibliograf\'{\i}a}

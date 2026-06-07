@@ -3,16 +3,19 @@
 # Script para compilar el PDF en macOS
 # Uso: ./compile_mac.sh
 
-echo "🔨 Compilando LaTeX..."
-pdflatex main.tex
+set -e
 
-echo "📚 Ejecutando Bibtex para referencias..."
-bibtex main
+echo "Compilando LaTeX (pasada 1)..."
+pdflatex -interaction=nonstopmode main.tex
 
-echo "🔨 Compilando nuevamente..."
-pdflatex main.tex
-pdflatex main.tex
+echo "Procesando bibliografia con Biber..."
+biber main
 
-echo "✅ ¡Compilación completada!"
-echo "📂 Abriendo PDF..."
+echo "Compilando LaTeX (pasada 2)..."
+pdflatex -interaction=nonstopmode main.tex
+
+echo "Compilando LaTeX (pasada 3 - índice y referencias cruzadas)..."
+pdflatex -interaction=nonstopmode main.tex
+
+echo "Compilacion completada. Abriendo PDF..."
 open main.pdf
