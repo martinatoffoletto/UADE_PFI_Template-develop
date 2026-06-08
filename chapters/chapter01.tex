@@ -1,32 +1,34 @@
 \chapter{Introducción}
 
-DePaso es una plataforma digital de logística urbana colaborativa para el AMBA, orientada a PyMEs, comercios y clientes particulares, que gestiona el ciclo completo del envío: solicitud, clasificación de la carga, asignación del transportista, seguimiento e impacto ambiental.
+DePaso es una plataforma digital de logística urbana colaborativa  orientada a PyMEs, comercios y clientes particulares del Área Metropolitana de Buenos Aires (AMBA). Su propósito es facilitar la gestión integral de envíos urbanos mediante una solución que permita solicitar, asignar, monitorear y completar entregas de manera eficiente, incorporando además herramientas para estimar el impacto ambiental asociado a cada operación.
 
-A diferencia de Rappi Favor, PedidosYa Envíos y DiDi Entrega ---que operan bajo un modelo exclusivo de transporte dedicado--- DePaso introduce un modelo híbrido que combina transporte dedicado (tipo flete) con transporte colaborativo basado en trayectorias habituales de los transportistas, aprovechando la capacidad ociosa de desplazamientos ya existentes mediante matching con el mínimo desvío.
+A diferencia de las plataformas de envíos bajo demanda actualmente disponibles, que se basan principalmente en transportistas dedicados, DePaso propone un modelo híbrido que combina transporte exclusivo con transporte colaborativo. Este último aprovecha trayectos que los transportistas ya realizan por motivos propios, permitiendo utilizar capacidad disponible en desplazamientos existentes y reduciendo viajes adicionales mediante mecanismos de asignación que minimizan los desvíos.
 
-Los problemas que se buscan resolver son:
+La propuesta surge ante una serie de problemáticas presentes en la logística urbana actual:
 
 \begin{itemize}[leftmargin=2em]
-    \item Costos logísticos elevados para PyMEs y comercios sin flota propia.
-    \item Vehículos circulando con espacio disponible sin aprovechamiento.
-    \item Baja eficiencia en la última milla en entornos urbanos densos.
-    \item Alta emisión de CO\textsubscript{2} por viajes dedicados innecesarios.
-    \item Falta de ingresos para personas que realizan trayectos cotidianos.
+    \item Costos logísticos elevados para PyMEs y comercios que no cuentan con flota propia.
+    \item Existencia de vehículos que realizan trayectos con capacidad disponible sin ser aprovechada.
+    \item Ineficiencias en la distribución de última milla dentro de entornos urbanos densamente poblados.
+    \item Emisiones de CO\textsubscript{2} asociadas a viajes dedicados que podrían evitarse mediante esquemas colaborativos.
+    \item Escasas oportunidades para que personas que realizan desplazamientos cotidianos obtengan ingresos adicionales aprovechando sus recorridos habituales.
 \end{itemize}
 
-% ─────────────────────────────────────────────────────────────────────────────
 \section{Modalidades de envío}
 
-DePaso organiza sus servicios en dos ejes ortogonales: quién inicia la transacción y cuál es el tipo de trayecto del transportista. El cruce da cuatro submodalidades:
+DePaso organiza sus servicios a partir de dos dimensiones: la forma en que se inicia la operación y el tipo de trayecto realizado por el transportista. La combinación de ambas da lugar a cuatro modalidades de servicio:
 
 \begin{itemize}[leftmargin=2em]
-    \item \textbf{Dedicado por demanda}: el remitente solicita un envío urgente; el sistema busca transportistas libres y cercanos al origen. Equivalente a Uber Flash, pero para cualquier tipo de carga.
-    \item \textbf{Dedicado por espacio}: el transportista publica disponibilidad en una zona y ventana horaria sin tener un trayecto prefijado; el sistema le asigna pedidos compatibles con su vehículo.
-    \item \textbf{Colaborativo por demanda}: el remitente solicita con cierta flexibilidad temporal; el sistema identifica transportistas cuyo trayecto actual sea compatible con el origen-destino del pedido, con bajo desvío.
-    \item \textbf{Colaborativo por espacio}: el transportista publica su trayecto habitual recurrente (p.~ej. ``lunes a viernes 8:00--9:00 hs, Caballito\,→\,Microcentro''); el sistema le sugiere pedidos compatibles y el transportista elige aceptarlos según su capacidad residual.
+    \item \textbf{Dedicado por demanda}: el remitente solicita un envío y el sistema identifica transportistas disponibles cercanos al punto de origen.
+    
+    \item \textbf{Dedicado por espacio}: el transportista informa disponibilidad en una zona y franja horaria determinadas, permitiendo la asignación de pedidos compatibles con la capacidad de su vehículo.
+    
+    \item \textbf{Colaborativo por demanda}: el remitente solicita un envío con cierta flexibilidad temporal y el sistema busca trayectos existentes compatibles con el recorrido requerido, procurando minimizar el desvío adicional.
+    
+    \item \textbf{Colaborativo por espacio}: el transportista registra trayectos habituales recurrentes y recibe sugerencias de envíos compatibles con dichos recorridos.
 \end{itemize}
 
-Se contemplan cuatro categorías de carga: paquetes pequeños y documentos, medianos, grandes/voluminosos, y mudanzas/fletes. Las restricciones por tipo de movilidad se resumen en la Tabla~\ref{tab:restricciones}.
+Para la operación del sistema se contemplan cuatro categorías generales de carga: paquetes pequeños y documentos, cargas medianas, cargas grandes o voluminosas y mudanzas o fletes. Las restricciones según el tipo de movilidad disponible se presentan en la Tabla~\ref{tab:restricciones}.
 
 \begin{table}[ht]
     \caption{Restricciones de carga por tipo de movilidad}
@@ -48,62 +50,42 @@ Se contemplan cuatro categorías de carga: paquetes pequeños y documentos, medi
 
 Las mudanzas y fletes se asignan siempre en modalidad dedicada; nunca colaborativa.
 
-% ─────────────────────────────────────────────────────────────────────────────
-\section{Objetivos}
+% ─────────────────────────────────────────────────────────────────────────────\section{Objetivos}
 
 \subsection{Objetivo general}
 
-Desarrollar un prototipo funcional de plataforma digital de logística urbana colaborativa (DePaso) para la zona del AMBA para diciembre de 2026 que, mediante Inteligencia Artificial y matching inteligente, permita gestionar el ciclo completo de envíos aprovechando la capacidad ociosa de desplazamientos de los transportistas.
+Desarrollar un prototipo funcional de plataforma digital de logística urbana colaborativa para el AMBA que permita gestionar el ciclo completo de los envíos mediante mecanismos inteligentes de clasificación y asignación, aprovechando la capacidad disponible en los desplazamientos de los transportistas.
 
 \subsection{Objetivos específicos}
 
 \begin{itemize}[leftmargin=2em]
-    \item Entrenar e implementar un modelo de visión computacional (basado en MobileNetV2) capaz de clasificar automáticamente el tamaño y volumen de las cargas a partir de imágenes.
-    \item Implementar un algoritmo de asignación (\emph{matching}) inteligente por trayectorias geoespaciales reales, que evalúe la compatibilidad de carga, desvío, ventana horaria y reputación del transportista.
-    \item Habilitar un modelo híbrido de envíos, incorporando tanto la modalidad dedicada (transporte exclusivo) como la colaborativa (aprovechamiento de rutas habituales del transportista).
-    \item Cuantificar el impacto ambiental, desarrollando un algoritmo determinístico que calcule el CO\textsubscript{2} ahorrado por envío colaborativo basándose en factores de emisión IPCC comparados contra viajes dedicados.
-    \item Desarrollar una arquitectura de software escalable, construyendo una API REST en Python (FastAPI) para el backend y una aplicación móvil nativa en React Native/Expo para el frontend.
+    \item Desarrollar e implementar un sistema de visión computacional capaz de clasificar automáticamente el tamaño y volumen de las cargas a partir de imágenes.
+    
+    \item Implementar un mecanismo de asignación inteligente que evalúe la compatibilidad entre pedidos y transportistas considerando características de la carga, trayectorias, ventanas horarias y reputación.
+    
+    \item Incorporar un modelo híbrido de operación que contemple tanto envíos dedicados como envíos colaborativos.
+    
+    \item Desarrollar un mecanismo de estimación del impacto ambiental que permita calcular el ahorro de CO\textsubscript{2} generado por cada envío colaborativo respecto de un escenario equivalente de transporte dedicado.
+    
+    \item Diseñar e implementar una plataforma digital escalable que integre los distintos componentes funcionales necesarios para la gestión de envíos urbanos.
 \end{itemize}
 
-% ─────────────────────────────────────────────────────────────────────────────
 \section{Alcance}
 
-Diseño y desarrollo de un prototipo funcional de plataforma digital (PWA/app móvil) para la gestión logística de envíos en el AMBA ($\sim$15M de habitantes), con alcance potencial superior a 100.000 usuarios. El prototipo incluirá:
+El proyecto comprende el diseño y desarrollo de un prototipo funcional de plataforma digital para la gestión logística de envíos dentro del AMBA. El sistema incluirá:
 
 \begin{itemize}[leftmargin=2em]
-    \item Registro y autenticación de clientes y transportistas multimodales (peatón, bicicleta, auto, utilitario, camión).
-    \item Creación, asignación y tracking en tiempo real de pedidos en cuatro submodalidades (dedicado por demanda, dedicado por espacio, colaborativo por demanda y colaborativo por espacio).
-    \item Clasificación automática de carga mediante modelo de IA entrenado por el equipo, con ingreso manual alternativo.
-    \item Asignación inteligente por trayectorias geoespaciales reales.
-    \item Gestor de capacidad libre del vehículo actualizado en tiempo real.
-    \item Cálculo de CO\textsubscript{2} ahorrado por envío colaborativo frente al escenario dedicado equivalente.
-    \item Panel \emph{dashboard} básico de monitoreo operativo para administradores.
+    \item Registro y autenticación de clientes y transportistas con distintos medios de movilidad.
+    
+    \item Creación, asignación y seguimiento de pedidos en las diferentes modalidades de servicio definidas.
+    
+    \item Clasificación automática de cargas mediante inteligencia artificial, con posibilidad de ingreso manual alternativo.
+    
+    \item Asignación inteligente basada en trayectorias geográficas compatibles.
+    
+    \item Gestión de capacidad disponible de los vehículos.
+    
+    \item Estimación del ahorro de CO\textsubscript{2} asociado a envíos colaborativos.
+    
+    \item Herramientas básicas de monitoreo operativo para administradores.
 \end{itemize}
-
-% ─────────────────────────────────────────────────────────────────────────────
-\section{Limitaciones y exclusiones}
-
-Quedan fuera del alcance de este PFI y se consideran trabajo futuro:
-
-\begin{itemize}[leftmargin=2em]
-    \item La integración real de una pasarela de pagos (el pago se simulará).
-    \item La implementación de notificaciones push productivas (se simularán mediante polling).
-    \item La publicación de la app en la tienda de iOS.
-    \item El soporte multi-ciudad fuera del AMBA.
-\end{itemize}
-
-Desde el punto de vista técnico, se asumen las siguientes restricciones de diseño:
-
-\begin{itemize}[leftmargin=2em]
-    \item La optimización de la capacidad volumétrica (bin packing) será greedy y no combinatoria óptima.
-    \item El algoritmo de matching será determinístico y no basado en Machine Learning.
-    \item El sistema se diseñará para soportar hasta $\sim$100 usuarios concurrentes, con despliegue en capa (\emph{tier}) gratuita.
-    \item La modalidad colaborativa estará inhabilitada para fletes y mudanzas.
-\end{itemize}
-
-% ─────────────────────────────────────────────────────────────────────────────
-\section{Estructura del documento}
-
-Este documento se organiza de la siguiente manera. El Capítulo~1 abarca la introducción, objetivos, alcance y limitaciones del proyecto. El Capítulo~2 expone los antecedentes, desglosados en el marco teórico que fundamenta las decisiones técnicas y el estado del arte que ubica el proyecto frente a soluciones académicas y comerciales existentes. El Capítulo~3 describe el sistema: arquitectura, modelos de datos y flujos principales. El Capítulo~4 presenta la metodología de desarrollo adoptada. Finalmente, se incluyen las conclusiones, la bibliografía y los anexos con material complementario.
-
-
