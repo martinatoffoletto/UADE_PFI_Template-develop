@@ -53,30 +53,57 @@ Las mudanzas y fletes se asignan siempre en modalidad dedicada; nunca colaborati
 
 \subsection{Objetivo general}
 
-Desarrollar un prototipo funcional de plataforma de logística urbana colaborativa para el AMBA para diciembre de 2026 que, mediante IA y matching inteligente, aproveche la capacidad ociosa de desplazamientos.
+Desarrollar un prototipo funcional de plataforma digital de logística urbana colaborativa (DePaso) para la zona del AMBA para diciembre de 2026 que, mediante Inteligencia Artificial y matching inteligente, permita gestionar el ciclo completo de envíos aprovechando la capacidad ociosa de desplazamientos de los transportistas.
 
 \subsection{Objetivos específicos}
 
 \begin{itemize}[leftmargin=2em]
-    \item Entrenar un modelo de visión computacional para clasificar cargas.
-    \item Implementar matching por trayectorias reales.
-    \item Calcular el CO\textsubscript{2} ahorrado por envío.
-    \item Habilitar modalidades dedicada y colaborativa.
+    \item Entrenar e implementar un modelo de visión computacional (basado en MobileNetV2) capaz de clasificar automáticamente el tamaño y volumen de las cargas a partir de imágenes.
+    \item Implementar un algoritmo de asignación (\emph{matching}) inteligente por trayectorias geoespaciales reales, que evalúe la compatibilidad de carga, desvío, ventana horaria y reputación del transportista.
+    \item Habilitar un modelo híbrido de envíos, incorporando tanto la modalidad dedicada (transporte exclusivo) como la colaborativa (aprovechamiento de rutas habituales del transportista).
+    \item Cuantificar el impacto ambiental, desarrollando un algoritmo determinístico que calcule el CO\textsubscript{2} ahorrado por envío colaborativo basándose en factores de emisión IPCC comparados contra viajes dedicados.
+    \item Desarrollar una arquitectura de software escalable, construyendo una API REST en Python (FastAPI) para el backend y una aplicación móvil nativa en React Native/Expo para el frontend.
 \end{itemize}
 
 % ─────────────────────────────────────────────────────────────────────────────
 \section{Alcance}
 
-Diseño y desarrollo de un prototipo funcional de plataforma digital (PWA/app móvil) para la gestión logística de envíos en el AMBA ($\sim$15M de habitantes), con alcance potencial superior a 100.000 usuarios. Incluirá:
+Diseño y desarrollo de un prototipo funcional de plataforma digital (PWA/app móvil) para la gestión logística de envíos en el AMBA ($\sim$15M de habitantes), con alcance potencial superior a 100.000 usuarios. El prototipo incluirá:
 
 \begin{itemize}[leftmargin=2em]
-    \item Registro de usuarios y transportistas multimodales (peatón, bicicleta, auto, utilitario, camión).
-    \item Carga de solicitudes con imágenes.
+    \item Registro y autenticación de clientes y transportistas multimodales (peatón, bicicleta, auto, utilitario, camión).
+    \item Creación, asignación y tracking en tiempo real de pedidos en cuatro submodalidades (dedicado por demanda, dedicado por espacio, colaborativo por demanda y colaborativo por espacio).
     \item Clasificación automática de carga mediante modelo de IA entrenado por el equipo, con ingreso manual alternativo.
-    \item Asignación inteligente por trayectorias geoespaciales.
-    \item Gestión de capacidad en tiempo real.
-    \item Cálculo de CO\textsubscript{2} ahorrado.
-    \item Panel de monitoreo operativo.
+    \item Asignación inteligente por trayectorias geoespaciales reales.
+    \item Gestor de capacidad libre del vehículo actualizado en tiempo real.
+    \item Cálculo de CO\textsubscript{2} ahorrado por envío colaborativo frente al escenario dedicado equivalente.
+    \item Panel \emph{dashboard} básico de monitoreo operativo para administradores.
 \end{itemize}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Limitaciones y exclusiones}
+
+Quedan fuera del alcance de este PFI y se consideran trabajo futuro:
+
+\begin{itemize}[leftmargin=2em]
+    \item La integración real de una pasarela de pagos (el pago se simulará).
+    \item La implementación de notificaciones push productivas (se simularán mediante polling).
+    \item La publicación de la app en la tienda de iOS.
+    \item El soporte multi-ciudad fuera del AMBA.
+\end{itemize}
+
+Desde el punto de vista técnico, se asumen las siguientes restricciones de diseño:
+
+\begin{itemize}[leftmargin=2em]
+    \item La optimización de la capacidad volumétrica (bin packing) será greedy y no combinatoria óptima.
+    \item El algoritmo de matching será determinístico y no basado en Machine Learning.
+    \item El sistema se diseñará para soportar hasta $\sim$100 usuarios concurrentes, con despliegue en capa (\emph{tier}) gratuita.
+    \item La modalidad colaborativa estará inhabilitada para fletes y mudanzas.
+\end{itemize}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Estructura del documento}
+
+Este documento se organiza de la siguiente manera. El Capítulo~1 abarca la introducción, objetivos, alcance y limitaciones del proyecto. El Capítulo~2 expone los antecedentes, desglosados en el marco teórico que fundamenta las decisiones técnicas y el estado del arte que ubica el proyecto frente a soluciones académicas y comerciales existentes. El Capítulo~3 describe el sistema: arquitectura, modelos de datos y flujos principales. El Capítulo~4 presenta la metodología de desarrollo adoptada. Finalmente, se incluyen las conclusiones, la bibliografía y los anexos con material complementario.
 
 
