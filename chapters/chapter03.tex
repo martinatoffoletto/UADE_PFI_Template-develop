@@ -10,7 +10,7 @@ DePaso se define como una plataforma digital (PWA/app móvil) de logística urba
     \item \textbf{PyMEs y comercios}: enfrentan costos de logística elevados al no disponer de una flota propia. El modelo de transporte dedicado existente les exige pagar un vehículo completo para realizar envíos pequeños o medianos, limitando los márgenes en cada operación. Por otra parte, poder contar con un sistema de envíos de rango más amplio tiene un impacto positivo al permitirles llegar a clientes que no pueden retirar en el local por cuestiones de tiempo o movilidad.
     \item \textbf{Transportistas ocasionales}: miles de personas realizan trayectos cotidianos (al trabajo, por trámites, por estudio) los cuales representan un gran costo para la economia diaria. Estas personas cuentan con espacio disponible en sus vehículos, el cual puede resignificarse en una oportunidad de ingreso. Las plataformas actuales exigen exclusividad y disponibilidad de tiempo completo, lo que es incompatible con un empleo de oficina o una rutina personal.
     \item \textbf{Personas que se dedican al transporte de carga}: el modelo de transporte dedicado tradicional les genera una demanda irregular, con picos de trabajo seguidos de períodos sin ingresos. La falta de una plataforma estructurada para conectar con clientes limita su capacidad de crecimiento y profesionalización. Poder contar con una plataforma que conecte a clientes con transportistas les permitiría acceder a nuevas oportunidades de negocio y mantener la demanda de forma constante.
-	\item \textbf{Entorno urbano}: el modelo de viajes dedicados incrementa considerablemnete los vehículos en circulación, lo que genera congestión y emisiones de CO\textsubscript{2} que podrían evitarse mediante la reducción del número de vehículos utilizados para logística.
+	\item \textbf{Entorno urbano}: el modelo de viajes dedicados incrementa considerablemente los vehículos en circulación, lo que genera congestión y emisiones de CO\textsubscript{2} que podrían evitarse mediante la reducción del número de vehículos utilizados para logística.
 \end{itemize}
 
 La propuesta de DePaso es conectar a estos actores en una plataforma híbrida: el remitente publica el envío que desea realizar, el algoritmo de matching identifica a aquellos transportistas cuya ruta preestablecida sea compatible con el origen y destino del envío, y el mismo se realiza utilizando un trayecto que ya iba a ocurrir. Si la carga requiere un vehículo especializado por distintas cuestiones, como gran volumen, mudanza o flete, el sistema se encarga de asignar un transportista dedicado. Para ambos casos, la carga se clasifica automáticamente utilizando el modelo de visión computacional y el impacto ambiental se calcula en tiempo real.
@@ -18,12 +18,12 @@ La propuesta de DePaso es conectar a estos actores en una plataforma híbrida: e
 % ═════════════════════════════════════════════════════════════════════════════
 \section{Investigación de Usuarios}
 
-La investigación de usuarios se basa en un análisis de las opiniones recolectadas de una muestra personas pertenencientes al público objetivo de las plataforma para conocer sus necesidades y preferencias. El ciclo de investigación actual consiste en una encuesta cuantitativa, la cual fue lanzada el día 22 de mayo de 2026 y continuara disponible durante el desarrollo del proyecto para fomentar un contacto continuo con los requerimients de los usuarios. Los resultados de la encuesta se presentan en el Anexo~B.
+La investigación de usuarios se basa en un análisis de las opiniones recolectadas de una muestra personas pertenecientes al público objetivo de la plataforma para conocer sus necesidades y preferencias. El ciclo de investigación actual consiste en una encuesta cuantitativa, la cual fue lanzada el día 22 de mayo de 2026 y continuará disponible durante el desarrollo del proyecto para fomentar un contacto continuo con los requerimientos de los usuarios. Los resultados de la encuesta se presentan en el Anexo~B.
 Posteriormente, se realizarán entrevistas semiestructuradas a una muestra de usuarios potenciales para profundizar sobre los resultados de la encuesta y valorar los aspectos cualitativos que guíen el diseño de la plataforma.
 % ─────────────────────────────────────────────────────────────────────────────
 \section{Metodología}
 
-El enfoque se basa en una metodología cuantitativa (encuesta) para establecer la adhesión de los encuestados a la propuesta. La encuesta fue diseñada siguiendo las recomendaciones presentadas por Barbara Kitchenham y Stuart Charters en "Guidelines for Performing Systematic Literature Reviews in Software Engineering" \parencite{KitchenhamCharters2007}. Se definieron preguntas de investigación predefinidas de forma clara y específica, vinculadas a variables medibles que permiten validar las hipótesis sobre las necesidades y preferencias de los usuarios. Además, se realizó una prueba piloto con un grupo reducido de participantes para asegurar la claridad y relevancia de las preguntas antes proceder con su distribución general.
+El enfoque se basa en una metodología cuantitativa (encuesta) para establecer la adhesión de los encuestados a la propuesta. La encuesta fue diseñada siguiendo las recomendaciones presentadas por Barbara Kitchenham y Stuart Charters en "Guidelines for Performing Systematic Literature Reviews in Software Engineering" \parencite{KitchenhamCharters2007}. Se definieron preguntas de investigación predefinidas de forma clara y específica, vinculadas a variables medibles que permiten validar las hipótesis sobre las necesidades y preferencias de los usuarios. Además, se realizó una prueba piloto con un grupo reducido de participantes para asegurar la claridad y relevancia de las preguntas antes de proceder con su distribución general.
 Teniendo en cuenta que la encuesta fue orientada a los usuarios residentes o trabajadores del AMBA, las preguntas de investigación seleccionadas para orientar la encuesta fueron: (1)~¿con qué frecuencia y qué tipos de servicios logísticos utilizan? (2)~¿cuáles son los problemas más frecuentes que surgen durante el uso de estos servicios? (3)~¿ se encuentran dispuestos a adoptar el modelo colaborativo? (4)~¿qué valor perciben en la clasificación por foto y el cálculo de CO\textsubscript{2}? (5)~¿a qué precio mínimo y con qué vehículo estarían dispuestos a participar como transportistas?
 
 % ─────────────────────────────────────────────────────────────────────────────
@@ -31,7 +31,7 @@ Teniendo en cuenta que la encuesta fue orientada a los usuarios residentes o tra
 
 La encuesta se estructuró y distribuyó mediante la plataforma Microsoft Forms y obtuvo 145 respuestas completas, de las cuales el 91,7\% corresponde a residentes o trabajadores del AMBA. El 76,6\% se identifica como particular o consumidor final y el 11,7\% como PyME, comercio o emprendedor.
 
-De acuerdo con los datos obtenidos, definimos aquellos hallazgos relevantes para el diseño de la plataforma y plasmamos los mismos en la tabla que se muestra a continuación ~\ref{tab:hallazgos}.
+De acuerdo con los datos obtenidos, definimos aquellos hallazgos relevantes para el diseño de la plataforma y plasmamos los mismos en la tabla que se muestra a continuación~\ref{tab:hallazgos}.
 
 \begin{table}[ht]
 	\caption{Hallazgos cuantitativos clave de la encuesta (n = 145)}
@@ -48,7 +48,7 @@ De acuerdo con los datos obtenidos, definimos aquellos hallazgos relevantes para
 		Problema principal: falta de seguimiento   & 50 menciones   & Relevancia del tracking en tiempo real \\
 		Predisposición al modelo colaborativo   & 71,0\%         & Demanda validada \\
 		Usaría clasificación por foto        & 80,7\%         & Modelo de visión computacional viable \\
-		Interes en ser transportista      & 67,6\%         & Oferta potencial de transportistas \\
+		Interés en ser transportista      & 67,6\%         & Oferta potencial de transportistas \\
 		Precio que el remitente está dispuesto a pagar (paquete chico)        & \$3.000--\$6.000 (68\%)  & Precio colaborativo: \$3.900 \\
 		Precio mínimo que el transportista está dispuesto a aceptar             & \$2.500--\$5.000 (51\%)  & Margen viable \\
 		Preocupación principal: responsabilidad    & 59\%           & Representa la necesidad de contar con un seguro básico \\
@@ -63,7 +63,7 @@ De acuerdo con los datos obtenidos, definimos aquellos hallazgos relevantes para
 	\item \textbf{El precio es el factor determinante:} El 82\% lo menciona como criterio de selección. Valida la hipótesis de que el precio debe mostrarse antes de confirmar el pedido, sin cargos ocultos.
 	\item \textbf{La principal motivación para participar como transportista está estrictamente ligada a la utilidad y la conveniencia:} Pudimos ver que el 62\% de los encuestados busca generar un ingreso extra solo bajo la condición de no desviarse de su trayectoria diaria. Podemos concluir que el algoritmo de scoring geoespacial no debe basarse en proximidad lineal, sino priorizar la compatibilidad absoluta de trayectorias preexistentes para evitar el rechazo de la oferta.
 	\item \textbf{El tracking como funcionalidad obligatoria:} Las demoras y la falta de seguimiento son los dos problemas más mencionados por los usuarios encuestados.
-	\item \textbf{La clasificación por foto tiene una alta aceptación:} El 80,7\% está interesado en dicha funcionalidad, pero el 4,1\% desconfía de la precisión al momento de calcular el costo. Como habiamos definido previamente, el clasificador debe mostrar la categoría asignada y permitir corrección manual de la misma y de las medidas.
+	\item \textbf{La clasificación por foto tiene una alta aceptación:} El 80,7\% está interesado en dicha funcionalidad, pero el 4,1\% desconfía de la precisión al momento de calcular el costo. Como habíamos definido previamente, el clasificador debe mostrar la categoría asignada y permitir corrección manual de la misma y de las medidas.
 	\item \textbf{El rango de precios aceptados por los usuarios es viable:} La superposición de rangos deja margen para la plataforma, pero no tolera comisiones altas en etapas tempranas.
 	\item \textbf{El seguro es la herramienta clave para la aceptación por parte del público:} La preocupación por quién asume la responsabilidad en caso de que ocurran daños es el obstáculo principal entre la plataforma y los usuarios potenciales. Por ejemplo, sin un mecanismo claro de cobertura, el 59\% de los transportistas potenciales no estaría interesado en la plataforma.
 	\item \textbf{La modalidad de auto particular es preferida:} El 54,4\% de los transportistas potenciales optaría por utilizar su vehículo (auto o camioneta) propio para realizar las entregas. Sin embargo, la plataforma debe contemplar otras opciones de desplazamiento, dado que un 32,4\% consolidado se inclina por desplazarse a pie o en bicicleta, los cuales son medios ideales para mitigar la saturación vehicular y reducir las emisiones de CO\textsubscript{2}.
@@ -83,9 +83,9 @@ A partir de los datos obtenidos en la encuesta, se construyeron tres user person
   \item\textbf{Contexto y rol respecto al producto o sistema} \hfill \\
     Administra un local de venta de repuestos en Lanús. Necesita enviar mercadería mediana y voluminosa dos o tres veces por semana hacia clientes en diferentes partes del AMBA. 
   \item\textbf{Objetivos al usar el producto} \hfill \\
-    Busca un forma de obtener el servicio a un precio razonable y predecible, además de poder rastrear el envío y que el sistema maneje la logística sin que él tenga que coordinar por WhatsApp personalmente con cada uno de los clientes durante todo el día.
+    Busca una forma de obtener el servicio a un precio razonable y predecible, además de poder rastrear el envío y que el sistema maneje la logística sin que él tenga que coordinar por WhatsApp personalmente con cada uno de los clientes durante todo el día.
   \item\textbf{Frustraciones y obstáculos actuales} \hfill \\
-    El costo de un flete exclusivo por cada envío es su principal costo, ya que el costo del servicio afecta el margen de ganancia y aumentar los precios resultaria en una baja en la competitividad.
+    El costo de un flete exclusivo por cada envío es su principal costo, ya que el costo del servicio afecta el margen de ganancia y aumentar los precios resultaría en una baja en la competitividad.
   \item\textbf{Comportamientos y hábitos relevantes} \hfill \\
 	Actualmente coordina los envíos a través de WhatsApp con cada cliente, lo que le demanda tiempo y genera incertidumbre sobre la llegada de los pedidos.
   \item\textbf{Cita representativa} \hfill \\
@@ -99,21 +99,21 @@ A partir de los datos obtenidos en la encuesta, se construyeron tres user person
   \item\textbf{Contexto y rol respecto al producto o sistema} \hfill \\
     Trabaja en recursos humanos en el microcentro y hace todos los días el trayecto de Caballito a Microcentro en auto. 
   \item\textbf{Objetivos al usar el producto} \hfill \\
-    Le interesa aceptar uno o dos pedidos que le queden de paso, cobrar en el momento y desconectarse sin penalización cuando no quiere o no precisa de hacerlo.
+    Le Interésa aceptar uno o dos pedidos que le queden de paso, cobrar en el momento y desconectarse sin penalización cuando no quiere o no precisa de hacerlo.
   \item\textbf{Frustraciones y obstáculos actuales} \hfill \\
     No quiere ser repartidora de tiempo completo y rechaza los sistemas de puntaje punitivos de aplicaciones como Rappi.
   \item\textbf{Comportamientos y hábitos relevantes} \hfill \\
 	Usa el auto y tiene espacio en el baúl. El precio mínimo que espera cobrar es de \$3.000--\$4.000 por llevar un paquete chico.
   \item\textbf{Cita representativa} \hfill \\
-    \textit{"Me gustaría poder ganar un dinero extra llevando paquetes que me queden de paso, pero no quiero tener que ser una repartidora de tiempo completo ni preocuparme por mantener un buen puntaje en una app que evalua el mismo por la frecuencia de uso."}
+    \textit{"Me gustaría poder ganar un dinero extra llevando paquetes que me queden de paso, pero no quiero tener que ser una repartidora de tiempo completo ni preocuparme por mantener un buen puntaje en una app que evalúa el mismo por la frecuencia de uso."}
 \end{itemize}
 
-\noindent{\textbf{Carlos Goméz}} \\
+\noindent{\textbf{Carlos Gómez}} \\
 55 años - Se dedica a hacer fletes - Quilmes, Buenos Aires
 
 \begin{itemize}[leftmargin=2em]
   \item\textbf{Contexto y rol respecto al producto o sistema} \hfill \\
-    Tiene un camión de mudanzas y actualmente consigue sus clientes a través de conocidos o por grupos de Facebook. No tiene app propia ni referncias visibles. 
+    Tiene un camión de mudanzas y actualmente consigue sus clientes a través de conocidos o por grupos de Facebook. No tiene app propia ni referencias visibles. 
   \item\textbf{Objetivos al usar el producto} \hfill \\
     Quiere recibir alertas estructuradas de cargas grandes y mudanzas, con información clara del origen, destino y pago antes de confirmar.
   \item\textbf{Frustraciones y obstáculos actuales} \hfill \\
@@ -121,9 +121,9 @@ A partir de los datos obtenidos en la encuesta, se construyeron tres user person
   \item\textbf{Comportamientos y hábitos relevantes} \hfill \\
 	No le importa el desvío porque se desplaza específicamente para cada pedido a demanda del cliente.
   \item\textbf{Cita representativa} \hfill \\
-    \textit{"Quisiera tener una forma más estrcturada de conseguir clientes para mis fletes y al mismo tiempo generar un espacio con refrencias que otros potenciales clintes puedan consultar para confiar en mi servicio."}
+    \textit{"Quisiera tener una forma más estructurada de conseguir clientes para mis fletes y al mismo tiempo generar un espacio con refrencias que otros potenciales clientes puedan consultar para confiar en mi servicio."}
 \end{itemize}
 % ─────────────────────────────────────────────────────────────────────────────
 \section{Próximas etapas}
 
-En la proxima entrega se verán reflejadas las entrevistas semiestructuradas, las cuales profundizarán sobre los aspectos cualitativos que la encuesta no logra capturar a detalle, como por ejmeplo: ¿por qué los no usuarios desconfían de las plataformas existentes? y ¿cuál es el flujo real que utilizan hoy para resolver sus necesidades de envío?.
+En la próxima entrega se verán reflejadas las entrevistas semiestructuradas, las cuales profundizarán sobre los aspectos cualitativos que la encuesta no logra capturar a detalle, como por ejemplo: ¿por qué los no usuarios desconfían de las plataformas existentes? y ¿cuál es el flujo real que utilizan hoy para resolver sus necesidades de envío?.
