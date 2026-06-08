@@ -17,13 +17,11 @@ Los problemas que se buscan resolver son:
 % ─────────────────────────────────────────────────────────────────────────────
 \section{Modalidades de envío}
 
-DePaso organiza sus servicios en dos ejes ortogonales: quién inicia la transacción y cuál es el tipo de trayecto del transportista. El cruce da cuatro submodalidades:
+DePaso funciona sobre la relación entre dos factores fundamentales: quién inicia la transacción y cuál es el tipo de trayecto del transportista. Teniendo en cuenta esto, se contemplan dos modalidades de envío que se ajustan a las necesidades de los usuarios y a la oferta de transporte disponible:
 
 \begin{itemize}[leftmargin=2em]
-    \item \textbf{Dedicado por demanda}: el remitente solicita un envío urgente; el sistema busca transportistas libres y cercanos al origen. Equivalente a Uber Flash, pero para cualquier tipo de carga.
-    \item \textbf{Dedicado por espacio}: el transportista publica disponibilidad en una zona y ventana horaria sin tener un trayecto prefijado; el sistema le asigna pedidos compatibles con su vehículo.
-    \item \textbf{Colaborativo por demanda}: el remitente solicita con cierta flexibilidad temporal; el sistema identifica transportistas cuyo trayecto actual sea compatible con el origen-destino del pedido, con bajo desvío.
-    \item \textbf{Colaborativo por espacio}: el transportista publica su trayecto habitual recurrente (p.~ej. ``lunes a viernes 8:00--9:00 hs, Caballito\,→\,Microcentro''); el sistema le sugiere pedidos compatibles y el transportista elige aceptarlos según su capacidad residual.
+    \item \textbf{Dedicada:} se asigna un transportista que haga uso completo de su vehículo para el envío según el tipo de carga. Fletes y mudanzas van a ser dedicados a quienes disponen de camioneta o camión.
+    \item \textbf{Colaborativa:} el transportista registra su ruta habitual y recibe pedidos compatibles, siempre respetando el mínimo nivel dedesvío. Pueden participar transportistas con cualquier medio de movilidad (auto, moto, bicicleta o a pie; las dos últimas habilitadas solo para paquetes pequeños y documentos en trayectos cortos) mientras que se respeten los límites de capacidad de carga asociados a cada una.
 \end{itemize}
 
 Se contemplan cuatro categorías de carga: paquetes pequeños y documentos, medianos, grandes/voluminosos, y mudanzas/fletes. Las restricciones por tipo de movilidad se resumen en la Tabla~\ref{tab:restricciones}.
