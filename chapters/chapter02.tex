@@ -120,6 +120,8 @@ Ninguna de las soluciones relevadas combina un modelo colaborativo basado en tra
 
 \textbf{IA para \emph{scheduling}.} Saleh \textit{et al.}\ aplican aprendizaje por refuerzo profundo (\emph{Deep Reinforcement Learning} - DQN) al \emph{scheduling} dinámico de conductores en sistemas colaborativos, logrando mayor ganancia que las heurísticas estáticas \parencite{SalehEtAl2024}. Las limitaciones reconocidas por los autores son dos: el agente requiere un \emph{dataset} histórico extenso para entrenarse, lo que lo hace inaplicable al inicio de una plataforma nueva (``arranque en frío''), y las decisiones del agente no son explicables al usuario final, lo que genera problemas de transparencia en contextos donde la asignación debe ser auditable. De manera transversal, el campo de la IA aplicada a la logística colaborativa asume en general que el tipo y volumen de la carga son datos precisos y ya disponibles al momento de la asignación. Ninguno de los trabajos revisados aborda la clasificación automática de la carga como parte integral del sistema logístico.
 
+\textbf{Visión computacional en logística.} Naumann \textit{et al.}\ sistematizan el estado del arte de la visión computacional aplicada a la cadena de suministro \parencite{NaumannEtAl2023}. Su revisión evidencia que, si bien la inteligencia artificial es crucial para automatizar procesos logísticos, la estimación de volumen precisa depende en la actualidad de costosos sensores 3D (RGB-D) en entornos controlados. Los autores identifican como principales limitaciones actuales la escasez de \emph{datasets} públicos logísticos y la alta complejidad de calcular volúmenes exactos utilizando únicamente cámaras de teléfonos móviles (RGB en 2D). Estos hallazgos justifican la decisión técnica de DePaso: al ser inviable la reconstrucción 3D exacta desde un móvil para un prototipo, el sistema opta por clasificar la carga en categorías volumétricas predefinidas mediante redes neuronales convolucionales, una solución que sortea las limitaciones de la literatura actual.
+
 \textbf{Tendencias emergentes.} Dos tendencias marcan la evolución reciente del campo. La primera es la incorporación de modelos de mercado con elasticidad dinámica: en lugar de tarifas fijas, los sistemas ajustan el precio en tiempo real según la disponibilidad de transportistas por zona y horario \parencite{OyamaAkamatsu2024}. La segunda es la aplicación creciente de IA ---en particular el aprendizaje por refuerzo--- a decisiones logísticas adaptativas: \emph{scheduling} de turnos, aceptación de pedidos y gestión de picos de demanda no anticipados \parencite{SalehEtAl2024}. Ambas tendencias presuponen una plataforma madura con datos históricos acumulados y no abordan la clasificación predictiva de la carga ni la cuantificación determinística del impacto ambiental por envío, aspectos que permanecen como áreas no exploradas en la literatura revisada.
 
 \textbf{Contexto del mercado.} En el AMBA, la OIT documentó en 2020 que las plataformas de reparto vigentes operan bajo modelos algorítmicos punitivos que imponen disponibilidad continua sin protección social ni de riesgos de trabajo \parencite{OIT2020}. Ningún trabajo académico revisado consolida sus hallazgos proponiendo un producto funcional o un modelo de software alternativo, no punitivo e híbrido, específicamente adaptado al contexto y las regulaciones del mercado argentino.
@@ -173,17 +175,25 @@ La Tabla~\ref{tab:antecedentes} sintetiza los trabajos seleccionados: para cada 
         Orienta la política de precios y la gestión de capacidad; justifica simplificación en el prototipo \\
         \midrule
         Saleh \textit{et al.}\ (2024) \newline \emph{Courier Scheduling via Deep RL} &
-        Maximizar ganancia de plataforma CSD mediante scheduling dinámico &
-        Deep Reinforcement Learning (DQN); simulación con datos sintéticos &
-        DQN; entorno de simulación; dataset sintético de demanda &
+        Maximizar ganancia de plataforma CSD mediante \emph{scheduling} dinámico &
+        \emph{Deep Reinforcement Learning} (DQN); simulación con datos sintéticos &
+        DQN; entorno de simulación; \emph{dataset} sintético de demanda &
         DQN supera heurísticas estáticas en ganancia neta durante picos de demanda &
-        Requiere dataset histórico extenso; decisiones no explicables al usuario final &
-        Identifica IA como línea de mejora del matching una vez que la plataforma acumule datos reales \\
+        Requiere \emph{dataset} histórico extenso; decisiones no explicables al usuario final &
+        Identifica IA como línea de mejora del \emph{matching} una vez que la plataforma acumule datos reales \\
+        \midrule
+        Naumann \textit{et al.}\ (2023) \newline \emph{CV in Transportation Logistics} &
+        Sistematizar el estado del arte de la Visión Computacional aplicada a logística y almacenamiento &
+        Revisión sistemática de la literatura (SLR) sobre monitoreo y automatización &
+        Redes Neuronales Convolucionales (CNN); estimación volumétrica; procesamiento RGB y RGB-D &
+        La IA es crucial para automatizar logística, pero la estimación de volumen depende de costosos sensores 3D en entornos controlados &
+        Escasez de \emph{datasets} públicos logísticos; alta complejidad para estimar volúmenes exactos con cámaras móviles 2D (RGB) &
+        Justifica el uso de IA en móviles para clasificar carga en categorías como alternativa viable frente al escaneo 3D exacto \\
         \midrule
         OIT (2020) \newline \emph{Trabajo en plataformas digitales, Argentina} &
         Analizar condiciones laborales de repartidores en plataformas del AMBA &
-        Investigación empírica mixta (cuali-cuantitativa); entrevistas grupales y encuestas a trabajadores de plataformas &
-        Entrevistas semiestructuradas; análisis documental de términos de servicio &
+        Investigación empírica mixta (cuali-cuantitativa); encuestas y grupos focales &
+        Encuestas estructuradas; entrevistas semiestructuradas; análisis documental &
         Algoritmos punitivos imponen disponibilidad continua disfrazada de flexibilidad; ausencia de protección social &
         Foco en diagnóstico; no propone modelo técnico alternativo ni solución de diseño &
         Único trabajo con foco específico en el AMBA; contextualiza el mercado local y justifica el modelo no punitivo de DePaso \\
