@@ -49,14 +49,11 @@ Brecha que justifica DePaso (Conclusión de la sección): DePaso innova rompiend
 --------------------------------------------------------------------------------
 3. Descripción
 User Research (Esta sección demuestra que el problema está validado en la realidad)
-Encuestas sobre movilidad y logística: Se realizaron encuestas a habitantes del AMBA con vehículos propios que hacen trayectos diarios (ej. casa-trabajo), evaluando su disposición a realizar paradas mínimas si la compensación económica es justa y justificada por un desvío mínimo. Paralelamente, encuestas a PyMEs revelaron que el costo de flete dedicado para pocas unidades es un freno comercial importante.
-Entrevistas a usuarios de plataformas actuales: Entrevistas a usuarios de "Rappi Favor" o "PedidosYa" revelaron frustración por la limitación de peso/volumen de las mochilas de reparto, y entrevistas a repartidores confirmaron la necesidad de una plataforma que no penalice la desconexión temporal
-,
-.
-User Personas:
-Juan (Dueño de PyME): Necesita enviar mercadería mediana/voluminosa de forma económica sin pagar un flete exclusivo vacío.
-María (Conductora colaborativa): Viaja 40 min en auto al centro todos los días; busca monetizar el espacio vacío en el baúl de su auto aceptando solo pedidos que le queden de paso.
-Carlos (Fletador dedicado): Tiene una camioneta y busca optimizar sus horas de trabajo recibiendo alertas estructuradas de mudanzas o cargas grandes.
+Encuesta sobre movilidad y logística (✓ completada, Microsoft Forms, 22-may-2026): 145 respuestas completas, 133 (91,7%) del AMBA. Resultados clave (bases por bifurcación: uso n=116, transportista n=98): 69,8% de predisposición al modelo colaborativo; 84,5% de interés en transportar en su ruta habitual; la motivación dominante es generar un ingreso extra sin desviarse de la rutina (91,8%); el costo es el principal criterio de elección (75,0%) y la responsabilidad por daños la principal preocupación (73,4%). El rango WTP ($3.000–6.000, 68,1%) se superpone con el WTA ($2.500–5.000, 51,0%), dejando margen operativo.
+User Personas (3 preliminares construidas a partir de la encuesta; se refinarán a medida que se amplíe la muestra):
+Juan (Dueño de PyME, Lanús): Necesita enviar mercadería mediana/voluminosa de forma económica sin pagar un flete exclusivo vacío.
+María (Conductora colaborativa, Caballito→Microcentro): Hace el trayecto en auto todos los días; busca monetizar el espacio vacío en el baúl aceptando solo pedidos que le queden de paso.
+Carlos (Fletero dedicado, Quilmes): Tiene un camión de mudanzas y busca optimizar sus horas de trabajo recibiendo alertas estructuradas de mudanzas o cargas grandes.
 
 --------------------------------------------------------------------------------
 4. Metodología de desarrollo
@@ -86,7 +83,7 @@ Arslan, A. M., Agatz, N., Kroon, L., & Zuidwijk, R. (2019). Crowdsourced Deliver
 Botsman, R., & Rogers, R. (2010). Beyond Zipcar: Collaborative Consumption. Harvard Business Review.
 Hagiu, A., & Wright, J. (2015). Multi-Sided Platforms. Harvard Business School.
 Luy, J., Hiermann, G., & Schiffer, M. (2023). Strategic Workforce Planning in Crowdsourced Delivery with Hybrid Driver Fleets. Technical University of Munich.
-Oyama, Y., & Akamatsu, T. (2023). A fluid-particle decomposition approach to matching market design for crowdsourced delivery systems. arXiv:2312.01641.
+Akamatsu, T., & Oyama, Y. (2023). A fluid-particle decomposition approach to matching market design for crowdsourced delivery systems. arXiv:2312.01641.
 Oyama, Y., & Akamatsu, T. (2024). A market-based efficient matching mechanism for crowdsourced delivery systems with demand/supply elasticities. arXiv:2412.20395.
 Organización Internacional del Trabajo (OIT). (2020). El trabajo en las plataformas digitales de reparto en Argentina: Análisis y recomendaciones de política. Oficina de País de la OIT para Argentina.
 Saleh, Z., Al Hanbali, A., & Baubaid, A. (2024). Enhancing Courier Scheduling in Crowdsourced Last-Mile Delivery through Dynamic Shift Extensions: A Deep Reinforcement Learning Approach. King Fahd University.
@@ -102,7 +99,7 @@ Cita clave para DePaso: "The CSD problem involves dedicated vehicles (DVs) and s
 Resumen: Estudia la planificación de una flota híbrida a largo plazo. Distingue teóricamente entre "Gigworkers" (trabajan a tiempo completo para la app) y "Occasional Drivers" (conductores ocasionales que solo aceptan pedidos que coinciden con su ruta personal). Demuestra que anticipar la oferta de conductores ahorra hasta un 19% en costos.
 Cita clave para DePaso: "We consider two types of CDs, gigworkers (GWs) and occasional drivers (ODs)... ODs only serve requests whose origin and destination coincide with their own private route’s origin and destination."
 .
-3. Oyama & Akamatsu (2023) - "A fluid-particle decomposition approach to matching market design..."
+3. Akamatsu & Oyama (2023) - "A fluid-particle decomposition approach to matching market design..."
 Resumen: Aborda el "matching" como un problema de diseño de mercado. Propone un mecanismo de subastas para emparejar tareas con conductores según su costo real de desvío, maximizando el beneficio social y reduciendo emisiones al usar capacidad ociosa.
 Cita clave para DePaso: "We consider a crowdsourced delivery (CSD) system that effectively utilizes the existing trips to fulfill parcel delivery as a matching problem between CSD drivers and delivery tasks."
 .

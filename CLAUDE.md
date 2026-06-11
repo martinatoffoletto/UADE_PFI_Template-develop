@@ -106,8 +106,11 @@ la capacidad ociosa de sus trayectos habituales.
 ## Convenciones del repo
 
 - Un archivo `.tex` por capítulo en `chapters/`
-- Figuras en `figures/`, bibliografía en `referencias.bib` (BibTeX)
-- Citas con `\cite{}`, norma ISO 690-2010
+- Figuras en `figures/`, bibliografía en `biblio.bib` (BibTeX, backend biber)
+- Citas con `\parencite{}`, norma ISO 690-2010 (estilo iso-numeric)
+- **El stack tecnológico NO se menciona en el documento del 25%** (decisión de
+  las autoras: no condicionarse antes de avanzar el desarrollo). No nombrar
+  frameworks/BD concretos en el documento; se definirá en el Cap. 4 (entrega 50%).
 - Compilar con `pdflatex` o `latexmk`
 
 ---
@@ -122,48 +125,39 @@ subtema responde a una pregunta concreta vinculada a los objetivos.
 
 > Responde: *¿con qué conceptos y teorías trabajamos?*
 
-Subtemas definidos para DePaso (de lo general a lo específico):
+Subtemas implementados en el documento, de lo general a lo específico:
 
-1. **Logística colaborativa y economía de plataforma** — mercados de dos lados
-   (two-sided markets). Remitentes en un lado, transportistas en el otro. El valor
-   crece con la base de usuarios de ambos lados (efecto de red).
-   - Hagiu & Wright (2015) — *Multi-Sided Platforms*. Harvard Business School.
-   - Rochet & Tirole (2003) — *Platform Competition in Two-Sided Markets*. JEEA.
+1. **Crowdsourced delivery y logística de última milla** — el CSD delega la
+   última milla en personas que integran pedidos en sus propios desplazamientos.
+   - Yang, Hyland & Jayakrishnan (2022) — arXiv:2203.14719.
 
-2. **Economía colaborativa / sharing economy** — acceso por sobre propiedad:
-   aprovechar capacidad ociosa (un viaje que ya se iba a realizar) para generar
-   valor compartido.
-   - Botsman & Rogers (2010) — *Beyond Zipcar: Collaborative Consumption*. HBR.
-   - Carbone, Rouquet & Roussat (2017) — *The Rise of Crowd Logistics*.
-     Journal of Business Logistics.
+2. **Flotas híbridas y el problema del desvío** — los SPVs reducen el costo
+   unitario, pero un desvío excesivo elimina el beneficio ambiental. El desvío
+   debe ser variable explícita del matching (filtro duro en DePaso).
+   - Yang et al. (2022).
 
-3. **Crowdsourced delivery y last-mile logistics** — conductores ad hoc para
-   cubrir el último tramo. Puede reducir costos hasta un 42%, pero requiere
-   resolver el matching dinámico en tiempo real.
-   - Arslan, Agatz, Kroon & Zuidwijk (2019) — *Crowdsourced Delivery: A Dynamic
-     Pickup and Delivery Problem*. Transportation Science, 53(1).
-   - Alnaggar, Gzara & Bookbinder (2021) — *Crowdsourced Delivery: A Review*.
-     Omega, 98.
-   - Oyama (2023) — arXiv:2312.01641.
+3. **Perfiles de conductores: gig-workers (GW) vs. occasional drivers (OD)** —
+   fundamento teórico de la modalidad colaborativa.
+   - Luy, Hiermann & Schiffer (2023) — arXiv:2311.17935.
 
-4. **Visión computacional para clasificación de objetos** — modelos de CV para
-   clasificar imágenes de paquetes. Métricas: accuracy, matriz de confusión,
-   análisis de sesgos por iluminación, ángulo y fondo. Directamente vinculado
-   al clasificador de carga propio del proyecto.
+4. **Diseño de mercados de matching y asignación** — el matching como
+   optimización combinatoria; subastas y elasticidades requieren datos
+   históricos inexistentes en el arranque → justifica el scoring determinístico.
+   - Akamatsu & Oyama (2023) — arXiv:2312.01641.
+   - Oyama & Akamatsu (2024) — arXiv:2412.20395.
 
-5. **Confianza en plataformas P2P** — confianza personal (reputación) vs.
-   sistémica (garantías de la plataforma: seguros, calificaciones, disputas).
-   - Gruber (2020) — *Personal Trust and System Trust in the Sharing Economy*.
-     Frontiers in Psychology.
+5. **Visión computacional y aprendizaje por transferencia** — clasificar la
+   carga en categorías volumétricas desde una foto (transfer learning); la
+   estimación 3D exacta desde móviles es inviable.
+   - Saleh, Al Hanbali & Baubaid (2024) — arXiv:2402.09961.
+   - Naumann et al. (2023) — arXiv:2304.06009.
 
-6. **Modelos de cotización y pricing** — tarifa fija, por peso/distancia o
-   scoring multivariable. Variables críticas: disposición a pagar del remitente
-   y compensación mínima aceptable del transportista.
-   - Le, Ukkusuri et al. (2021) — Transportation Research Part E, 149.
-
-7. **UX en apps de servicios / matching** — patrones clave: cotización en pasos
-   reducidos, tracking en tiempo real, flujos diferenciados por rol.
-   - Cooper, Reimann & Cronin (2014) — *About Face*. Wiley.
+Referencias conceptuales de respaldo, aún NO incorporadas al documento (posibles
+ampliaciones futuras: two-sided markets, sharing economy, confianza P2P,
+pricing, UX): Hagiu & Wright (2015); Rochet & Tirole (2003); Botsman & Rogers
+(2010); Carbone, Rouquet & Roussat (2017); Arslan et al. (2019); Alnaggar et
+al. (2021); Gruber (2020); Le & Ukkusuri et al. (2021); Cooper, Reimann &
+Cronin (2014).
 
 ---
 
@@ -179,19 +173,21 @@ qué quedó pendiente.
 híbrido (dedicado + colaborativo), clasificación de carga por IA propia y cálculo
 de CO₂ para envíos entre particulares y PyMEs en el AMBA.
 
-Competidores directos analizados: Rappi Favor, PedidosYa Envíos, DiDi Entrega,
-Moova, Treggo, OCA/Andreani, Shipit.
+Competidores directos analizados: Rappi Favor, PedidosYa Envíos, Uber Flash,
+DiDi Entrega, Moova, Treggo, OCA/Andreani, Shipit.
 
-Papers clave:
-- Alnaggar et al. (2021) — Omega 98 — revisión sistemática de plataformas CSD.
-- Arslan et al. (2019) — Transportation Science 53(1) — matching dinámico.
-- Carbone et al. (2017) — Journal of Business Logistics — crowd logistics.
-- Le & Ukkusuri et al. (2021) — TRE 149 — willingness to work como crowd-shipper.
-- Oyama (2023) — arXiv:2312.01641 — matching como optimización combinatoria.
-- Anónimo (2024) — arXiv:2412.20395 — mercado CSD de dos lados con elasticidad.
+Papers en la matriz de antecedentes (los 7 citados en biblio.bib):
+- Yang et al. (2022) — arXiv:2203.14719 — flota híbrida DVs+SPVs a gran escala.
+- Luy et al. (2023) — arXiv:2311.17935 — workforce planning GW/OD.
+- Akamatsu & Oyama (2023) — arXiv:2312.01641 — matching fluido-partícula.
+- Oyama & Akamatsu (2024) — arXiv:2412.20395 — mercado CSD de dos lados con
+  elasticidad y task-bundling.
+- Saleh et al. (2024) — arXiv:2402.09961 — deep RL para courier scheduling.
+- Naumann et al. (2023) — arXiv:2304.06009 — CV en logística (SLR).
+- OIT (2020) — plataformas de reparto en Argentina (único con foco AMBA).
 
-Dato de mercado: mercado global CSD valuado en USD 12.500M en 2023, proyectado
-a USD 37.500M en 2032 (CAGR 12,5%).
+(Orden de autores verificado contra arXiv: 2312.01641 es Akamatsu→Oyama;
+2412.20395 es Oyama→Akamatsu.)
 
 ---
 
@@ -200,19 +196,27 @@ a USD 37.500M en 2032 (CAGR 12,5%).
 Proceso sistemático para comprender a los usuarios mediante técnicas empíricas.
 Aporta evidencia para tomar decisiones de diseño en lugar de basarlas en supuestos.
 
-Técnicas usadas: encuesta, entrevistas semiestructuradas, user personas.
+Técnicas usadas: encuesta (permanece abierta) y user personas. **No se realizan
+entrevistas** — no reintroducirlas en el documento.
 
 **Encuesta** ✓ completada
-- Bifurcaciones por perfil: remitente / transportista / no usuario.
-- En el documento: instrumento va al Anexo; en el cuerpo van visualizaciones
-  de resultados + 3–5 hallazgos accionables que impactan decisiones de diseño.
+- Microsoft Forms, lanzada el 22-may-2026. 145 respuestas completas; 133 (91,7%)
+  del AMBA.
+- Bifurcaciones por perfil → las bases varían: bloque de uso de servicios
+  n = 116; bloque transportista n = 98 (94–98 según pregunta). Todo porcentaje
+  citado en el cuerpo debe calcularse sobre la base de quienes respondieron esa
+  pregunta.
+- En el documento: transcripción de resultados en el Anexo B; en el cuerpo,
+  tabla de hallazgos + 7 hallazgos accionables.
+- Cifras clave verificadas: predisposición colaborativa 69,8%; usaría
+  clasificación por foto 80,2%; interés en transportar 84,5%; motivación
+  "ingreso extra sin desvío" 91,8%; preocupación responsabilidad por daños
+  73,4%; WTP $3.000–6.000 (68,1%); WTA $2.500–5.000 (51,0%).
 
-**Entrevistas** — pendiente
-- Modalidad semiestructurada, mínimo 5 entrevistas de 30–45 min.
-- Transcripciones al Anexo; en el cuerpo solo hallazgos sintetizados.
-
-**User Personas** — pendiente (se construyen post encuesta + entrevistas)
-- 2–3 personas: al menos una remitente y una transportista.
+**User Personas** — 3 preliminares construidas a partir de la encuesta:
+Juan García (remitente PyME, Lanús), María Alvarez (transportista colaborativa,
+Caballito→Microcentro) y Carlos Gómez (fletero dedicado con camión, Quilmes).
+Pendiente: refinarlas a medida que se amplíe la muestra de la encuesta.
 - Elementos: nombre ficticio, datos demográficos, contexto/rol, objetivos,
   frustraciones, comportamientos, cita representativa.
 

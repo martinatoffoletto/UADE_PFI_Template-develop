@@ -1,6 +1,6 @@
 \chapter{Introducción}
 
-DePaso es una plataforma digital de logística urbana colaborativa  orientada a PyMEs, comercios y clientes particulares del Área Metropolitana de Buenos Aires (AMBA). Su propósito es facilitar la gestión integral de envíos urbanos mediante una solución que permita solicitar, asignar, monitorear y completar entregas de manera eficiente, incorporando además herramientas para estimar el impacto ambiental asociado a cada operación.
+DePaso es una plataforma digital de logística urbana colaborativa orientada a PyMEs, comercios y clientes particulares del Área Metropolitana de Buenos Aires (AMBA). Su propósito es facilitar la gestión integral de envíos urbanos mediante una solución que permita solicitar, asignar, monitorear y completar entregas de manera eficiente, incorporando además herramientas para estimar el impacto ambiental asociado a cada operación.
 
 A diferencia de las plataformas de envíos bajo demanda actualmente disponibles, que se basan principalmente en transportistas dedicados, DePaso propone un modelo híbrido que combina transporte exclusivo con transporte colaborativo. Este último aprovecha trayectos que los transportistas ya realizan por motivos propios, permitiendo utilizar capacidad disponible en desplazamientos existentes y reduciendo viajes adicionales mediante mecanismos de asignación que minimizan los desvíos.
 
@@ -14,7 +14,7 @@ La propuesta surge ante una serie de problemáticas presentes en la logística u
     \item Escasas oportunidades para que personas que realizan desplazamientos cotidianos obtengan ingresos adicionales aprovechando sus recorridos habituales.
 \end{itemize}
 
-Frente a este escenario, DePaso busca articular una solución que aproveche la capacidad ociosa existente en los desplazamientos urbanos, al tiempo que ofrece alternativas de envío dedicado para los casos que así lo requieran. El proyecto se enmarca geográficamente en el Área Metropolitana de Buenos Aires y tiene como horizonte temporal el desarrollo de un prototipo funcional para finales de 2026. Esta combinación se traduce en un conjunto de modalidades de servicio que estructuran la operación de la plataforma y que se describen a continuación.
+Frente a este escenario, DePaso busca articular una solución que aproveche la capacidad ociosa existente en los desplazamientos urbanos, al tiempo que ofrece alternativas de envío dedicado para los casos que así lo requieran. El proyecto se circunscribe a dicha área metropolitana y tiene como horizonte temporal el desarrollo de un prototipo funcional para finales de 2026. Esta combinación se traduce en un conjunto de modalidades de servicio que estructuran la operación de la plataforma y que se describen a continuación.
 
 % ─────────────────────────────────────────────────────────────────────────────
 \section{Modalidades de envío}
@@ -58,7 +58,7 @@ Las mudanzas y fletes se asignan siempre en modalidad dedicada; nunca colaborati
 
 \subsection{Objetivo general}
 
-Desarrollar un prototipo funcional de plataforma digital de logística urbana colaborativa para el AMBA que permita gestionar el ciclo completo de los envíos mediante mecanismos inteligentes de clasificación y asignación, aprovechando la capacidad disponible en los desplazamientos de los transportistas.
+Desarrollar, para fines de 2026, un prototipo funcional de plataforma digital de logística urbana colaborativa para el AMBA que permita gestionar el ciclo completo de los envíos mediante mecanismos inteligentes de clasificación y asignación, aprovechando la capacidad disponible en los desplazamientos de los transportistas.
 
 \subsection{Objetivos específicos}
 
@@ -78,7 +78,11 @@ Desarrollar un prototipo funcional de plataforma digital de logística urbana co
 \vspace{1em}
 \section{Alcance}
 
-El proyecto comprende el diseño y desarrollo de un prototipo funcional de plataforma digital para la gestión logística de envíos dentro del AMBA. El sistema incluirá:
+El proyecto comprende el diseño y desarrollo de un prototipo funcional de plataforma digital para la gestión logística de envíos dentro del AMBA.
+
+\subsection{Características del prototipo funcional}
+
+El sistema incluirá:
 
 \begin{itemize}[leftmargin=2em]
     \item Registro y autenticación de clientes y transportistas con distintos medios de movilidad.
@@ -95,3 +99,11 @@ El proyecto comprende el diseño y desarrollo de un prototipo funcional de plata
     
     \item Herramientas básicas de monitoreo operativo para administradores.
 \end{itemize}
+
+\subsection{Limitaciones y exclusiones}
+
+El alcance se restringe geográficamente a operaciones dentro del AMBA, excluyendo envíos interprovinciales e internacionales. El clasificador de carga estará acotado a las categorías volumétricas definidas y al dataset de entrenamiento, ofreciendo el ingreso manual como alternativa cuando el objeto no sea reconocido con confianza suficiente. La pasarela de pagos se simulará en el prototipo, dejando su integración productiva como trabajo posterior. El mecanismo de cobertura ante daños se abordará a nivel de diseño y definición de responsabilidades, quedando la integración con compañías aseguradoras fuera del alcance del prototipo.
+
+\subsection{Estructura del documento}
+
+El presente documento se organiza de la siguiente manera: el Capítulo~1 introduce el problema, las modalidades de servicio, los objetivos y el alcance del proyecto; el Capítulo~2 presenta los antecedentes, compuestos por el marco teórico y el estado del arte; el Capítulo~3 describe la propuesta y la investigación de usuarios realizada; y el Capítulo~4 expone la conclusión parcial y el trabajo futuro. Completan el documento la bibliografía y los anexos, que incluyen el cronograma de actividades y la transcripción de los resultados de la encuesta.
