@@ -5,6 +5,10 @@
 %final es para compilar a modo normal. Cambiar a draft para que se compile en modo borrador. No se pone final dado que viene por defecto.
 \documentclass[a4paper, 12pt, oneside, titlepage, openany]{book}
 
+% Opciones para hyperref. Deben pasarse antes de que cualquier paquete
+% (p. ej. pdfcomment) cargue hyperref, para evitar un "Option clash".
+\PassOptionsToPackage{plainpages=false,pdfpagelabels}{hyperref}
+
 % Para el seccionado, debe colocarse al principio este package.
 \usepackage{titlesec}
 
@@ -230,6 +234,8 @@
     linkcolor=black,
     citecolor=red
 }
+\renewcommand{\theHtable}{\thechapter.\Roman{table}}
+\renewcommand{\theHfigure}{\thechapter.\arabic{figure}}
 % Para la entrega final:
 %\usepackage[hidelinks]{hyperref}
 %\hypersetup{
@@ -245,6 +251,7 @@
 }
 
 \begin{document}
+\hypersetup{pageanchor=false}
 \clearpage
 \thispagestyle{empty}
 \includepdf[
@@ -259,14 +266,14 @@
 \clearpage
 	\input{chapters/title}
 	\newpage
+\hypersetup{pageanchor=true}
 	\tableofcontents
 	\input{chapters/chapter01}
 	\input{chapters/chapter02}
 	\input{chapters/chapter03}
 	\input{chapters/conclusion}
 
-	\addcontentsline{toc}{chapter}{Bibliograf\'{\i}a}
-	\printbibliography{}
+	\printbibliography[heading=bibintoc]
 
 	\appendix
 	\input{chapters/appendix/annex}

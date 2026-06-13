@@ -9,6 +9,7 @@
 % Comando para cada anexo individual
 \newcommand{\anexo}[1]{%
   \refstepcounter{chapter}%
+  \phantomsection
   \chapter*{Anexo \thechapter: #1}%
   \addcontentsline{toc}{section}{Anexo \thechapter: #1}%
   \markboth{Anexo \thechapter: #1}{}%
