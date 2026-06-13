@@ -2,9 +2,9 @@
 
 El desarrollo del proyecto ha avanzado conforme a lo planificado. A la fecha de esta entrega (13 de junio de 2026), se encuentran completadas las etapas de definición del tema, revisión bibliográfica, redacción del Marco Teórico y Estado del Arte, y recolección y análisis de datos de la encuesta. Asimismo, el desarrollo de la aplicación se inició a partir de la aprobación de la propuesta, en paralelo con la investigación de usuarios; este adelanto respecto de la planificación original otorga mayor margen para las etapas de integración y pruebas del segundo semestre. Las etapas de diseño de arquitectura y entrenamiento del clasificador se desarrollarán según lo previsto en el segundo semestre.
 
-\begin{landscape}
-\begin{figure}[p]
+\begin{figure}[H]
 \centering
+\resizebox{\textwidth}{!}{%
 \begin{ganttchart}[
     hgrid,
     vgrid={*{1}{dotted}},
@@ -18,7 +18,7 @@ El desarrollo del proyecto ha avanzado conforme a lo planificado. A la fecha de 
     milestone/.append style={fill=red!65},
     x unit=1.25cm,
     y unit title=0.5cm,
-    y unit chart=0.6cm
+    y unit chart=0.48cm
 ]{1}{10}
   \gantttitle{2026}{10} \\
   \gantttitle{Mar}{1}\gantttitle{Abr}{1}\gantttitle{May}{1}\gantttitle{Jun}{1}\gantttitle{Jul}{1}\gantttitle{Ago}{1}\gantttitle{Sep}{1}\gantttitle{Oct}{1}\gantttitle{Nov}{1}\gantttitle{Dic}{1} \\
@@ -52,8 +52,8 @@ El desarrollo del proyecto ha avanzado conforme a lo planificado. A la fecha de 
   \ganttbar{Documentaci\'on final}{9}{10} \\
   \ganttmilestone{Defensa final}{10}
 
-\end{ganttchart}
+\end{ganttchart}%
+}
 \caption{Cronograma de actividades del proyecto DePaso (marzo--diciembre 2026). Columnas 1--10 corresponden a los meses marzo--diciembre de 2026.}
 \label{fig:gantt}
 \end{figure}
-\end{landscape}
