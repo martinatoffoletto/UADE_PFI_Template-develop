@@ -176,15 +176,30 @@ de CO₂ para envíos entre particulares y PyMEs en el AMBA.
 Competidores directos analizados: Rappi Favor, PedidosYa Envíos, Uber Flash,
 DiDi Entrega, Moova, Treggo, OCA/Andreani, Shipit.
 
-Papers en la matriz de antecedentes (los 7 citados en biblio.bib):
-- Yang et al. (2022) — arXiv:2203.14719 — flota híbrida DVs+SPVs a gran escala.
-- Luy et al. (2023) — arXiv:2311.17935 — workforce planning GW/OD.
-- Akamatsu & Oyama (2023) — arXiv:2312.01641 — matching fluido-partícula.
-- Oyama & Akamatsu (2024) — arXiv:2412.20395 — mercado CSD de dos lados con
-  elasticidad y task-bundling.
-- Saleh et al. (2024) — arXiv:2402.09961 — deep RL para courier scheduling.
-- Naumann et al. (2023) — arXiv:2304.06009 — CV en logística (SLR).
+Papers en la matriz de antecedentes (los 7 citados en biblio.bib). En jun-2026
+se actualizaron 4 citas a sus versiones formales de journal (regla de la
+cátedra: arXiv máx. 2 años sin paper formal posterior); las claves BibTeX no
+cambiaron:
+- Yang et al. (2024) — Transportation Research Part E, vol. 188, 103633,
+  DOI 10.1016/j.tre.2024.103633 (antes arXiv:2203.14719) — flota híbrida
+  DVs+SPVs a gran escala.
+- Luy et al. (2024) — Production and Operations Management, 33(11), 2177–2200,
+  DOI 10.1177/10591478241268602 (antes arXiv:2311.17935) — workforce planning
+  GW/OD.
+- Akamatsu & Oyama (2024) — Transportation Research Part C, vol. 166, 104738,
+  DOI 10.1016/j.trc.2024.104738 (antes arXiv:2312.01641) — matching
+  fluido-partícula.
+- Oyama & Akamatsu (2024) — arXiv:2412.20395 (sin versión journal; dentro del
+  límite de 2 años) — mercado CSD de dos lados con elasticidad y task-bundling.
+- Saleh et al. (2026) — Computers & Industrial Engineering, vol. 212, 111693,
+  DOI 10.1016/j.cie.2025.111693 (antes arXiv:2402.09961) — deep RL para
+  courier scheduling.
+- Naumann et al. (2023) — arXiv:2304.06009 — CV en logística (SLR). ÚNICO que
+  sigue solo en arXiv sin versión formal (verificado en Crossref/Semantic
+  Scholar, jun-2026): si la cátedra lo objeta, justificar que es la única SLR
+  del tema.
 - OIT (2020) — plataformas de reparto en Argentina (único con foco AMBA).
+  URL agregada al bib: ilo.org (.../wcms_759896.pdf).
 
 (Orden de autores verificado contra arXiv: 2312.01641 es Akamatsu→Oyama;
 2412.20395 es Oyama→Akamatsu.)
