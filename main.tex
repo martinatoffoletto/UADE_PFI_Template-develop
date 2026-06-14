@@ -1,8 +1,13 @@
+\pdfminorversion=7
 %oneside para una impresi\'on simple.
 %titlepage define que vamos a tener una portada.
 %openany para que los cap\'{\i}tulos empiecen en cualquier p\'agina y no s\'olo las impares.
 %final es para compilar a modo normal. Cambiar a draft para que se compile en modo borrador. No se pone final dado que viene por defecto.
 \documentclass[a4paper, 12pt, oneside, titlepage, openany]{book}
+
+% Opciones para hyperref. Deben pasarse antes de que cualquier paquete
+% (p. ej. pdfcomment) cargue hyperref, para evitar un "Option clash".
+\PassOptionsToPackage{plainpages=false,pdfpagelabels}{hyperref}
 
 % Para el seccionado, debe colocarse al principio este package.
 \usepackage{titlesec}
@@ -13,7 +18,7 @@
 \usepackage[T1]{fontenc} % Para poder copiar y pegar el texto desde un pdf
 \usepackage{lmodern}
 
-\usepackage[backend=biber, style=iso-authoryear, language=spanish]{biblatex}
+\usepackage[backend=biber, style=iso-numeric, sorting=nyt, language=spanish]{biblatex}
 \DeclareUnicodeCharacter{202F}{~} % Para reemplazar el caracter 202F por un espacio
 \bibliography{biblio.bib}
 \setcounter{tocdepth}{3}
@@ -52,13 +57,13 @@
 % \parbox[b] es para poner texto sobre el bottom
 \newpagestyle{ruled}{
 	\sethead{\includegraphics[width=3.7cm]{./images/UADE_LARGE}}
-			{\parbox[b]{0.43\textwidth}{\raggedright\MakeUppercase{Título de la PFI}}} % El parámetro 0.43 puede modificarse para tener más espacio en la columan del medio, y que así el título de la tesis entre mejor.
+			{\parbox[b]{0.43\textwidth}{\raggedright\MakeUppercase{DePaso --- Plataforma de logística urbana colaborativa}}}
 			{
 				\raisebox{1.5ex}{%
 					\parbox[b]{0.26\textwidth}{\raggedleft
 					\begin{tabular}{r}
-						Curry, Haskell \\
-						Howard, William Alvin
+						Toffoletto, Martina O. \\
+						Basaez, Candela P.
 					\end{tabular}
 					}
 				}
@@ -126,6 +131,10 @@
   {}{}
 
 \usepackage{pdfcomment}
+\usepackage{pgfgantt}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{float}
 \usepackage[spanish,es-nodecimaldot]{babel}
 \usepackage{csquotes}
 \addto\captionsspanish{
@@ -222,8 +231,11 @@
 \usepackage{hyperref}
 \hypersetup{
     colorlinks,
+    linkcolor=black,
     citecolor=red
 }
+\renewcommand{\theHtable}{\thechapter.\Roman{table}}
+\renewcommand{\theHfigure}{\thechapter.\arabic{figure}}
 % Para la entrega final:
 %\usepackage[hidelinks]{hyperref}
 %\hypersetup{
@@ -239,6 +251,7 @@
 }
 
 \begin{document}
+\hypersetup{pageanchor=false}
 \clearpage
 \thispagestyle{empty}
 \includepdf[
@@ -252,19 +265,15 @@
 ]{cover/caratula_DePaso.pdf}
 \clearpage
 	\input{chapters/title}
-	\input{chapters/acknowledgments}
 	\newpage
-	\input{chapters/summary}
-	\newpage
-	\input{chapters/abstract}
-	\newpage
+\hypersetup{pageanchor=true}
 	\tableofcontents
 	\input{chapters/chapter01}
 	\input{chapters/chapter02}
+	\input{chapters/chapter03}
 	\input{chapters/conclusion}
 
-	\addcontentsline{toc}{chapter}{Bibliograf\'{\i}a}
-	\printbibliography{}
+	\printbibliography[heading=bibintoc]
 
 	\appendix
 	\input{chapters/appendix/annex}

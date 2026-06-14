@@ -1,78 +1,109 @@
-\chapter{Estado del Arte}
+\chapter{Introducción}
 
-\emph{El siguiente capítulo presenta un ejemplo de Estado del Arte. Se puede observar el uso de referencias bibliográficas, la estructura del contenido y el estilo de redacción académica esperado.}
+DePaso es una plataforma digital de logística urbana colaborativa orientada a PyMEs, comercios y clientes particulares del Área Metropolitana de Buenos Aires (AMBA). Su propósito es facilitar la gestión integral de envíos urbanos mediante una solución que permita solicitar, asignar, monitorear y completar entregas de manera eficiente, incorporando además herramientas para estimar el impacto ambiental asociado a cada operación.
 
-Este cap\'{\i}tulo asume cierta familiaridad con c\'alculo lambda y computaci\'on cu\'antica. Si este no es el caso del lector, se sugiere leer primero el cap\'{\i}tulo 2 y luego el presente cap\'{\i}tulo.
+A diferencia de las plataformas de envíos bajo demanda actualmente disponibles, que se basan principalmente en transportistas dedicados, DePaso propone un modelo híbrido que combina transporte exclusivo con transporte colaborativo. Este último aprovecha trayectos que los transportistas ya realizan por motivos propios, permitiendo utilizar capacidad disponible en desplazamientos existentes y reduciendo viajes adicionales mediante mecanismos de asignación que minimizan los desvíos.
 
-En 1982, Richard Feynman destac\'o que la computaci\'on cl\'asica no alcanza para crear simulaciones de forma eficiente \parencite{Feynman1982}, debido
-a la propia construcci\'on de las computadoras cl\'asicas.
-La simulaci\'on de interacciones entre \(N\) part\'{\i}culas a nivel cu\'antico presenta una complejidad de orden exponencial de los recursos necesarios en la computaci\'on cl\'asica y esto no sucede si lo hici\'eramos directamente con una computadora con propiedades cu\'anticas.
+La propuesta surge ante una serie de problemáticas presentes en la logística urbana actual:
 
-La computaci\'on cu\'antica puede ser vista como un modelo de computaci\'on para la mec\'anica cu\'antica. La idea es considerar
-los estados de las part\'{\i}culas como estados del sistema computacional, y su evoluci\'on como un proceso de c\'omputo. Como tal,
-puede ser estudiado desde la teor\'{\i}a de lenguajes de programaci\'on, y desde all\'{\i}, la teor\'{\i}a de tipos. Tener una teor\'{\i}a
-de tipos completa para la computaci\'on cu\'antica induce nuevas conexiones con l\'ogica, siguiendo el isomorfismo de Curry-Howard \parencite{SorensenUrzyczyn2006}. Finalmente, este camino redundar\'a en una l\'ogica formal de la mec\'anica cu\'antica, fundamentada
-por las ciencias de la computaci\'on.
+\begin{itemize}[leftmargin=2em]
+    \item Costos logísticos elevados para PyMEs y comercios que no cuentan con flota propia.
+    \item Existencia de vehículos que realizan trayectos con capacidad disponible sin ser aprovechada.
+    \item Ineficiencias en la distribución de última milla dentro de entornos urbanos densamente poblados.
+    \item Emisiones de CO\textsubscript{2} asociadas a viajes dedicados que podrían evitarse mediante esquemas colaborativos.
+    \item Escasas oportunidades para que personas que realizan desplazamientos cotidianos obtengan ingresos adicionales aprovechando sus recorridos habituales.
+\end{itemize}
 
-Una de las soluciones m\'as importantes presentadas por la computaci\'on cu\'antica fue dada por Peter Shor,
-en 1994 \parencite{Shor1994}. La importancia del algoritmo de Shor es la utilizaci\'on de la transformada r\'apida cu\'antica de Fourier, que tiene aplicaciones en much\'{\i}simas \'areas. Por ejemplo, permite la descomposici\'on en factores de un n\'umero, de vital importancia
-para romper la criptograf\'{\i}a de clave p\'ublica. Otro algoritmo de gran importancia es el algoritmo de Grover \parencite{Grover1996},
-por Lov K. Grover en 1996, que permite la b\'usqueda de un valor en una secuencia no ordenada, por ejemplo, para todas las combinaciones de mol\'eculas hasta dar con una que cumpla una propiedad en particular.
+Frente a este escenario, DePaso busca articular una solución que aproveche la capacidad ociosa existente en los desplazamientos urbanos, al tiempo que ofrece alternativas de envío dedicado para los casos que así lo requieran. El proyecto se circunscribe a dicha área metropolitana y tiene como horizonte temporal el desarrollo de un prototipo funcional para finales de 2026. Esta combinación se traduce en un conjunto de modalidades de servicio que estructuran la operación de la plataforma y que se describen a continuación.
 
-En principio estos algoritmos se describen en t\'erminos de circuitos.
-En la b\'usqueda de un lenguaje de programaci\'on que permita abstraer los conceptos,
-un concepto que nace es el de \emph{control cl\'asico}, el cual se basa
-en dirigir instrucciones a una computadora cu\'antica desde una computadora cl\'asica. Las primeras nociones de
-este manejo las da Peter Selinger en el a\~no 2004 \parencite{Selinger2004} basado en la idea de qRAM de Knill \parencite{Knill1996},
-el cual propone que es necesario un conjunto de instrucciones de alto nivel que se abstraigan del hardware,
-con un flujo de control cl\'asico.
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Modalidades de envío}
 
-De este tipo de control es como nace Quipper \parencite{GreenEtAl2013}, un lenguaje
-embebido creado en 2013, que utiliza Haskell como el lenguaje de programaci\'on mediante
-la importaci\'on de librer\'{\i}as, lo que lo clasifica como lenguaje funcional. Se clasifica como
-escalable y expresivo de orden superior.
+DePaso organiza sus servicios a partir de dos dimensiones: la forma en que se inicia la operación y el tipo de trayecto realizado por el transportista. La combinación de ambas da lugar a cuatro modalidades de servicio:
 
-En el a\~no 2017, se publica QWIRE, un lenguaje de programaci\'on cu\'antica creado para escribir en alto nivel la
-programaci\'on de circuitos cu\'anticos, interpretando a estos como superoperadores en matrices de densidad \parencite{PaykinRandZdancewic2017} (similar a Quipper).
+\begin{itemize}[leftmargin=2em]
+    \item \textbf{Dedicado por demanda}: el remitente solicita un envío y el sistema identifica transportistas disponibles cercanos al punto de origen.
+    
+    \item \textbf{Dedicado por espacio}: el transportista informa disponibilidad en una zona y franja horaria determinadas, permitiendo la asignación de pedidos compatibles con la capacidad de su vehículo.
+    
+    \item \textbf{Colaborativo por demanda}: el remitente solicita un envío con cierta flexibilidad temporal y el sistema busca trayectos existentes compatibles con el recorrido requerido, procurando minimizar el desvío adicional.
+    
+    \item \textbf{Colaborativo por espacio}: el transportista registra trayectos habituales recurrentes y recibe sugerencias de envíos compatibles con dichos recorridos.
+\end{itemize}
 
-Tambi\'en existen lenguajes cu\'anticos imperativos, como QCL (que permite al usuario definir sus propios
-operadores y funciones con una sintaxis parecida a C), o el m\'as reciente Q\# de Microsoft (que lee y
-devuelve datos cl\'asicos) nombrado as\'{\i} en referencia a C\#, dado que se accede mediante este \'ultimo.
+Para la operación del sistema se contemplan cuatro categorías generales de carga: paquetes pequeños y documentos, cargas medianas, cargas grandes o voluminosas y mudanzas o fletes. Las restricciones según el tipo de movilidad disponible se presentan en la Tabla~\ref{tab:restricciones}.
+\begin{table}[ht]
+    \caption{Restricciones de carga por tipo de movilidad}
+    \label{tab:restricciones}
+    \centering
+    \small
+    \begin{tabular}{lccccc}
+        \toprule
+        \textbf{Categoría} & \textbf{Peatón/Bici} & \textbf{Moto} & \textbf{Auto} & \textbf{Camioneta} & \textbf{Camión} \\
+        \midrule
+        Pequeños / documentos & Sí\textsuperscript{*} & Sí & Sí & Sí & Sí \\
+        Medianos              & No & Sí & Sí & Sí & Sí \\
+        Grandes / voluminosos & No & No & Sí & Sí & Sí \\
+        Mudanzas / fletes     & No & No & No & Sí & Sí \\
+        \bottomrule
+        \multicolumn{6}{l}{\textsuperscript{*} Solo trayectos cortos ($<$ 5 km).}
+    \end{tabular}
+\end{table}
 
-Otro tipo de control es el control cu\'antico, introducido por Altenkirch y Grattage
-\parencite{AltenkirchGrattage2005},
-donde se propone un c\'alculo que no necesite de un control indirecto de la computadora cu\'antica, sino que se
-pueda usar directamente en la misma. En 2019, se propone una extensi\'on cu\'antica al \(\lambda\)-c\'alculo (Lineal)
-m\'as expresivo \parencite{DiazcaroEtAl2019}, en el paradigma de control cu\'antico, basado en la t\'ecnica de la realizabilidad \parencite{Kleene1945}. Lineal~\parencite{ArrighiDowek2017} fue uno de los primeros lenguajes que tuvo como objetivo desarrollar un c\'alculo lambda de control cu\'antico. Es un c\'alculo lambda sin tipos extendido con superposiciones lineales arbitrarias. Las reglas de reescritura garantizan la confluencia y se toma una forma can\'onica como forma normal de los t\'erminos. Para evitar la clonaci\'on, se considera una estrategia {\em call-by-base}: se puede aplicar una abstracci\'on \(\lambda x.t\) a una superposici\'on de valores \((\alpha.v+\beta.w)\) que producen \(\alpha. (\lambda x.t)v+\beta.(\lambda x.t)w\). De esta manera, no s\'olo se evita la clonaci\'on, sino que adem\'as todas las abstracciones son lineales por construcci\'on. Esto permite expresar matrices y vectores y, por tanto, programas cu\'anticos, pero tambi\'en mapas no unitarios y, por supuesto, vectores no normalizados.
+Las mudanzas y fletes se asignan siempre en modalidad dedicada; nunca colaborativa.
 
-\begin{center}
-	\ldots Texto \ldots
-\end{center}
+% ─────────────────────────────────────────────────────────────────────────────
+\vspace{1em}
+\section{Objetivos}
 
-De las extensiones del \(\lambda\)-c\'alculo, Lambda-\(S\) \parencite{DiazcaroDowekRinaldi2019, DiazcaroMalherbe2024} presenta un sistema de tipos capaz de distinguir
-entre un estado superpuesto y un qubit con un estado no superpuesto respecto a una base dada. En esta tesis se propone
-una extensi\'on a Lambda-\(S\) para permitir identificar valores duplicables en m\'as de una base de medici\'on.
+\subsection{Objetivo general}
 
-Lambda-\(S\) est\'a enfocado en la propiedad cu\'antica conocida como superposici\'on. Su sistema de tipos puede distinguir entre estados superpuestos, respecto a una base dada, y estados de dicha base. Este sistema de tipos representa un dual de la l\'ogica lineal \parencite{DiazcaroMalherbe2020}.
+Desarrollar, para fines de 2026, un prototipo funcional de plataforma digital de logística urbana colaborativa para el AMBA que permita gestionar el ciclo completo de los envíos mediante mecanismos inteligentes de clasificación y asignación, aprovechando la capacidad disponible en los desplazamientos de los transportistas.
 
-En \(\lambda\)-calculo, aplicar el t\'ermino \(\lambda x.(x \otimes x)\), que expresa una funci\'on no lineal, a un t\'ermino \(u\) produce el t\'ermino \((\lambda x.(x \otimes x))u\), que se eval\'ua a \(u
-	\otimes u\). Pero \enquote{clonar} este vector, es decir, el t\'ermino \(u\), est\'a prohibido en la computaci\'on cu\'antica.
-Varias extensiones cu\'anticas al \(\lambda\)-c\'alculo tratan este problema de diferentes maneras.
+\subsection{Objetivos específicos}
 
-Una manera es prohibir la construcci\'on del t\'ermino \(\lambda x.(x \otimes x)\), usando un sistema de tipos inspirado en la l\'ogica lineal
-\parencite{Girard1987,Abramsky1993}, lo que, por ejemplo, deriv\'o en c\'alculos l\'ogico-lineales 
-\parencite{	AltenkirchGrattage2005,
-	SelingerValiron2009,
-	GreenEtAl2013,
-	PaganiSelingerValiron2014,
-	Zorzi2016}.
+\begin{itemize}[leftmargin=2em]
+    \item Desarrollar e implementar un sistema de visión computacional capaz de clasificar automáticamente el tamaño y volumen de las cargas a partir de imágenes.
+    
+    \item Implementar un mecanismo de asignación inteligente que evalúe la compatibilidad entre pedidos y transportistas considerando características de la carga, trayectorias, ventanas horarias y reputación.
+    
+    \item Incorporar un modelo híbrido de operación que contemple tanto envíos dedicados como envíos colaborativos.
+    
+    \item Desarrollar un mecanismo de estimación del impacto ambiental que permita calcular el ahorro de CO\textsubscript{2} generado por cada envío colaborativo respecto de un escenario equivalente de transporte dedicado.
+    
+    \item Diseñar e implementar una plataforma digital escalable que integre los distintos componentes funcionales necesarios para la gestión de envíos urbanos.
+\end{itemize}
 
-\begin{center}
-	\ldots Texto \ldots
-\end{center}
+% ─────────────────────────────────────────────────────────────────────────────
+\vspace{1em}
+\section{Alcance}
 
-Esto deriv\'o ulteriormente en una sem\'antica categ\'orica para el lenguaje, donde los t\'erminos del lenguaje son interpretados en una categor\'{\i}a cartesiana \textbf{Set}, mientras que las operaciones ocurren en una categor\'{\i}a aditiva monoidal \textbf{Vec}, a donde se transportan usando una \emph{adjunci\'on} entre ambas categor\'{\i}as \parencite{DiazcaroMalherbe2024, DiazcaroMalherbe2020}.
+El proyecto comprende el diseño y desarrollo de un prototipo funcional de plataforma digital para la gestión logística de envíos dentro del AMBA.
 
-Este lenguaje permite expresar algoritmos cu\'anticos con una informaci\'on muy precisa sobre los datos cu\'anticos procesados por esos algoritmos. Sin embargo, dado que ya se cuenta con un lenguaje que puede decidir cu\'ando un qubit est\'a en una base computacional, y cu\'ando podr\'{\i}a no estarlo, sin necesidad de medir, sino simplemente por haber seguido su evoluci\'on a lo largo del algoritmo, es interesante extender dicha t\'ecnica a otras bases, que es lo que hacemos en esta tesis.
+\subsection{Características del prototipo funcional}
 
-% Generalmente, uno puede poner acá un breve párrafo sobre la estructura de la tesis, explicando qué se verá en cada capítulo, y dicha explicación de a lo sumo una línea de largo. Consultar con los docentes de la PFI previamente.
+El sistema incluirá:
+
+\begin{itemize}[leftmargin=2em]
+    \item Registro y autenticación de clientes y transportistas con distintos medios de movilidad.
+    
+    \item Creación, asignación y seguimiento de pedidos en las diferentes modalidades de servicio definidas.
+    
+    \item Clasificación automática de cargas mediante inteligencia artificial, con posibilidad de ingreso manual alternativo.
+    
+    \item Asignación inteligente basada en trayectorias geográficas compatibles.
+    
+    \item Gestión de capacidad disponible de los vehículos.
+    
+    \item Estimación del ahorro de CO\textsubscript{2} asociado a envíos colaborativos.
+    
+    \item Herramientas básicas de monitoreo operativo para administradores.
+\end{itemize}
+
+\subsection{Limitaciones y exclusiones}
+
+El alcance se restringe geográficamente a operaciones dentro del AMBA, excluyendo envíos interprovinciales e internacionales. El clasificador de carga estará acotado a las categorías volumétricas definidas y al dataset de entrenamiento, ofreciendo el ingreso manual como alternativa cuando el objeto no sea reconocido con confianza suficiente. La pasarela de pagos se simulará en el prototipo, dejando su integración productiva como trabajo posterior. El mecanismo de cobertura ante daños se abordará a nivel de diseño y definición de responsabilidades, quedando la integración con compañías aseguradoras fuera del alcance del prototipo.
+
+\subsection{Estructura del documento}
+
+El presente documento se organiza de la siguiente manera: el Capítulo~1 introduce el problema, las modalidades de servicio, los objetivos y el alcance del proyecto; el Capítulo~2 presenta los antecedentes, compuestos por el marco teórico y el estado del arte; el Capítulo~3 describe la propuesta y la investigación de usuarios realizada; y el Capítulo~4 expone la conclusión parcial y el trabajo futuro. Completan el documento la bibliografía y los anexos, que incluyen el cronograma de actividades y la transcripción de los resultados de la encuesta.

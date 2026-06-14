@@ -1,9 +1,59 @@
 \anexo{Cronograma de Actividades}
 
-En líneas generales, el desarrollo del proyecto ha avanzado conforme a lo planificado. No obstante, se presentó una demora en \ldots, motivo por el cual \ldots. A continuación, se presenta el cronograma actualizado con las tareas realizadas, en curso y replanificadas, que reflejan el estado actual del proyecto.
+El desarrollo del proyecto ha avanzado conforme a lo planificado. A la fecha de esta entrega (13 de junio de 2026), se encuentran completadas las etapas de definición del tema, revisión bibliográfica, redacción del Marco Teórico y Estado del Arte, y recolección y análisis de datos de la encuesta. Asimismo, el desarrollo de la aplicación se inició a partir de la aprobación de la propuesta, en paralelo con la investigación de usuarios; este adelanto respecto de la planificación original otorga mayor margen para las etapas de integración y pruebas del segundo semestre. Las etapas de diseño de arquitectura y entrenamiento del clasificador se desarrollarán según lo previsto en el segundo semestre.
 
-%\begin{figure}[ht]
-%    \centering
-%    \includegraphics[width=0.7\textheight]{./././images/Cronograma.png}
-%    \caption{Cronograma de actividades.}
-%\end{figure}
+\begin{figure}[H]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{ganttchart}[
+    hgrid,
+    vgrid={*{1}{dotted}},
+    title height=1,
+    title label font=\bfseries\footnotesize,
+    bar label font=\footnotesize,
+    group label font=\bfseries\footnotesize,
+    milestone label font=\footnotesize\itshape,
+    bar/.append style={fill=blue!35},
+    group/.append style={fill=gray!45},
+    milestone/.append style={fill=red!65},
+    x unit=1.25cm,
+    y unit title=0.5cm,
+    y unit chart=0.48cm
+]{1}{10}
+  \gantttitle{2026}{10} \\
+  \gantttitle{Mar}{1}\gantttitle{Abr}{1}\gantttitle{May}{1}\gantttitle{Jun}{1}\gantttitle{Jul}{1}\gantttitle{Ago}{1}\gantttitle{Sep}{1}\gantttitle{Oct}{1}\gantttitle{Nov}{1}\gantttitle{Dic}{1} \\
+
+  \ganttgroup{Investigaci\'on y documentaci\'on}{1}{4} \\
+  \ganttbar{Definici\'on del tema y propuesta}{1}{2} \\
+  \ganttbar{Revisi\'on bibliogr\'afica}{1}{4} \\
+  \ganttbar{Marco Te\'orico}{2}{4} \\
+  \ganttbar{Estado del Arte}{2}{4} \\
+
+  \ganttgroup{User Research}{3}{5} \\
+  \ganttbar{Dise\~no de la encuesta}{3}{3} \\
+  \ganttbar{Recolecci\'on de datos}{3}{4} \\
+  \ganttbar{An\'alisis de resultados}{4}{4} \\
+  \ganttmilestone{Entrega 25\%}{4} \\
+  \ganttbar{Construcci\'on y validaci\'on de User Personas}{4}{5} \\
+
+  \ganttgroup{Dise\~no}{5}{6} \\
+  \ganttbar{Arquitectura del sistema}{5}{6} \\
+  \ganttbar{Modelo econ\'omico y de negocio}{5}{6} \\
+  \ganttmilestone{Presentaci\'on 50\%}{6} \\
+
+  \ganttgroup{Desarrollo}{3}{9} \\
+  \ganttbar{Desarrollo del backend}{3}{8} \\
+  \ganttbar{Desarrollo del frontend (app m\'ovil)}{3}{8} \\
+  \ganttbar{Clasificador de carga (visi\'on computacional)}{6}{9} \\
+  \ganttbar{Integraci\'on y pruebas}{8}{9} \\
+  \ganttmilestone{Informe 75\%}{8} \\
+
+  \ganttgroup{Cierre}{9}{10} \\
+  \ganttbar{Documentaci\'on final}{9}{10} \\
+  \ganttmilestone{Defensa final}{10}
+
+\end{ganttchart}%
+}
+\caption{Cronograma de actividades del proyecto DePaso (marzo--diciembre 2026). Columnas 1--10 corresponden a los meses marzo--diciembre de 2026.}
+\label{fig:gantt}
+\end{figure}

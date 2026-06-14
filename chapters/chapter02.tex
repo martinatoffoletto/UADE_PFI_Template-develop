@@ -1,21 +1,228 @@
-\chapter{Preliminares}\label{chapter02}
+\chapter{Antecedentes}
 
-\section{Nombre de la primera sección}
+% ═════════════════════════════════════════════════════════════════════════════
+\section{Marco Teórico}
 
-Completar.\pdfcomment{Ejemplo de comentario en el pdf}
+El desarrollo de una plataforma de logística urbana colaborativa requiere integrar conceptos provenientes de distintas áreas: logística de última milla, modelos de transporte colaborativo, mecanismos de asignación entre oferta y demanda e inteligencia artificial.
 
-\section{Nombre de la segunda sección}
+El objetivo de este marco teórico es presentar los conceptos que fundamentan las principales decisiones de diseño adoptadas en DePaso. En primer lugar se analizan los modelos de crowdsourced delivery y las flotas híbridas como alternativa a los sistemas tradicionales de reparto. Luego se estudian los distintos perfiles de transportistas y los mecanismos de matching utilizados para asignar envíos de forma eficiente. Finalmente se abordan las técnicas de inteligencia artificial aplicadas a la clasificación automática de cargas y se declara el plan de datos que sustentará el entrenamiento de ese clasificador.
 
-Completar.
+Estos conceptos constituyen la base teórica sobre la cual se construye la propuesta desarrollada en este trabajo.
+% ─────────────────────────────────────────────────────────────────────────────
+\subsection{Crowdsourced delivery y logística de última milla}
 
-\section{Ejemplo de tabla}
+El \emph{crowdsourced delivery} (CSD) es un modelo logístico que delega la entrega de última milla a personas no profesionales que integran pedidos en sus propios desplazamientos, a cambio de una compensación económica, en lugar de recurrir a una flota dedicada. A diferencia de los sistemas tradicionales de reparto, no genera viajes nuevos: aprovecha los desplazamientos que ya existen en la ciudad.
 
-\input{tables/table_example.tex}
+Este modelo surge como respuesta a una ineficiencia estructural de la logística urbana. La entrega al destinatario final concentra una fracción desproporcionada del costo logístico total y genera congestión vehicular y emisiones en ciudades densas \parencite{YangEtAl2022}. En el AMBA, esa ineficiencia se agrava: una PyME o un particular que necesita enviar algo enfrenta pocas opciones reales, pagar una tarifa alta por un flete dedicado, resignarse a los tiempos de un \emph{courier} masivo pensado para \emph{e-commerce} de gran volumen, o directamente no enviarlo. Al mismo tiempo, hay vehículos circulando por la ciudad con espacio disponible todos los días y personas que necesitan mandar cosas, y los dos grupos rara vez se cruzan.
 
-\noindent \ldots como se ve en la Tabla~\ref{tab:example} \ldots
+Yang \textit{et al.}\ formalizan la lógica del CSD distinguiendo entre vehículos dedicados (DVs), que viajan exclusivamente para hacer entregas, y vehículos personales compartidos (SPVs), cuyos conductores integran pedidos en viajes que ya tenían planificados \parencite{YangEtAl2022}. La diferencia no es solo operativa: define dos modelos logísticos con costos, emisiones y dinámicas de participación completamente distintos, y es la base sobre la que se construye cualquier comparación rigurosa entre el modelo colaborativo y el dedicado.
 
-\section{Ejemplo de figura}
+DePaso se apoya en ese modelo para dar respuesta al problema logístico del AMBA. No opera flota propia ni subcontrata \emph{couriers}: conecta a remitentes con personas que ya se desplazan por la ciudad. Los subtemas que siguen desarrollan los conceptos que hacen viable esa conexión: qué tipo de conductor la sostiene, cómo se asignan pedidos a rutas preexistentes y qué rol cumple la inteligencia artificial en el proceso.
 
-\input{figures/example.tex}
+% ─────────────────────────────────────────────────────────────────────────────
+\subsection{Flotas híbridas: ventajas del modelo y el problema del desvío}
 
-\noindent \ldots como se ve en la Figura~\ref{fig:example} \ldots
+El resultado central de Yang et al.\ establece que los SPVs reducen el costo unitario de entrega respecto a los DVs, pero que esa ventaja puede revertirse cuando el conductor se aleja demasiado de su ruta habitual para retirar o entregar un paquete: si el desvío supera cierto umbral, los kilómetros adicionales recorridos eliminan el beneficio ambiental e incluso pueden incrementar las emisiones por encima del escenario dedicado que se supone reemplazar \parencite{YangEtAl2022}. Este hallazgo no es un detalle técnico: define una restricción estructural para cualquier plataforma que combine DVs y SPVs.
+
+La implicación de diseño es que el desvío de los conductores debe ser una variable explícita del algoritmo de asignación, no un parámetro secundario. Una plataforma que asigna pedidos sin acotar el desvío puede estar generando más emisiones que el modelo dedicado que dice reemplazar, sin que ni el remitente ni el transportista lo sepan. Yang et al.\ identifican además que este efecto escala con el tamaño del sistema, lo que vuelve al problema especialmente relevante para una plataforma con vocación de alcance masivo.
+
+DePaso traduce este resultado en una restricción de diseño explícita: la modalidad colaborativa solo asigna pedidos cuando el desvío del transportista se mantiene por debajo de un umbral calculado sobre rutas geoespaciales reales. El valor concreto de ese umbral y el mecanismo de cálculo se especifican en etapas posteriores del desarrollo.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\subsection{Perfiles de conductores: gig-workers y conductores ocasionales}
+
+La literatura en CSD distingue dos perfiles de conductores según su relación con la plataforma. Luy et al.\ los formalizan en el contexto de flotas híbridas \parencite{LuyEtAl2023}:
+
+\begin{itemize}[leftmargin=2em]
+    \item \textbf{Gig-workers (GW)}: conductores con disponibilidad continua que aceptan cualquier pedido dentro de su zona operativa, independientemente de si tienen un destino previo. Maximizan la previsibilidad de la oferta, pero requieren una remuneración constante que se traslada al costo del servicio.
+    \item \textbf{Conductores ocasionales (OD, \emph{Occasional Drivers})}: personas que solo participan cuando un pedido coincide con un desplazamiento que ya tienen planificado, como ir al trabajo, a otro barrio o al médico. No son repartidores; son viajeros habituales que ofrecen su capacidad ociosa de forma intermitente.
+\end{itemize}
+
+La diferencia entre ambos perfiles no es de grado sino de naturaleza: un OD no es un GW con menos disponibilidad. Su lógica de participación es distinta, su motivación es distinta y, como demuestran Luy et al., el valor que generan depende de que la plataforma reconozca esa diferencia en su diseño. Los autores señalan que la mayoría de las plataformas existentes asumen que todos sus conductores son GWs y descuidan el potencial de sincronizar la demanda con los ODs \parencite{LuyEtAl2023}. Aprovechar trayectos ya planificados en lugar de generar viajes dedicados reduce el tráfico urbano, las emisiones y el costo del servicio. Una limitación relevante del trabajo, señalada por los propios autores, es que opera sobre modelos matemáticos teóricos sin llegar a un prototipo funcional ni contemplar la experiencia de usuario que haría viable esa sincronización en la práctica.
+
+El concepto de OD es el fundamento teórico de la modalidad colaborativa de DePaso: una propuesta diferenciada, con su propio flujo de registro de trayecto habitual y su propia lógica de matching geoespacial, que no puede tratarse como una variante reducida de la modalidad dedicada.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\subsection{Diseño de mercados de matching y asignación}
+
+Asignar pedidos a transportistas con trayectos preexistentes es, en su forma general, un problema de optimización combinatoria: dada una demanda de envíos y una oferta de transportistas con rutas definidas, encontrar la asignación que maximiza el bienestar global, minimizando desvíos y respetando capacidades y ventanas horarias, no admite solución exacta en tiempo razonable cuando el número de actores escala.
+
+Akamatsu y Oyama proponen abordar este problema mediante una descomposición fluido-partícula: a nivel agregado, el sistema distribuye flujos de pedidos entre zonas como si fueran fluidos; a nivel individual, un mecanismo de subasta obliga a cada conductor a revelar su costo real de desvío, que constituye su información privada, para que la asignación resultante sea eficiente y maximice el bienestar social \parencite{AkamatsuOyama2023}. La innovación central es precisamente que el mecanismo no asume que la plataforma conoce las preferencias de los conductores: las subastas las extraen. La limitación para un prototipo no es de información, sino de implementación: ejecutar subastas en tiempo real y calcular probabilidades de fluidos requiere grandes volúmenes de datos históricos que no existen en el arranque de una plataforma nueva. Los propios autores señalan además la ausencia de elasticidades de oferta y demanda como trabajo pendiente.
+
+Oyama y Akamatsu extienden el trabajo incorporando elasticidades de oferta y demanda: el precio de la plataforma se ajusta dinámicamente según la disponibilidad de transportistas por zona y horario, y se permite que un conductor agrupe múltiples pedidos en un mismo viaje \parencite{OyamaAkamatsu2024}. El resultado es un mecanismo 700 veces más rápido que la optimización combinatoria directa con precio de equilibrio estable. Su limitación para el contexto de DePaso es la misma que la del trabajo anterior: el modelo requiere datos históricos extensos para calibrar las elasticidades y ejecutar las subastas, condición que no se cumple en el arranque de una plataforma nueva. Los autores señalan además que no contempla cargas heterogéneas como trabajo futuro.
+
+Ambos enfoques orientan la arquitectura conceptual del matching en DePaso: la idea de separar la compatibilidad geoespacial de la compatibilidad de carga y de incorporar la calificación acumulada como factor de selección proviene directamente de este marco. Sin embargo, implementar el mecanismo completo requiere un sistema de subastas en tiempo real y datos históricos de demanda que no existen en el arranque de la plataforma. DePaso adopta un algoritmo determinístico de scoring multivariable que no requiere subastas ni ese volumen de datos; su especificación se aborda en etapas posteriores del desarrollo.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\subsection{Visión computacional y aprendizaje por transferencia}
+
+La visión computacional es un área de la inteligencia artificial orientada a la extracción automática de información a partir de imágenes. Aplicada a problemas de clasificación, permite asignar una imagen a una categoría determinada a partir de patrones visuales aprendidos durante el proceso de entrenamiento.
+
+Una de las técnicas más utilizadas en este campo es el aprendizaje por transferencia (\emph{transfer learning}), que consiste en reutilizar arquitecturas de redes neuronales previamente entrenadas sobre grandes volúmenes de datos y adaptarlas a un nuevo dominio específico. Este enfoque permite reducir significativamente la cantidad de imágenes necesarias para el entrenamiento y mejorar el desempeño en contextos donde los datos disponibles son limitados, resultando ideal para implementaciones algorítmicas en dispositivos móviles.
+
+La literatura revisada sobre IA aplicada a logística colaborativa se concentra principalmente en optimizar la asignación de pedidos una vez que las características de la carga ya son conocidas. En contraste, la clasificación automática de la carga a partir de imágenes constituye un problema complementario que ha recibido menor atención dentro de estos sistemas.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\subsection{Datos para el entrenamiento del clasificador}
+
+El clasificador de carga descrito requiere un conjunto de imágenes etiquetadas según las cuatro categorías de carga definidas (paquete pequeño o documento, mediano, grande o voluminoso, y mudanza o flete). El conjunto se construye a partir de dos orígenes complementarios. El primero es un \emph{dataset} público de gran escala con anotaciones verificadas, Google Open Images, de uso extendido y validado por la comunidad de visión computacional, condición que respalda la confiabilidad y la trazabilidad de su procedencia. El segundo son fotografías propias de objetos representativos del contexto argentino, es decir, datos crudos generados por el equipo, incorporadas para reducir el sesgo de dominio que introduciría entrenar únicamente con imágenes de repositorios internacionales. Se estima un volumen total del orden de 1.500 imágenes, distribuidas de forma equilibrada entre las categorías. Se trata de una cifra preliminar, sujeta a ajuste según la disponibilidad de ejemplares adecuados por clase y los resultados de las primeras evaluaciones del modelo.
+
+El plan de tratamiento de los datos contempla, de manera preliminar, las siguientes etapas orientadas a garantizar la consistencia del conjunto antes de su uso. La primera es el saneamiento: descarte de imágenes corruptas, duplicadas, de baja resolución o visualmente ambiguas, así como de aquellas cuyo contenido no corresponde a ninguna categoría. La segunda es el etiquetado y la codificación: asignación consistente de cada imagen a una única categoría volumétrica y codificación de las clases al formato numérico que requiere el entrenamiento; las imágenes sin etiqueta confiable, equivalente a los valores nulos en datos tabulares, se reetiquetan manualmente o se excluyen. La tercera es la normalización: unificación de dimensiones, espacio de color (RGB) y rango de valores de los píxeles, para asegurar un formato homogéneo. La cuarta es el balanceo y la partición: equilibrado de la cantidad de ejemplares por clase y división estratificada en subconjuntos de entrenamiento, validación y prueba, evitando la filtración de imágenes entre ellos. La quinta es el aumento de datos (\emph{data augmentation}): generación controlada de variantes (rotaciones, recortes, cambios de iluminación) para ampliar la diversidad del conjunto sin introducir inconsistencias. La evaluación del modelo resultante contemplará, además del \emph{accuracy} y la matriz de confusión, un análisis de sesgos asociados a condiciones de iluminación, ángulo y fondo de las fotografías, en línea con las limitaciones de la visión computacional móvil señaladas por Naumann \textit{et al.}\ \parencite{NaumannEtAl2023}.
+% ─────────────────────────────────────────────────────────────────────────────
+
+Los cinco conceptos desarrollados en este marco forman un sistema de fundamentación coherente: cada uno responde a una de las preguntas de diseño que enfrenta DePaso. El modelo CSD y la lógica de flotas híbridas justifican por qué tiene sentido aprovechar desplazamientos existentes en lugar de operar flota propia; la distinción OD/GW explica por qué ese modelo requiere dos modalidades con flujos de registro distintos y no puede reducirse a una sola. El diseño de mercados de \emph{matching} delimita el problema de asignación y justifica el alcance del prototipo; la visión computacional y el aprendizaje por transferencia fundamentan la decisión de inferir la categoría de carga desde una imagen. El plan de datos detallado en el apartado precedente completa esta fundamentación al declarar la procedencia, el volumen y el tratamiento del conjunto con que se entrenará ese clasificador. El Estado del Arte que sigue evalúa en qué medida las soluciones existentes abordan este conjunto de dimensiones.
+
+% ═════════════════════════════════════════════════════════════════════════════
+\section{Estado del Arte}
+
+Esta sección sistematiza las soluciones comerciales y la investigación académica relevantes para DePaso, adoptando lineamientos de revisión sistemática de la literatura \parencite{KitchenhamCharters2007}. La búsqueda se realizó en bases de datos como Google Scholar, IEEE Xplore, Scopus y arXiv, combinando términos en inglés y español con operadores booleanos. Se aplicó un filtro temporal de 2022--2026 para la literatura académica, con la excepción del informe técnico de la OIT de 2020 \parencite{OIT2020}, incluido fuera de ese rango por ser el principal trabajo con foco específico en el mercado de plataformas en Argentina. Las versiones preliminares disponibles en repositorios de acceso abierto (arXiv) se admitieron únicamente cuando no existía una versión formal posterior; tal es el caso de la revisión de Naumann \textit{et al.}\ \parencite{NaumannEtAl2023}, incorporada por constituir la única revisión sistemática de la literatura dedicada específicamente a la visión computacional en logística identificada en la búsqueda. No se aplicó restricción temporal para el análisis de los competidores comerciales.
+
+Se priorizaron trabajos que cumplieran al menos uno de los siguientes criterios de inclusión: que propongan un modelo o algoritmo para \emph{crowdsourced delivery}, que analicen plataformas de logística urbana en América Latina, o que apliquen inteligencia artificial a la clasificación de carga o al \emph{scheduling} logístico.
+
+La revisión se articuló en torno a cinco preguntas de investigación:
+
+\begin{enumerate}[leftmargin=2em]
+    \item ¿Qué plataformas de logística urbana bajo demanda operan en el AMBA y qué limitaciones presentan para PyMEs y cargas no estándar?
+    \item ¿Qué modelos académicos abordan el \emph{matching} entre pedidos y transportistas ocasionales minimizando desvíos?
+    \item ¿Cómo se han implementado modelos híbridos que combinen flota dedicada y transportistas colaborativos (GW y OD)?
+    \item ¿Qué técnicas de IA se aplican a la clasificación automática de carga o al \emph{scheduling} dinámico en sistemas logísticos?
+    \item ¿Qué brecha existe entre las soluciones actuales y un sistema que combine modelo colaborativo, clasificación por IA y cálculo de impacto ambiental para el contexto argentino?
+\end{enumerate}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\subsection{Plataformas de logística urbana en el AMBA}
+
+En el AMBA coexisten dos grandes categorías de soluciones, analizadas a continuación.
+
+\textbf{Plataformas de envíos bajo demanda.} Rappi Favor, PedidosYa Envíos, Uber Flash y DiDi Entrega conectan remitentes con repartidores para envíos puntuales de objetos pequeños (documentos, bolsas, paquetes livianos). Operan bajo un modelo rígidamente dedicado de \emph{gig-workers}, gestionado algorítmicamente mediante sistemas de puntaje que penalizan el rechazo de pedidos o la desconexión \parencite{OIT2020}. Además de las limitaciones que este modelo impone al trabajador, desde el punto de vista logístico no contemplan cargas medianas, grandes ni mudanzas, no calculan el impacto ambiental y no ofrecen una modalidad colaborativa basada en aprovechar los trayectos habituales preexistentes del conductor.
+
+\textbf{Servicios de \emph{courier} y agregadores B2B.} OCA y Andreani ofrecen logística tradicional con tarifas fijas por peso y zona, orientadas al \emph{e-commerce} y envíos masivos; no tienen \emph{matching} inteligente ni clasificación asistida por IA. Por otro lado, empresas como Moova y Treggo apuntan al segmento B2B con flota propia o tercerizada y cobertura en el AMBA, pero requieren un volumen mínimo de envíos, excluyendo a usuarios particulares y no habilitando modalidades colaborativas ocasionales. Shipit funciona como un agregador que cotiza entre múltiples operadores, pero tampoco implementa trayectos compartidos ni clasificación automática de la carga.
+
+Ninguna de las soluciones relevadas combina un modelo colaborativo basado en trayectorias, clasificación de carga por visión computacional y cálculo de ahorro de CO\textsubscript{2}. La Tabla~\ref{tab:comparativa} sintetiza el posicionamiento de DePaso frente a las plataformas existentes.
+
+\begin{table}[ht]
+    \caption{Posicionamiento de DePaso frente a plataformas existentes en el AMBA}
+    \label{tab:comparativa}
+    \centering
+    \small
+    \begin{tabular}{lccccc}
+        \toprule
+        \textbf{Plataforma} & \textbf{Modelo} & \textbf{Colaborativo} & \textbf{IA carga} & \textbf{CO\textsubscript{2}} & \textbf{PyMEs} \\
+        \midrule
+        Rappi / Uber / DiDi    & GWs dedicados & No  & No  & No  & No  \\
+        OCA / Andreani         & \emph{Courier} & No  & No  & No  & Sí  \\
+        Moova / Treggo         & B2B flota      & No  & No  & No  & Sí  \\
+        \midrule
+        \textbf{DePaso}        & Híbrido        & \textbf{Sí} & \textbf{Sí} & \textbf{Sí} & \textbf{Sí} \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\subsection{Investigación académica reciente}
+
+\textbf{Flotas híbridas y \emph{matching}.} Yang \textit{et al.}\ modelan el ruteo de flota híbrida (DVs y SPVs) a gran escala y demuestran que los SPVs reducen el costo unitario, pero que los desvíos excesivos incrementan las emisiones totales \parencite{YangEtAl2022}. Las limitaciones reconocidas por los autores son relevantes para este proyecto: el modelo asume cargas homogéneas, no incorpora clasificación automática de paquetes heterogéneos y no incluye un modelo de precios. Por su parte, Luy \textit{et al.}\ señalan que las plataformas actuales asumen que todos sus conductores son GWs y descuidan el potencial de sincronizar la demanda con los ODs; sincronizar la demanda con trayectos preexistentes reduce el tráfico, las emisiones y el costo del servicio \parencite{LuyEtAl2023}. Sin embargo, los propios autores reconocen que su trabajo es un modelo teórico sin prototipo funcional y sin consideración de la experiencia de usuario necesaria para hacer viable esa sincronización en la práctica. A nivel algorítmico, Akamatsu y Oyama formulan el problema de \emph{matching} como un mercado de dos lados y proponen resolverlo mediante descomposición fluido-partícula con subastas que extraen el costo real de desvío de cada conductor \parencite{AkamatsuOyama2023}. Su limitación principal para un Producto Mínimo Viable (MVP) es que ejecutar esas subastas en tiempo real requiere grandes volúmenes de datos históricos, inexistentes al inicio de la plataforma; además, los autores señalan la ausencia de elasticidades como trabajo pendiente. Oyama y Akamatsu extienden ese resultado incorporando elasticidades y agrupamiento de pedidos (\emph{task-bundling}) \parencite{OyamaAkamatsu2024}. Su limitación operativa es similar: calibrar las elasticidades requiere datos históricos extensos, y el modelo matemático no contempla la clasificación volumétrica de cargas heterogéneas.
+
+\textbf{IA para \emph{scheduling}.} Saleh \textit{et al.}\ aplican aprendizaje por refuerzo profundo (\emph{Deep Reinforcement Learning} - DQN) al \emph{scheduling} dinámico de conductores en sistemas colaborativos, logrando mayor ganancia que las heurísticas estáticas \parencite{SalehEtAl2024}. Para el contexto de DePaso se identifican dos limitaciones relevantes: el agente requiere un \emph{dataset} histórico extenso para entrenarse, lo que lo hace inaplicable al inicio de una plataforma nueva (``arranque en frío''), y las decisiones del agente no son explicables al usuario final, lo que genera problemas de transparencia en contextos donde la asignación debe ser auditable. De manera transversal, el campo de la IA aplicada a la logística colaborativa asume en general que el tipo y volumen de la carga son datos precisos y ya disponibles al momento de la asignación. Ninguno de los trabajos revisados aborda la clasificación automática de la carga como parte integral del sistema logístico.
+
+\textbf{Visión computacional en logística.} Naumann \textit{et al.}\ sistematizan el estado del arte de la visión computacional aplicada a la cadena de suministro \parencite{NaumannEtAl2023}. Su revisión evidencia que, si bien la inteligencia artificial es crucial para automatizar procesos logísticos, la estimación de volumen precisa depende en la actualidad de costosos sensores 3D (RGB-D) en entornos controlados. Los autores identifican como principales limitaciones actuales la escasez de \emph{datasets} públicos logísticos y la alta complejidad de calcular volúmenes exactos utilizando únicamente cámaras de teléfonos móviles (RGB en 2D). Estos hallazgos justifican la decisión técnica de DePaso: al ser inviable la reconstrucción 3D exacta desde un móvil para un prototipo, el sistema opta por clasificar la carga en categorías volumétricas predefinidas mediante redes neuronales convolucionales, una solución que sortea las limitaciones de la literatura actual.
+
+\textbf{Tendencias emergentes.} Dos tendencias marcan la evolución reciente del campo. La primera es la incorporación de modelos de mercado con elasticidad dinámica: en lugar de tarifas fijas, los sistemas ajustan el precio en tiempo real según la disponibilidad de transportistas por zona y horario \parencite{OyamaAkamatsu2024}. La segunda es la aplicación creciente de IA, en particular el aprendizaje por refuerzo, a decisiones logísticas adaptativas: \emph{scheduling} de turnos, aceptación de pedidos y gestión de picos de demanda no anticipados \parencite{SalehEtAl2024}. Ambas tendencias presuponen una plataforma madura con datos históricos acumulados y no abordan la clasificación predictiva de la carga ni la cuantificación determinística del impacto ambiental por envío, aspectos que permanecen como áreas no exploradas en la literatura revisada.
+
+\textbf{Contexto del mercado.} En el AMBA, la OIT documentó en 2020 que las plataformas de reparto vigentes operan bajo modelos algorítmicos punitivos que imponen disponibilidad continua sin protección social ni de riesgos de trabajo \parencite{OIT2020}. Ningún trabajo académico revisado consolida sus hallazgos proponiendo un producto funcional o un modelo de software alternativo, no punitivo e híbrido, específicamente adaptado al contexto y las regulaciones del mercado argentino.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\subsection{Matriz de antecedentes}
+
+La Tabla~\ref{tab:antecedentes} sintetiza los trabajos seleccionados: para cada uno se registran objetivo, enfoque metodológico, tecnologías empleadas, resultados principales, limitaciones reconocidas por los propios autores y aporte concreto para DePaso.
+
+\begin{table}[ht]
+    \caption{Matriz de antecedentes: trabajos seleccionados}
+    \label{tab:antecedentes}
+    \centering
+    \scriptsize
+    \renewcommand{\arraystretch}{1.3}
+    \resizebox{\linewidth}{!}{%
+    \begin{tabular}{p{2.3cm}p{2.6cm}p{2.3cm}p{2.5cm}p{3.0cm}p{2.5cm}p{3.0cm}}
+        \toprule
+        \textbf{Autor/año y título} & \textbf{Objetivo} & \textbf{Enfoque o metodología} & \textbf{Tecnologías utilizadas} & \textbf{Resultados principales} & \textbf{Limitaciones reconocidas} & \textbf{Aporte para el proyecto} \\
+        \midrule
+        Yang et al.\ (2024) \newline \emph{Crowdsourced Shared-Trip Delivery} &
+        Resolver ruteo de flota híbrida DVs+SPVs a gran escala &
+        Heurística de descomposición; simulación computacional &
+        Algoritmos de ruteo; simulación de instancias a gran escala &
+        SPVs reducen costo unitario; desvíos excesivos aumentan millas totales y emisiones CO\textsubscript{2} &
+        Cargas homogéneas; sin clasificación automática de paquetes; sin modelo de precios &
+        Fundamenta la restricción de desvío máximo como condición previa al matching colaborativo \\
+        \midrule
+        Luy et al.\ (2024) \newline \emph{Workforce Planning CSD Hybrid Fleets} &
+        Planificación estratégica de fuerza laboral GW/OD en CSD &
+        Optimización matemática; comparación de escenarios GW vs.\ OD &
+        Modelos de programación matemática; análisis de escenarios &
+        Las plataformas actuales descuidan el potencial de los ODs; sincronizar demanda con trayectos preexistentes reduce tráfico, emisiones y costos &
+        Modelo teórico sin prototipo; no contempla experiencia de usuario para el registro de rutas &
+        Valida la distinción OD/GW y la necesidad de una modalidad colaborativa con registro de trayecto \\
+        \midrule
+        Akamatsu y Oyama (2024) \newline \emph{Fluid-particle matching market} &
+        Diseñar mecanismo de mercado para matching CSD minimizando desvío real &
+        Teoría de diseño de mercados; descomposición fluido-partícula &
+        Algoritmo de matching con descomposición fluido-partícula; análisis matemático formal &
+        Maximiza bienestar social; superior computacionalmente a la optimización directa &
+        Sin elasticidades de oferta/demanda; implementar subastas en tiempo real requiere datos históricos extensos, inviables en un MVP &
+        Marco conceptual del matching; justifica una alternativa determinística para el prototipo \\
+        \midrule
+        Oyama y Akamatsu (2025) \newline \emph{Market-based matching CSD} &
+        Modelar mercado CSD de dos lados con elasticidad y agrupamiento de pedidos &
+        Teoría de equilibrio de mercado; algoritmo de asignación de tráfico &
+        Modelo de equilibrio bidireccional; algoritmo de asignación de tráfico; análisis de elasticidad &
+        700$\times$ más rápido que optimización combinatoria directa; precio de equilibrio estable &
+        Calibrar elasticidades requiere datos históricos extensos; no contempla cargas heterogéneas &
+        Orienta la política de precios y la gestión de capacidad; justifica simplificación en el prototipo \\
+        \midrule
+        Saleh \textit{et al.}\ (2026) \newline \emph{Courier Scheduling via Deep RL} &
+        Maximizar ganancia de plataforma CSD mediante \emph{scheduling} dinámico &
+        \emph{Deep Reinforcement Learning} (DQN); simulación con datos sintéticos &
+        DQN; entorno de simulación; \emph{dataset} sintético de demanda &
+        DQN supera heurísticas estáticas en ganancia neta durante picos de demanda &
+        Requiere \emph{dataset} histórico extenso; decisiones no explicables al usuario final &
+        Identifica IA como línea de mejora del \emph{matching} una vez que la plataforma acumule datos reales \\
+        \midrule
+        Naumann \textit{et al.}\ (2023) \newline \emph{CV in Transportation Logistics} &
+        Sistematizar el estado del arte de la Visión Computacional aplicada a logística y almacenamiento &
+        Revisión sistemática de la literatura (SLR) sobre monitoreo y automatización &
+        Redes Neuronales Convolucionales (CNN); estimación volumétrica; procesamiento RGB y RGB-D &
+        La IA es crucial para automatizar logística, pero la estimación de volumen depende de costosos sensores 3D en entornos controlados &
+        Escasez de \emph{datasets} públicos logísticos; alta complejidad para estimar volúmenes exactos con cámaras móviles 2D (RGB) &
+        Justifica el uso de IA en móviles para clasificar carga en categorías como alternativa viable frente al escaneo 3D exacto \\
+        \midrule
+        OIT (2020) \newline \emph{Trabajo en plataformas digitales, Argentina} &
+        Analizar condiciones laborales de repartidores en plataformas del AMBA &
+        Investigación empírica mixta (cuali-cuantitativa); encuestas y grupos focales &
+        Encuestas estructuradas; entrevistas semiestructuradas; análisis documental &
+        Algoritmos punitivos imponen disponibilidad continua disfrazada de flexibilidad; ausencia de protección social &
+        Foco en diagnóstico; no propone modelo técnico alternativo ni solución de diseño &
+        Único trabajo con foco específico en el AMBA; contextualiza el mercado local y justifica el modelo no punitivo de DePaso \\
+        \bottomrule
+    \end{tabular}%
+    }% end resizebox
+\end{table}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\subsection{Conclusiones del relevamiento}
+
+Del análisis de soluciones comerciales y trabajos académicos se extraen dos conclusiones. Primero, \emph{qué se sabe y qué existe}: el mercado local resuelve la logística urbana imponiendo costos elevados para PyMEs mediante fletes dedicados, generando ineficiencia y emisiones innecesarias por vehículos que circulan con espacio ocioso. A nivel académico, la optimización matemática del problema CSD está ampliamente estudiada, pero rara vez se consolida en productos funcionales y accesibles para el usuario final; los modelos teóricos asumen condiciones (información perfecta, datos históricos, cargas homogéneas) que no se cumplen en la etapa de lanzamiento de una plataforma nueva. Segundo, \emph{qué falta}: existe un claro vacío entre las teorías de asignación colaborativa de la academia y las aplicaciones rígidas del mercado local, vacío que DePaso busca cubrir materializando un modelo híbrido en un prototipo funcional adaptado a las particularidades del AMBA.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\subsection{Brecha que justifica DePaso}
+
+Del análisis precedente emergen cinco características que ninguna solución existente, ni comercial ni académica, combina simultáneamente en el contexto argentino:
+
+\begin{enumerate}[leftmargin=2em]
+    \item \textbf{Modelo híbrido GW+OD en una única plataforma}: si bien la literatura académica modela la eficiencia de combinar ambos perfiles, las plataformas comerciales locales solo implementan GWs. DePaso materializa esta integración teórica en una sola aplicación con flujos de registro, \emph{matching} y tarifas diferenciados por modalidad, sin requerir que el usuario comprenda la distinción conceptual subyacente.
+    \item \textbf{Clasificador automático de carga heterogénea por IA propia}: toda la literatura de \emph{matching} asume el tipo de carga como dato previo. DePaso lo infiere a partir de una imagen capturada por el remitente, eliminando la necesidad de que el usuario conozca las categorías volumétricas del sistema y reduciendo la fricción en el proceso de solicitud.
+    \item \textbf{Control del desvío como restricción explícita del algoritmo}: Yang \textit{et al.}\ documentan que la ventaja ambiental del CSD desaparece con desvíos excesivos \parencite{YangEtAl2022}, pero ninguna plataforma comercial relevada incorpora ese control como variable de \emph{matching}. DePaso lo trata como filtro duro previo a la asignación, garantizando que cada envío colaborativo sea genuinamente más eficiente que su alternativa dedicada.
+    \item \textbf{Cálculo en tiempo real de CO\textsubscript{2} ahorrado por envío}: la cuantificación del impacto ambiental a nivel de cada envío individual, comparando el escenario colaborativo contra el dedicado equivalente, no aparece en ninguna de las plataformas ni en los trabajos académicos revisados. DePaso lo presenta como \emph{feedback} al usuario al completar cada operación, convirtiendo el impacto ambiental en un valor visible y acumulable.
+    \item \textbf{Adaptación al contexto del AMBA}: los modelos académicos se prueban con datos de ciudades de alta renta o en escenarios sintéticos; las plataformas comerciales del AMBA ignoran el segmento colaborativo. DePaso diseña sus restricciones (tipos de vehículo habilitados por categoría de carga, cobertura geográfica, perfil de usuario \emph{target}) para reflejar las condiciones reales del mercado local, incluyendo la realidad laboral documentada por la OIT \parencite{OIT2020}.
+\end{enumerate}
+
+La combinación de estos cinco elementos en un prototipo funcional representa la contribución diferencial de DePaso: materializar en software la convergencia de un modelo logístico colaborativo, IA para clasificación de carga y transparencia ambiental, adaptados a la realidad del mercado argentino.
