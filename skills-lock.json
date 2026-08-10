@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "skills": {
+    "bib-search-citation": {
+      "source": "bahayonghang/academic-writing-skills",
+      "sourceType": "github",
+      "skillPath": "academic-writing-skills/bib-search-citation/SKILL.md",
+      "computedHash": "b6e8add5150a8a69800507643433862983cc8c1f6b34a7683addacdead68cc92"
+    },
+    "find-skills": {
+      "source": "vercel-labs/skills",
+      "sourceType": "github",
+      "skillPath": "skills/find-skills/SKILL.md",
+      "computedHash": "b146008599c31057cef1c145774cea5d5afb30e8f43fa802e47a4b461419aaaf"
+    },
+    "infographic": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "infographic/SKILL.md",
+      "computedHash": "fb62177c796fe9e8eb015559aeb630c447a7edbe627f9e89336d54029c6eba47"
+    },
+    "latex-paper-en": {
+      "source": "bahayonghang/academic-writing-skills",
+      "sourceType": "github",
+      "skillPath": "academic-writing-skills/latex-paper-en/SKILL.md",
+      "computedHash": "1438b4985d9183f81065ca7ffda6bf4c69bc279473d8db8f5a567e5d17e3a7d8"
+    },
+    "paper-audit": {
+      "source": "bahayonghang/academic-writing-skills",
+      "sourceType": "github",
+      "skillPath": "academic-writing-skills/paper-audit/SKILL.md",
+      "computedHash": "e5c6590b729f100b101059e53ed3c649ca27d6dc9607817aff749b37cf7e5521"
+    }
+  }
+}
