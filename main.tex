@@ -135,6 +135,38 @@
 \usepackage{booktabs}
 \usepackage{graphicx}
 \usepackage{float}
+
+% Marcado de contenido nuevo (entrega 50%) para revisión del tutor.
+% Envolver los bloques nuevos con \nuevo{...} o {\color{nuevo} ...}.
+% Para la entrega final: quitar los marcados o redefinir \nuevo como identidad.
+\definecolor{nuevo}{RGB}{0,0,205}
+\newcommand{\nuevo}[1]{{\color{nuevo}#1}}
+
+% TikZ para los diagramas del dise\~no (C4, casos de uso, secuencia, despliegue, DER)
+\usepackage{tikz}
+\usetikzlibrary{positioning, arrows.meta, shapes.geometric, shapes.multipart, fit, backgrounds, calc}
+\tikzset{
+    c4person/.style={draw, rounded corners=2pt, fill=RoyalBlue!15, minimum width=2.3cm, minimum height=1cm, align=center, font=\footnotesize},
+    c4system/.style={draw, rounded corners=7pt, fill=ForestGreen!18, minimum width=3cm, minimum height=1.3cm, align=center, font=\footnotesize},
+    c4container/.style={draw, rounded corners=3pt, fill=RoyalBlue!10, minimum width=2.9cm, minimum height=1.2cm, align=center, font=\footnotesize},
+    c4ext/.style={draw, rounded corners=2pt, fill=black!8, minimum width=2.5cm, minimum height=1cm, align=center, font=\footnotesize},
+    c4db/.style={draw, cylinder, shape border rotate=90, aspect=0.25, fill=black!8, minimum width=2.3cm, minimum height=1.3cm, align=center, font=\footnotesize, inner sep=3pt},
+    c4arrow/.style={-{Stealth[length=2mm]}, thick},
+    c4lbl/.style={font=\scriptsize, fill=white, inner sep=1pt, midway},
+    ucase/.style={draw, ellipse, align=center, font=\scriptsize, fill=Goldenrod!20, minimum width=3.1cm, minimum height=0.9cm, inner sep=1pt},
+    boundary/.style={draw, thick, rounded corners=4pt},
+    entity/.style={draw, rectangle split, rectangle split parts=2, fill=RoyalBlue!8, font=\scriptsize, align=left, minimum width=2.6cm},
+}
+% Actor UML (figura de palotes) como pic reutilizable
+\tikzset{
+    actor/.pic={
+        \draw[thick] (0,0) circle (2.4mm);
+        \draw[thick] (0,-2.4mm) -- (0,-1cm);
+        \draw[thick] (-4.5mm,-6mm) -- (4.5mm,-6mm);
+        \draw[thick] (0,-1cm) -- (-3.5mm,-1.6cm);
+        \draw[thick] (0,-1cm) -- (3.5mm,-1.6cm);
+    }
+}
 \usepackage[spanish,es-nodecimaldot]{babel}
 \usepackage{csquotes}
 \addto\captionsspanish{
@@ -271,6 +303,8 @@
 	\input{chapters/chapter01}
 	\input{chapters/chapter02}
 	\input{chapters/chapter03}
+	\input{chapters/chapter04}
+	\input{chapters/chapter05}
 	\input{chapters/conclusion}
 
 	\printbibliography[heading=bibintoc]

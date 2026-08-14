@@ -14,7 +14,7 @@ La propuesta surge ante una serie de problemáticas presentes en la logística u
     \item Escasas oportunidades para que personas que realizan desplazamientos cotidianos obtengan ingresos adicionales aprovechando sus recorridos habituales.
 \end{itemize}
 
-La magnitud de estas problemáticas se refleja en datos del sector. La entrega de última milla concentra una fracción desproporcionada del costo logístico total y constituye el tramo más ineficiente de la cadena de distribución \parencite{YangEtAl2022}. Esta ineficiencia tiende a agravarse: de mantenerse las tendencias actuales, se proyecta que para 2030 la demanda de entregas urbanas crezca un 78~\%, con un aumento del 36~\% en la cantidad de vehículos de reparto, del 32~\% en las emisiones de CO\textsubscript{2} y del 21~\% en la congestión de las principales ciudades \parencite{WEF2020}. En el plano local, un relevamiento de la Organización Internacional del Trabajo sobre trabajadores de plataformas de reparto en la Argentina encontró que el 95~\% de quienes habían ingresado recientemente lo hizo ante la dificultad de conseguir otro empleo \parencite{OIT2020}.
+{\color{nuevo}La magnitud de estas problemáticas se refleja en datos del sector. La entrega de última milla concentra una fracción desproporcionada del costo logístico total y constituye el tramo más ineficiente de la cadena de distribución \parencite{YangEtAl2022}. Esta ineficiencia tiende a agravarse: de mantenerse las tendencias actuales, se proyecta que para 2030 la demanda de entregas urbanas crezca un 78\%, con un aumento del 36\% en la cantidad de vehículos de reparto, del 32\% en las emisiones de CO\textsubscript{2} y del 21\% en la congestión de las principales ciudades \parencite{WEF2020}. En el plano local, un relevamiento de la Organización Internacional del Trabajo sobre trabajadores de plataformas de reparto en la Argentina encontró que el 95\% de quienes habían ingresado recientemente lo hizo ante la dificultad de conseguir otro empleo \parencite{OIT2020}.}
 
 Frente a este escenario, DePaso busca articular una solución que aproveche la capacidad ociosa existente en los desplazamientos urbanos, al tiempo que ofrece alternativas de envío dedicado para los casos que así lo requieran. El proyecto se circunscribe a dicha área metropolitana y tiene como horizonte temporal el desarrollo de un prototipo funcional para finales de 2026. Esta combinación se traduce en un conjunto de modalidades de servicio que estructuran la operación de la plataforma y que se describen a continuación.
 
@@ -64,10 +64,11 @@ Desarrollar, para fines de 2026, un prototipo funcional de plataforma digital de
 
 \subsection{Objetivos específicos}
 
+{\color{nuevo}
 \begin{itemize}[leftmargin=2em]
-    \item Desarrollar e implementar un sistema de visión computacional capaz de clasificar automáticamente las cargas en las cuatro categorías volumétricas definidas a partir de imágenes, alcanzando una exactitud (\emph{accuracy}) sobre el conjunto de prueba de al menos el 60~\%, valor que supera ampliamente la línea base aleatoria del 25~\% correspondiente a cuatro categorías.
+    \item Desarrollar e implementar un sistema de visión computacional capaz de clasificar automáticamente las cargas en las cuatro categorías volumétricas definidas a partir de imágenes, alcanzando una exactitud (\emph{accuracy}) sobre el conjunto de prueba de al menos el 60\%, valor que supera ampliamente la línea base aleatoria del 25\% correspondiente a cuatro categorías.
 
-    \item Implementar un mecanismo de asignación inteligente que evalúe la compatibilidad entre pedidos y transportistas considerando características de la carga, trayectorias, ventanas horarias y reputación, y que restrinja el desvío del transportista colaborativo a un máximo del 15~\% del trayecto original mediante un filtro duro, devolviendo un ranking de candidatos con su puntaje desglosado y explicable.
+    \item Implementar un mecanismo de asignación inteligente que evalúe la compatibilidad entre pedidos y transportistas considerando características de la carga, trayectorias, ventanas horarias y reputación, y que restrinja el desvío del transportista colaborativo a un máximo del 15\% del trayecto original mediante un filtro duro, devolviendo un ranking de candidatos con su puntaje desglosado y explicable.
 
     \item Incorporar un modelo híbrido de operación que contemple tanto envíos dedicados como colaborativos, cubriendo las cuatro categorías de carga y los distintos tipos de movilidad definidos.
 
@@ -75,6 +76,7 @@ Desarrollar, para fines de 2026, un prototipo funcional de plataforma digital de
 
     \item Diseñar e implementar una plataforma digital escalable que integre los distintos componentes funcionales necesarios para la gestión de envíos urbanos, con una cobertura geográfica objetivo del AMBA.
 \end{itemize}
+}
 
 % ─────────────────────────────────────────────────────────────────────────────
 \vspace{1em}
@@ -108,4 +110,4 @@ El alcance se restringe geográficamente a operaciones dentro del AMBA, excluyen
 
 \subsection{Estructura del documento}
 
-El presente documento se organiza de la siguiente manera: el Capítulo~1 introduce el problema, las modalidades de servicio, los objetivos y el alcance del proyecto; el Capítulo~2 presenta los antecedentes, compuestos por el marco teórico y el estado del arte; el Capítulo~3 describe la propuesta y la investigación de usuarios realizada; y el Capítulo~4 expone la conclusión parcial y el trabajo futuro. Completan el documento la bibliografía y los anexos, que incluyen el cronograma de actividades y la transcripción de los resultados de la encuesta.
+El presente documento se organiza de la siguiente manera: el Capítulo~1 introduce el problema, las modalidades de servicio, los objetivos y el alcance del proyecto; el Capítulo~2 presenta los antecedentes, compuestos por el marco teórico, el estado del arte y {\color{nuevo}el análisis competitivo}; el Capítulo~3 describe la propuesta y la investigación de usuarios realizada; {\color{nuevo}el Capítulo~4 detalla el análisis de requerimientos, con los requerimientos funcionales y no funcionales y los casos de uso; el Capítulo~5 desarrolla la metodología de desarrollo, la arquitectura y las tecnologías, el modelo de datos y la validación del sistema; y el Capítulo~6} expone la conclusión parcial y el trabajo futuro. Completan el documento la bibliografía y los anexos, que incluyen el cronograma de actividades y la transcripción de los resultados de la encuesta.

@@ -108,9 +108,18 @@ la capacidad ociosa de sus trayectos habituales.
 - Un archivo `.tex` por capítulo en `chapters/`
 - Figuras en `figures/`, bibliografía en `biblio.bib` (BibTeX, backend biber)
 - Citas con `\parencite{}`, norma ISO 690-2010 (estilo iso-numeric)
-- **El stack tecnológico NO se menciona en el documento del 25%** (decisión de
-  las autoras: no condicionarse antes de avanzar el desarrollo). No nombrar
-  frameworks/BD concretos en el documento; se definirá en el Cap. 4 (entrega 50%).
+- **Stack tecnológico:** en el documento del 25% NO se mencionaba (decisión de
+  las autoras: no condicionarse antes de avanzar el desarrollo). **A partir de la
+  entrega del 50% el stack SÍ se introduce**, en el Cap. 5 «Metodología de
+  desarrollo» (§Tecnologías), como lo exige la rúbrica del 50% (ítem Tecnologías).
+- **Estructura del documento (entrega 50%, branch `50%-final`):** Cap. 1
+  Introducción · Cap. 2 Antecedentes (marco teórico + estado del arte + análisis
+  competitivo FODA/Porter) · Cap. 3 Descripción (contexto + investigación de
+  usuarios) · Cap. 4 Análisis de requerimientos (RF/RNF + casos de uso) · Cap. 5
+  Metodología de desarrollo (metodología + arquitectura C4 + tecnologías + modelo
+  de datos + validación) · Cap. 6 Conclusión. Diagramas hechos en TikZ nativo
+  (C4, secuencia, despliegue, DER, casos de uso). Materia prima del código en el
+  repo hermano `../DePaso` (`ARQUITECTURA.md`, `ARQUITECTURA_DIAGRAMAS.md`).
 - Compilar con `pdflatex` o `latexmk`
 
 ---
