@@ -14,7 +14,7 @@ La propuesta surge ante una serie de problemáticas presentes en la logística u
     \item Escasas oportunidades para que personas que realizan desplazamientos cotidianos obtengan ingresos adicionales aprovechando sus recorridos habituales.
 \end{itemize}
 
-{\color{nuevo}La magnitud de estas problemáticas se refleja en datos del sector. La entrega de última milla concentra una fracción desproporcionada del costo logístico total y constituye el tramo más ineficiente de la cadena de distribución \parencite{YangEtAl2022}. Esta ineficiencia tiende a agravarse: de mantenerse las tendencias actuales, se proyecta que para 2030 la demanda de entregas urbanas crezca un 78\%, con un aumento del 36\% en la cantidad de vehículos de reparto, del 32\% en las emisiones de CO\textsubscript{2} y del 21\% en la congestión de las principales ciudades \parencite{WEF2020}. En el plano local, un relevamiento de la Organización Internacional del Trabajo sobre trabajadores de plataformas de reparto en la Argentina encontró que el 95\% de quienes habían ingresado recientemente lo hizo ante la dificultad de conseguir otro empleo \parencite{OIT2020}.}
+{\color{nuevo}La magnitud de estas problemáticas se refleja en datos del sector. La entrega de última milla concentra una fracción desproporcionada del costo logístico total y constituye el tramo más ineficiente de la cadena de distribución \parencite{YangEtAl2022}. En Argentina esa presión se intensifica: el Índice de Costos Logísticos elaborado por la Cámara Empresaria de Operadores Logísticos, homologado por la Universidad Tecnológica Nacional, acumuló un incremento del 22,2~\% en el primer semestre de 2026, muy por encima del 14~\% registrado en el mismo período del año anterior \parencite{CEDOL2025}. Esta ineficiencia tiende a agravarse: de mantenerse las tendencias actuales, se proyecta que para 2030 la demanda de entregas urbanas crezca un 78~\%, con un aumento del 36~\% en la cantidad de vehículos de reparto, del 32~\% en las emisiones de CO\textsubscript{2} y del 21~\% en la congestión de las principales ciudades \parencite{WEF2020}. En Argentina, el transporte explica cerca del 14~\% de las emisiones totales de gases de efecto invernadero del país, siendo la segunda fuente de emisiones dentro del sector energético \parencite{InventarioGEI2024}. En el plano local, un relevamiento de la Organización Internacional del Trabajo sobre trabajadores de plataformas de reparto en la Argentina encontró que el 95~\% de quienes habían ingresado recientemente lo hizo ante la dificultad de conseguir otro empleo; hacia fines de 2018, solo tres de las principales aplicaciones de reparto (Glovo, PedidosYa y Rappi) sumaban en conjunto más de 7.100 repartidores independientes registrados, la amplia mayoría bajo la figura de monotributista y sin relación de dependencia \parencite{OIT2020}.}
 
 Frente a este escenario, DePaso busca articular una solución que aproveche la capacidad ociosa existente en los desplazamientos urbanos, al tiempo que ofrece alternativas de envío dedicado para los casos que así lo requieran. El proyecto se circunscribe a dicha área metropolitana y tiene como horizonte temporal el desarrollo de un prototipo funcional para finales de 2026. Esta combinación se traduce en un conjunto de modalidades de servicio que estructuran la operación de la plataforma y que se describen a continuación.
 
@@ -74,7 +74,7 @@ Desarrollar, para fines de 2026, un prototipo funcional de plataforma digital de
 
     \item Desarrollar un mecanismo de estimación del impacto ambiental que calcule el ahorro de CO\textsubscript{2} de cada envío colaborativo respecto de un escenario equivalente de transporte dedicado, a partir de factores de emisión estandarizados por tipo de vehículo.
 
-    \item Diseñar e implementar una plataforma digital escalable que integre los distintos componentes funcionales necesarios para la gestión de envíos urbanos, con una cobertura geográfica objetivo del AMBA.
+    \item Diseñar e implementar una plataforma digital con una arquitectura modular preparada para escalar, que integre los distintos componentes funcionales necesarios para la gestión de envíos urbanos, con una cobertura geográfica objetivo del AMBA.
 \end{itemize}
 }
 
@@ -104,6 +104,7 @@ El sistema incluirá:
     \item Herramientas básicas de monitoreo operativo para administradores.
 \end{itemize}
 
+\vspace{1em}
 \subsection{Limitaciones y exclusiones}
 
 El alcance se restringe geográficamente a operaciones dentro del AMBA, excluyendo envíos interprovinciales e internacionales. El clasificador de carga estará acotado a las categorías volumétricas definidas y al dataset de entrenamiento, ofreciendo el ingreso manual como alternativa cuando el objeto no sea reconocido con confianza suficiente. La pasarela de pagos se simulará en el prototipo, dejando su integración productiva como trabajo posterior. El mecanismo de cobertura ante daños se abordará a nivel de diseño y definición de responsabilidades, quedando la integración con compañías aseguradoras fuera del alcance del prototipo.
