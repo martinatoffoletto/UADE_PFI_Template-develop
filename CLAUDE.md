@@ -246,3 +246,12 @@ Pendiente: refinarlas a medida que se amplíe la muestra de la encuesta.
 - Cooper, Reimann & Cronin (2014). *About Face*. Wiley.
 - Pruitt & Adlin (2006). *The Persona Lifecycle*. Morgan Kaufmann.
 - Nielsen Norman Group — recursos sobre User Research y Personas.
+
+---
+
+## Notas temporales de entorno (borrar cuando ya no haga falta)
+
+- Se instaló `poppler` vía Homebrew (`brew install poppler`, comando `pdftoppm`)
+  el 2026-08-16 para poder previsualizar páginas específicas de PDFs (usado para
+  revisar el render de `latexdiff` contra `main`). No es una dependencia del
+  proyecto en sí 
