@@ -10,9 +10,10 @@ de evaluación de la cátedra, y (C) el esquema de contenidos del documento.
 > 100 % y se conservan solo como referencia.
 
 Documento general del proyecto: ver [`../CLAUDE.md`](../CLAUDE.md).
-Especificación funcional/técnica detallada (para 50 % en adelante): ver
-[`proy.txt`](proy.txt). Datos crudos y scripts de la encuesta: ver
-[`encuesta/`](encuesta/).
+Especificación funcional/técnica: `proy.txt` fue eliminado el 17-ago-2026 por estar
+desactualizado frente al código (recuperable con `git show bf90503:docs/proy.txt`);
+la referencia vigente es el informe en `chapters/` y `../DePaso/ARQUITECTURA.md`.
+Datos crudos y scripts de la encuesta: ver [`encuesta/`](encuesta/).
 
 ---
 

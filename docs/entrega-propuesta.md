@@ -244,7 +244,11 @@ Se actualizará a medida que avance la investigación.
 
 ## Referencias y Documentación Complementaria
 
-- **Documento técnico detallado:** [`proy.txt`](proy.txt)
+- **Documento técnico detallado:** `proy.txt` — eliminado el 17-ago-2026 por estar
+  desactualizado frente al código (llamaba «por espacio» a la submodalidad que el
+  sistema implementa como «por disponibilidad», entre otras divergencias).
+  Recuperable con `git show bf90503:docs/proy.txt`. La especificación vigente es el
+  informe (`chapters/`) y, para el detalle de implementación, `../DePaso/ARQUITECTURA.md`.
 - **Datos crudos de la encuesta:** [`encuesta/`](encuesta/)
 - **Bibliografía:** [`../biblio.bib`](../biblio.bib)
 - **Proyecto general:** [`../CLAUDE.md`](../CLAUDE.md)

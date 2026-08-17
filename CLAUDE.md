@@ -44,7 +44,7 @@ vehículo (peatón, bicicleta, auto, utilitario, camión).
 Carga de solicitudes con imágenes — el remitente fotografía el paquete
 para clasificación automática.
 Clasificador de carga por visión computacional — modelo de IA propio
-entrenado por el equipo con dataset de ~1.500 imágenes (Google Open Images +
+entrenado por el equipo con un dataset de 1.079 imágenes al 17-ago-2026 (Google Open Images +
 fotos propias de objetos argentinos). Admite objeto de referencia opcional e
 ingreso manual alternativo. Evaluado con accuracy, matriz de confusión y
 análisis de sesgos por iluminación, ángulo y fondo.
@@ -60,7 +60,7 @@ Sistema de calificaciones — ambos roles se califican mutuamente.
 
 
 Stack tecnológico
-CapaTecnologíaBackendPython + FastAPIFrontend / App móvilReact Native + ExpoBase de datosPostgreSQL + PostGIS (cloud)IA / MLFrameworks de ML en la nube con GPUDatos geoespacialesOpenStreetMap / datos de calles AMBADiseñoFigmaControl de versionesGit / GitHub
+CapaTecnologíaBackendPython + FastAPIFrontend / App móvilReact Native + ExpoPanel webReact + TypeScript (Vite)Base de datosPostgreSQL (cloud) — PostGIS NO se usa: los cálculos geográficos se resuelven en Python; queda como optimización futuraIA / MLMobileNetV2 (TensorFlow/Keras), transfer learningDatos geoespacialesOpenStreetMap / OSRMDiseñoFigmaControl de versionesGit / GitHub
 
 Alcance del prototipo (PFI)
 
@@ -93,11 +93,12 @@ la capacidad ociosa de sus trayectos habituales.
 
 | Capa | Tecnología |
 |---|---|
-| Backend | Python + FastAPI |
-| Frontend / móvil | React Native + Expo |
-| Base de datos | PostgreSQL + PostGIS (cloud) |
-| IA / ML | Frameworks ML con GPU en la nube |
-| Geo | OpenStreetMap / datos AMBA |
+| Backend | Python 3.11+ · FastAPI (async) · SQLAlchemy |
+| App móvil | React Native + Expo · TypeScript |
+| Panel web | React 19 + TypeScript (Vite) |
+| Base de datos | PostgreSQL (cloud). **PostGIS NO se usa** — la geo se resuelve en Python (haversine × 1,3) y con OSRM; queda como optimización futura |
+| IA / ML | MobileNetV2 (TensorFlow/Keras), aprendizaje por transferencia |
+| Geo | OpenStreetMap / OSRM |
 | Diseño | Figma |
 | Docs | LaTeX / MikTeX — norma de citas ISO 690-2010 |
 
@@ -119,7 +120,56 @@ la capacidad ociosa de sus trayectos habituales.
   Metodología de desarrollo (metodología + arquitectura C4 + tecnologías + modelo
   de datos + validación) · Cap. 6 Conclusión. Diagramas hechos en TikZ nativo
   (C4, secuencia, despliegue, DER, casos de uso). Materia prima del código en el
-  repo hermano `../DePaso` (`ARQUITECTURA.md`, `ARQUITECTURA_DIAGRAMAS.md`).
+  repo hermano `../DePaso`. **Los diagramas se verifican contra el código fuente
+  (`depaso_rest/src/app/modules/*/models.py` y `router.py`), NO contra los `.md`
+  del repo** — los `.md` describen la intención, el código es la verdad.
+- **Auditoría de diagramas vs. código (ago-2026).** Corregidos:
+  - DER: Calificación era 1:N → es 1:0..1 (`UniqueConstraint uq_rating_shipment`);
+    Clasificación era 0..1 → es 0..N; Envío–Transportista es 0..1 del lado
+    transportista (`carrier_id` nullable); Organización–Transportista es N:M vía
+    `organization_carriers`, no 1:N. Agregadas las entidades asociativas
+    (`organization_members`, `organization_carriers`) y los verbos de relación.
+  - Casos de uso: se eliminó «Sistema» como actor (un actor es externo al
+    sistema). CU-02 lo inicia el Administrador —el endpoint de matching es
+    admin-only, «inspección»— y se incluye en CU-05 vía «include»; CU-03 se
+    incluye en CU-01.
+  - Secuencia: el CO₂ definitivo se calcula y persiste **al aceptar**
+    (`accept_shipment`), no al entregar; la entrega solo libera el pago. Crear y
+    pagar son dos operaciones distintas. El cliente interactúa siempre vía la app.
+  - Despliegue: la flecha HTTP de la app móvil atravesaba el nodo PostgreSQL;
+    se reubicó la app móvil a la izquierda.
+  - Trampa de TikZ: un color suelto dentro de un `/.style` (p. ej. `black!65`)
+    pisa el `fill=white` y pinta el nodo entero de gris, dejando el texto
+    ilegible. Usar `text=black!70`.
+- **Alineación informe ↔ repo `../DePaso` (17-ago-2026).** Se auditaron todos los
+  `.md` de ambos repos contra el código. Corregido: dataset 1.500→**1.079** real
+  (Cap. 2 y `CONTEXTO.md`; el E25 sí decía 1.500 como estimación, la progresión es
+  legítima); actores unificados en **cuatro** (Cap. 4 y Cap. 5, con la
+  organización desdoblada en fletera/comercio solo dentro del C4); **PostGIS
+  fuera del stack declarado** (no se usa: la geo se resuelve en Python con
+  haversine×1,3 y OSRM); `README.md` de DePaso reescrito (decía que `depaso_web`
+  era la app móvil y no mencionaba `depaso_app`); `ARQUITECTURA.md` (un falso
+  «62 % de transportistas sin desviarse» → el real es **91,8 %**; tests 30→177;
+  augmentation ±20°/±25 %/0,3); `PLAN_MAESTRO.md` (IA ya no está «al 45 % falta
+  entrenar»: v1 entrenado; no existen migraciones 002/003, se usa `create_all()`);
+  `ORGANIZACION_CODIGO.md` (la app se organiza por rol: `src/sender|carrier|shared`,
+  no por `features/services/utils`). `docs/proy.txt` eliminado.
+- **Pendiente conocido:** los códigos `RF-*` citados en los comentarios del código
+  NO coinciden con la numeración del informe (el código usa `RF-CAR-07` para la
+  penalización por abandono, que en el informe es `RF-CAR-08`, y cita un
+  `RF-MAT-05` inexistente). La numeración válida es la del Cap. 4.
+- **Verificación de cifras:** `docs/encuesta/verify_numbers.py` contrasta cada
+  número de la encuesta citado en el documento contra el CSV. Correrlo tras tocar
+  cifras: al 17-ago-2026 pasa completo.
+- **Rúbrica del 50% (ago-2026).** Los ejemplos entre paréntesis de la rúbrica son
+  ilustrativos («etc.»): NO hacen falta matriz BCG (se compara un portafolio y
+  DePaso es producto único preoperativo) ni triple P (no se hizo análisis
+  económico ni flujo de fondos). Con FODA + Porter + estrategia de diferenciación,
+  «Competencias» cumple. Cap. 5 §Tecnologías tiene ahora dos subsecciones:
+  «Elección de los lenguajes de programación» (Python por el ecosistema de ML —
+  inferencia en el mismo proceso de la API; TypeScript por tipado del contrato de
+  la API; alternativas descartadas: Java/C#, Node, nativo por plataforma) y
+  «Stack tecnológico por capa». Quedan pendientes solo Mockups y Demo.
 - Compilar con `pdflatex` o `latexmk`
 
 ---
@@ -225,12 +275,31 @@ user personas.
 
 > **Cambio de decisión (ago-2026).** La entrega del 25% se hizo sin entrevistas
 > y esta guía indicaba no reintroducirlas. La devolución de la cátedra las pidió
-> explícitamente para la entrega del 50%, así que se incorporaron. El andamiaje
-> ya está en el documento y queda **pendiente de completar**:
-> - Cap. 3, sección "Entrevistas semiestructuradas": guion listo; faltan el
->   análisis de resultados y las conclusiones.
-> - Anexo C (`chapters/appendix/interviews.tex`): plantilla para 5 entrevistas
->   (E1–E5); faltan las fichas y las transcripciones.
+> explícitamente para la entrega del 50%, así que se incorporaron. **Ciclo
+> cerrado (ago-2026):** 5 entrevistas por videollamada, materia prima en
+> `docs/entrevistas/entrevistas.txt`.
+> - Cap. 3, §3.5 "Entrevistas semiestructuradas": completa y **deliberadamente
+>   compacta (~2,5 pp., sin subsecciones), en paralelo a §3.4 Encuesta**. Una
+>   primera versión con subsecciones (guion / análisis / conclusiones) ocupaba
+>   ~10 pp. y quedaba desbalanceada frente a la encuesta; se comprimió a:
+>   párrafo de método + perfiles, párrafo de guion (6 ejes en prosa), tabla
+>   `tab:entrevistas` con los 11 hallazgos (Hallazgo | Evidencia | Relación con
+>   la encuesta e implicancia) y dos párrafos de síntesis y limitaciones.
+>   **No volver a expandirla en subsecciones.**
+> - Anexo C (`chapters/appendix/interviews.tex`): las 5 transcripciones
+>   (E1–E5) con edición ligera y anonimizadas (E:/P:, sin nombres; comercio de
+>   E2 generalizado). Sin campo "Duración" (no se registró).
+> - Perfiles cubiertos: E1 remitente particular · E2 remitente PyME · E3
+>   transporte de carga (camión) · E4 destinataria particular · E5
+>   transportista con recorrido habitual (camioneta).
+> - **Requerimientos derivados que aún NO están en el Cap. 4** (el Cap. 3 los
+>   declara como planificados para la etapa siguiente): evidencia de custodia
+>   (foto en retiro/entrega + confirmación de recepción), declaración
+>   obligatoria del contenido, y desglose de peajes/estacionamiento medido en
+>   la cotización.
+> - Vacíos que orientan la próxima ronda: no se entrevistó a transportistas
+>   ocasionales con auto/moto/bici, ni se indagó sobre la clasificación por
+>   foto (solo respaldada por la encuesta, 80,2%).
 
 > **Pendientes de material (auditoría ago-2026).** Solo requieren material real
 > de las autoras; el andamiaje ya está en el documento:
@@ -238,11 +307,13 @@ user personas.
 >   wireframes/capturas de Figma.
 > - Demo (Cap. 5 §Avance de la implementación, sección nueva): 5 `\marcador`
 >   para capturas reales (API /docs, corrida de pytest, app móvil ×2, panel web).
-> - Entrevistas (son 5): análisis/conclusiones (Cap. 3) y transcripciones
->   E1–E5 (Anexo C).
+>
+> Entrevistas: **resueltas** (ver el bloque anterior).
 >
 > Resueltos en la auditoría: imágenes de arquetipo de las user personas
-> (avatares TikZ en Cap. 3, reemplazables por foto con `\includegraphics`);
+> (fotos reales en Cap. 3: `figures/persona-juan|maria|carlos.png`, origen en
+> `docs/Fotos User Personas/1|2|3.png`, redimensionadas a 400 px y recortadas
+> con esquinas redondeadas vía `\clip` de TikZ);
 > tabla de tecnologías con nombres concretos (SQLAlchemy, JWT/Argon2,
 > OSRM/OSM, MobileNetV2 TF/Keras, React+TS, Docker, pytest) verificados contra
 > el código de `../DePaso`; `summary.tex` actualizado de 25%→50% con cifras

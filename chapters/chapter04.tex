@@ -7,17 +7,18 @@ A partir del problema planteado, de la investigación de usuarios y de las decis
 % ═════════════════════════════════════════════════════════════════════════════
 \section{Actores del sistema}
 
-Se identifican cinco actores que interactúan con la plataforma:
+Se identifican cuatro actores que interactúan con la plataforma:
 
 \begin{itemize}[leftmargin=2em]
     \item \textbf{Remitente}: cliente particular, comercio o PyME que solicita un envío. Publica la carga, recibe una cotización y elige la modalidad.
     \item \textbf{Transportista}: persona que registra su trayecto habitual o su disponibilidad y transporta envíos compatibles con su recorrido. Puede operar con distintos tipos de movilidad.
     \item \textbf{PyME / organización}: entidad que agrupa a uno o varios usuarios y, opcionalmente, una flota de transportistas; programa envíos y consulta sus finanzas.
     \item \textbf{Administrador}: valida transportistas, modera la operación y ajusta los parámetros del sistema.
-    \item \textbf{Sistema}: actor no humano que ejecuta procesos automáticos (clasificación de la carga, asignación por \emph{matching} y cálculo del impacto ambiental).
 \end{itemize}
 
 Un mismo usuario puede desempeñar simultáneamente los roles de remitente y transportista.
+
+Los tres componentes automáticos del proyecto —la clasificación de la carga, el ordenamiento por \emph{matching} y el cálculo del impacto ambiental— no se modelan como un actor. Un actor, por definición, es una entidad externa al sistema, y estos procesos se ejecutan dentro de él: en todos los casos son disparados por alguno de los cuatro actores anteriores como parte de un caso de uso, y así se representan.
 
 % ═════════════════════════════════════════════════════════════════════════════
 \section{Requerimientos funcionales}
@@ -165,36 +166,44 @@ Se especifican los casos de uso correspondientes a los flujos centrales del sist
 
 \begin{figure}[H]
     \centering\color{nuevo}
-    \resizebox{0.88\textwidth}{!}{%
-    \begin{tikzpicture}
-        % Casos de uso (columna central)
-        \node[ucase] (cu1) at (0,4)    {CU-01 Solicitar envío};
-        \node[ucase] (cu2) at (0,2.4)  {CU-02 Asignar (\emph{matching})};
-        \node[ucase] (cu3) at (0,0.8)  {CU-03 Clasificar carga};
-        \node[ucase] (cu4) at (0,-0.8) {CU-04 Publicar trayecto};
-        \node[ucase] (cu5) at (0,-2.4) {CU-05 Aceptar pedido};
-        \node[ucase] (cu6) at (0,-4)   {CU-06 Seguir y cerrar envío};
+    \resizebox{0.94\textwidth}{!}{%
+    \begin{tikzpicture}[
+        incl/.style={-{Stealth[length=2.4mm]}, dashed, black!65},
+        stereo/.style={font=\itshape, text=black!70, inner sep=1.5pt},
+    ]
+        % Casos de uso
+        \node[ucase] (cu1) at (0,4.2)  {CU-01 Solicitar envío};
+        \node[ucase] (cu3) at (0,2.1)  {CU-03 Clasificar carga};
+        \node[ucase] (cu6) at (0,0)    {CU-06 Seguir y cerrar envío};
+        \node[ucase] (cu4) at (0,-2.1) {CU-04 Publicar trayecto};
+        \node[ucase] (cu5) at (0,-4.2) {CU-05 Aceptar pedido};
+        \node[ucase] (cu2) at (0,-6.3) {CU-02 Asignar (\emph{matching})};
         % Actores
-        \node (rem) at (-6,2.4)  {}; \pic at (rem) {actor}; \node[font=\footnotesize, below=1.6cm of rem]{Remitente};
-        \node (sis) at (-6,-2.2) {}; \pic at (sis) {actor}; \node[font=\footnotesize, below=1.6cm of sis]{Sistema};
-        \node (car) at (6,-1.4)  {}; \pic at (car) {actor}; \node[font=\footnotesize, below=1.6cm of car]{Transportista};
+        \node (rem) at (-6.4,3.1)  {}; \pic at (rem) {actor}; \node[font=\footnotesize, below=1.6cm of rem]{Remitente};
+        \node (car) at (6.4,-3.1)  {}; \pic at (car) {actor}; \node[font=\footnotesize, below=1.6cm of car]{Transportista};
+        \node (adm) at (-6.4,-6.3) {}; \pic at (adm) {actor}; \node[font=\footnotesize, below=1.6cm of adm]{Administrador};
         % Frontera del sistema
         \node[boundary, fit=(cu1)(cu2)(cu3)(cu4)(cu5)(cu6), inner sep=4mm, label=above:{\footnotesize DePaso}] {};
-        % Asociaciones
+        % Asociaciones actor - caso de uso
         \draw (rem) -- (cu1); \draw (rem) -- (cu3); \draw (rem) -- (cu6);
-        \draw (sis) -- (cu2); \draw (sis) -- (cu3);
         \draw (car) -- (cu4); \draw (car) -- (cu5); \draw (car) -- (cu6);
+        \draw (adm) -- (cu2);
+        % Relaciones de inclusion entre casos de uso
+        \draw[incl] (cu1) -- (cu3) node[stereo,pos=0.5,right=1.5mm]{«include»};
+        \draw[incl] (cu5) -- (cu2) node[stereo,pos=0.5,right=1.5mm]{«include»};
     \end{tikzpicture}%
     }
     \caption{Diagrama de casos de uso del sistema}
     \label{fig:casos-uso}
 \end{figure}
 
+El caso CU-02 no aparece asociado al remitente ni al transportista porque el ordenamiento por puntaje no es un caso de uso que estos inicien: se ejecuta como parte de CU-05, cuando el transportista consulta su listado de pedidos compatibles, y de allí la relación de inclusión. El administrador sí lo invoca de forma directa, para inspeccionar el ranking completo de candidatos de un envío y verificar el comportamiento del algoritmo.
+
 % ─────────────────────────────────────────────────────────────────────────────
 \subsection{CU-01 --- Solicitar un envío}
 
 \begin{itemize}[leftmargin=2em]
-    \item \textbf{Actor principal}: Remitente. \quad \textbf{Actor secundario}: Sistema.
+    \item \textbf{Actor principal}: Remitente. \quad \textbf{Incluye}: CU-03.
     \item \textbf{Precondiciones}: el remitente tiene una sesión activa (RF-USR-03).
     \item \textbf{Flujo principal}:
     \begin{enumerate}[leftmargin=2em]
@@ -218,7 +227,7 @@ Se especifican los casos de uso correspondientes a los flujos centrales del sist
 \subsection{CU-02 --- Asignar un transportista mediante \emph{matching}}
 
 \begin{itemize}[leftmargin=2em]
-    \item \textbf{Actor principal}: Sistema.
+    \item \textbf{Actor principal}: Administrador (inspección). El mismo procesamiento se ejecuta, incluido en CU-05, cuando el transportista consulta su listado de pedidos compatibles.
     \item \textbf{Precondiciones}: existe un envío en estado \emph{pendiente}.
     \item \textbf{Flujo principal}:
     \begin{enumerate}[leftmargin=2em]
@@ -239,7 +248,7 @@ Se especifican los casos de uso correspondientes a los flujos centrales del sist
 \subsection{CU-03 --- Clasificar la carga mediante una fotografía}
 
 \begin{itemize}[leftmargin=2em]
-    \item \textbf{Actor principal}: Sistema. \quad \textbf{Actor secundario}: Remitente.
+    \item \textbf{Actor principal}: Remitente. \quad \textbf{Incluido en}: CU-01.
     \item \textbf{Precondiciones}: el remitente aportó una fotografía del paquete.
     \item \textbf{Flujo principal}:
     \begin{enumerate}[leftmargin=2em]
