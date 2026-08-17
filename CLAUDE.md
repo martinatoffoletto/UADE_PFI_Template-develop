@@ -44,7 +44,7 @@ vehículo (peatón, bicicleta, auto, utilitario, camión).
 Carga de solicitudes con imágenes — el remitente fotografía el paquete
 para clasificación automática.
 Clasificador de carga por visión computacional — modelo de IA propio
-entrenado por el equipo con un dataset de 1.079 imágenes al 17-ago-2026 (Google Open Images +
+entrenado por el equipo con un dataset objetivo de ~1.500 imágenes; la v1 se entrenó con 1.079 al 17-ago-2026 (Google Open Images +
 fotos propias de objetos argentinos). Admite objeto de referencia opcional e
 ingreso manual alternativo. Evaluado con accuracy, matriz de confusión y
 análisis de sesgos por iluminación, ángulo y fondo.
@@ -141,10 +141,18 @@ la capacidad ociosa de sus trayectos habituales.
   - Trampa de TikZ: un color suelto dentro de un `/.style` (p. ej. `black!65`)
     pisa el `fill=white` y pinta el nodo entero de gris, dejando el texto
     ilegible. Usar `text=black!70`.
+- **Regla: el texto ya entregado NO se toca.** El documento es acumulativo: lo del
+  25% se mantiene textual y lo nuevo se agrega marcado con `\nuevo{}`. La única
+  excepción son los puntos que la cátedra pidió corregir (la lista de correcciones
+  del 25%), que sí se reescriben. Caso concreto: §2.1.6 dice «se estima un volumen
+  total del orden de **1.500 imágenes**»; **se deja tal cual** y las autoras
+  completarán el dataset hasta esa cifra con más descargas de Open Images, en vez
+  de bajar el número en el informe. No «corregirlo» a 1.079.
+  - Cap. 5 §Validación sí cita **1.079**, que es el conjunto real con el que se
+    entrenó `cargo_classifier_v1`. Al reentrenar con el dataset completo hay que
+    actualizar ese número (y solo ese).
 - **Alineación informe ↔ repo `../DePaso` (17-ago-2026).** Se auditaron todos los
-  `.md` de ambos repos contra el código. Corregido: dataset 1.500→**1.079** real
-  (Cap. 2 y `CONTEXTO.md`; el E25 sí decía 1.500 como estimación, la progresión es
-  legítima); actores unificados en **cuatro** (Cap. 4 y Cap. 5, con la
+  `.md` de ambos repos contra el código. Corregido: actores unificados en **cuatro** (Cap. 4 y Cap. 5, con la
   organización desdoblada en fletera/comercio solo dentro del C4); **PostGIS
   fuera del stack declarado** (no se usa: la geo se resuelve en Python con
   haversine×1,3 y OSRM); `README.md` de DePaso reescrito (decía que `depaso_web`
@@ -270,8 +278,17 @@ cambiaron:
 Proceso sistemático para comprender a los usuarios mediante técnicas empíricas.
 Aporta evidencia para tomar decisiones de diseño en lugar de basarlas en supuestos.
 
-Técnicas usadas: encuesta (permanece abierta), entrevistas semiestructuradas y
-user personas.
+Técnicas usadas: encuesta, entrevistas semiestructuradas y user personas.
+
+> **No prometer más instrumentos (ago-2026).** La encuesta (145 respuestas) y
+> las 5 entrevistas son lo que hay. El documento habla de ellas **en pasado** y
+> no anuncia continuidad: se eliminaron del Cap. 3, la conclusión y el Anexo A
+> las frases "permanece abierta", "la muestra continuará ampliándose", "próxima
+> ronda de entrevistas" y las user personas "preliminares… serán refinadas".
+> Tampoco declarar lo contrario ("cerrado", "definitivo"): en la práctica nunca
+> se cierra del todo, así que simplemente no se hace hincapié en ninguna de las
+> dos direcciones. El feedback posterior entra por la validación con usuarios
+> sobre el prototipo, que ya figura en trabajo futuro.
 
 > **Cambio de decisión (ago-2026).** La entrega del 25% se hizo sin entrevistas
 > y esta guía indicaba no reintroducirlas. La devolución de la cátedra las pidió
@@ -320,7 +337,7 @@ user personas.
 > corregidas (69,8% / 75%); cronograma del Anexo A actualizado a ago-2026 con
 > barra de entrevistas; métricas verificables en objetivos específicos 4 y 5.
 
-**Encuesta** ✓ completada
+**Encuesta** ✓ completada y CERRADA
 - Microsoft Forms, lanzada el 22-may-2026. 145 respuestas completas; 133 (91,7%)
   del AMBA.
 - Bifurcaciones por perfil → las bases varían: bloque de uso de servicios
@@ -334,10 +351,10 @@ user personas.
   "ingreso extra sin desvío" 91,8%; preocupación responsabilidad por daños
   73,4%; WTP $3.000–6.000 (68,1%); WTA $2.500–5.000 (51,0%).
 
-**User Personas** — 3 preliminares construidas a partir de la encuesta:
+**User Personas** — 3, construidas a partir de la encuesta:
 Juan García (remitente PyME, Lanús), María Alvarez (transportista colaborativa,
 Caballito→Microcentro) y Carlos Gómez (fletero dedicado con camión, Quilmes).
-Pendiente: refinarlas a medida que se amplíe la muestra de la encuesta.
+Construidas a partir de la investigación de usuarios ya cerrada; no quedan pendientes.
 - Elementos: nombre ficticio, datos demográficos, contexto/rol, objetivos,
   frustraciones, comportamientos, cita representativa.
 
@@ -355,9 +372,26 @@ Pendiente: refinarlas a medida que se amplíe la muestra de la encuesta.
 
 ---
 
-## Notas temporales de entorno (borrar cuando ya no haga falta)
+## Ver las diferencias contra otra rama
 
-- Se instaló `poppler` vía Homebrew (`brew install poppler`, comando `pdftoppm`)
-  el 2026-08-16 para poder previsualizar páginas específicas de PDFs (usado para
-  revisar el render de `latexdiff` contra `main`). No es una dependencia del
-  proyecto en sí 
+```bash
+./make-diff.sh              # contra main
+./make-diff.sh 25%-final    # contra otra rama
+```
+
+Genera `diff-vs-main.pdf`: **añadido en azul subrayado, borrado en rojo tachado**.
+No modifica el proyecto (trabaja sobre copias en un temporal).
+
+Dos cosas que el script resuelve y que `latexdiff main.tex main.tex` a secas no:
+el documento usa `\input` por capítulo (hay que aplanar con `latexpand`), y los
+bloques marcados con `{\color{nuevo}...}` pisan el color del markup de latexdiff
+dentro del grupo, dejando el texto añadido sin resaltar — por eso el script
+neutraliza `\nuevo` en las copias temporales antes de comparar.
+
+**El documento se entrega en negro.** `\definecolor{nuevo}` está en `{0,0,0}`
+(main.tex), así que los `\nuevo{...}` no se ven. Para volver a resaltar lo nuevo
+mientras se trabaja, ponerlo en `{0,0,205}`; el diff no depende de eso.
+
+Requiere `latexpand` y `latexdiff` (vienen con TeX Live) y `poppler`
+(`brew install poppler`) solo si se quieren previsualizar páginas sueltas con
+`pdftoppm`. 

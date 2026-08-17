@@ -140,8 +140,10 @@
 
 % Marcado de contenido nuevo (entrega 50%) para revisión del tutor.
 % Envolver los bloques nuevos con \nuevo{...} o {\color{nuevo} ...}.
-% Para la entrega final: quitar los marcados o redefinir \nuevo como identidad.
-\definecolor{nuevo}{RGB}{0,0,205}
+% El documento se entrega en NEGRO: el color queda en 0,0,0 y los marcados
+% \nuevo{...} no se ven. Para volver a resaltar lo nuevo mientras se trabaja,
+% poner {0,0,205}. Las diferencias contra main se ven con ./make-diff.sh.
+\definecolor{nuevo}{RGB}{0,0,0}
 \newcommand{\nuevo}[1]{{\color{nuevo}#1}}
 
 % Marcador de posición para material todavía no incorporado (fotos de user
