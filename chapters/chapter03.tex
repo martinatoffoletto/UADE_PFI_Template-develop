@@ -21,7 +21,7 @@ La propuesta de DePaso es conectar a estos actores en una plataforma híbrida: e
 % ═════════════════════════════════════════════════════════════════════════════
 \section{Investigación de usuarios}
 
-La investigación de usuarios se basa en el análisis de las opiniones recolectadas de una muestra de personas pertenecientes al público objetivo de la plataforma, con el fin de conocer sus necesidades y preferencias. El instrumento elegido fue una encuesta cuantitativa, lanzada el 22 de mayo de 2026, que continuará disponible durante el desarrollo del proyecto para fomentar un contacto continuo con los requerimientos de los usuarios y permitir ajustar los resultados a medida que se amplíe la muestra. La transcripción completa de los resultados se presenta en el Anexo~\ref{anexo:encuesta}.
+La investigación de usuarios se basa en el análisis de las opiniones recolectadas de una muestra de personas pertenecientes al público objetivo de la plataforma, con el fin de conocer sus necesidades y preferencias. El {\color{nuevo}primer instrumento} fue una encuesta cuantitativa, lanzada el 22 de mayo de 2026, que continuará disponible durante el desarrollo del proyecto para fomentar un contacto continuo con los requerimientos de los usuarios y permitir ajustar los resultados a medida que se amplíe la muestra{\color{nuevo}; como segundo instrumento se realizó un ciclo de entrevistas semiestructuradas que profundiza cualitativamente esos hallazgos}. La transcripción completa de los resultados se presenta en el Anexo~\ref{anexo:encuesta}{\color{nuevo}\ y en el Anexo~\ref{anexo:entrevistas}}.
 % ─────────────────────────────────────────────────────────────────────────────
 \section{Metodología de la investigación de usuarios}
 
@@ -132,9 +132,22 @@ A partir de los datos obtenidos en la encuesta se construyeron tres user persona
 \noindent
 \begin{minipage}[c]{0.24\textwidth}
     \centering
-    % Al incorporar la imagen del arquetipo, reemplazar la linea siguiente por:
-    % \includegraphics[width=0.9\linewidth]{figures/persona-juan}
-    \marcador[0.9\linewidth]{3cm}{Imagen del\\ arquetipo}
+    % Avatar ilustrado del arquetipo. Si se prefiere una fotografía, reemplazar
+    % el tikzpicture por: \includegraphics[width=0.9\linewidth]{figures/persona-juan}
+    \begin{tikzpicture}
+        \begin{scope}
+            \clip[rounded corners=8pt] (0,0) rectangle (3,3);
+            \fill[RoyalBlue!15] (0,0) rectangle (3,3);
+            \fill[RoyalBlue!65] (1.5,0.15) ellipse (0.95 and 0.8);
+            \fill[brown!50!orange!45] (1.5,1.8) circle (0.5);
+            \fill[black!70] (1.5,1.86) ++(180:0.5) arc (180:0:0.5) -- cycle;
+        \end{scope}
+        \draw[rounded corners=8pt, black!30] (0,0) rectangle (3,3);
+        \fill[white] (2.42,0.58) circle (0.4);
+        \draw[black!30] (2.42,0.58) circle (0.4);
+        \fill[brown!70!black!50] (2.26,0.42) rectangle (2.58,0.74);
+        \draw[white, line width=1pt] (2.42,0.42) -- (2.42,0.74);
+    \end{tikzpicture}
 \end{minipage}\hfill
 \begin{minipage}[c]{0.72\textwidth}
     {\textbf{Juan García}} \\
@@ -157,9 +170,25 @@ A partir de los datos obtenidos en la encuesta se construyeron tres user persona
 \noindent
 \begin{minipage}[c]{0.24\textwidth}
     \centering
-    % Al incorporar la imagen del arquetipo, reemplazar la linea siguiente por:
-    % \includegraphics[width=0.9\linewidth]{figures/persona-maria}
-    \marcador[0.9\linewidth]{3cm}{Imagen del\\ arquetipo}
+    % Avatar ilustrado del arquetipo. Si se prefiere una fotografía, reemplazar
+    % el tikzpicture por: \includegraphics[width=0.9\linewidth]{figures/persona-maria}
+    \begin{tikzpicture}
+        \begin{scope}
+            \clip[rounded corners=8pt] (0,0) rectangle (3,3);
+            \fill[ForestGreen!14] (0,0) rectangle (3,3);
+            \fill[brown!45!black] (0.96,0.85) rectangle (2.04,1.9);
+            \fill[ForestGreen!55!black!70] (1.5,0.15) ellipse (0.95 and 0.8);
+            \fill[brown!45!orange!50] (1.5,1.8) circle (0.5);
+            \fill[brown!45!black] (1.5,1.86) ++(180:0.52) arc (180:0:0.52) -- cycle;
+        \end{scope}
+        \draw[rounded corners=8pt, black!30] (0,0) rectangle (3,3);
+        \fill[white] (2.42,0.58) circle (0.4);
+        \draw[black!30] (2.42,0.58) circle (0.4);
+        \fill[black!65] (2.16,0.52) rectangle (2.68,0.64);
+        \fill[black!65] (2.29,0.62) rectangle (2.56,0.74);
+        \fill[black!85] (2.26,0.48) circle (0.05);
+        \fill[black!85] (2.58,0.48) circle (0.05);
+    \end{tikzpicture}
 \end{minipage}\hfill
 \begin{minipage}[c]{0.72\textwidth}
     {\textbf{María Álvarez}} \\
@@ -182,9 +211,24 @@ A partir de los datos obtenidos en la encuesta se construyeron tres user persona
 \noindent
 \begin{minipage}[c]{0.24\textwidth}
     \centering
-    % Al incorporar la imagen del arquetipo, reemplazar la linea siguiente por:
-    % \includegraphics[width=0.9\linewidth]{figures/persona-carlos}
-    \marcador[0.9\linewidth]{3cm}{Imagen del\\ arquetipo}
+    % Avatar ilustrado del arquetipo. Si se prefiere una fotografía, reemplazar
+    % el tikzpicture por: \includegraphics[width=0.9\linewidth]{figures/persona-carlos}
+    \begin{tikzpicture}
+        \begin{scope}
+            \clip[rounded corners=8pt] (0,0) rectangle (3,3);
+            \fill[Goldenrod!18] (0,0) rectangle (3,3);
+            \fill[BurntOrange!75!black!80] (1.5,0.15) ellipse (0.95 and 0.8);
+            \fill[brown!55!orange!40] (1.5,1.8) circle (0.5);
+            \fill[black!35] (1.5,1.86) ++(180:0.5) arc (180:0:0.5) -- cycle;
+        \end{scope}
+        \draw[rounded corners=8pt, black!30] (0,0) rectangle (3,3);
+        \fill[white] (2.42,0.58) circle (0.4);
+        \draw[black!30] (2.42,0.58) circle (0.4);
+        \fill[black!60] (2.14,0.5) rectangle (2.44,0.74);
+        \fill[black!45] (2.46,0.5) rectangle (2.68,0.66);
+        \fill[black!85] (2.24,0.46) circle (0.05);
+        \fill[black!85] (2.56,0.46) circle (0.05);
+    \end{tikzpicture}
 \end{minipage}\hfill
 \begin{minipage}[c]{0.72\textwidth}
     {\textbf{Carlos Gómez}} \\

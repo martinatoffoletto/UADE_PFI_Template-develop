@@ -2,7 +2,7 @@
 \chapter{Metodología de desarrollo}
 \label{cap:diseno}
 
-Este capítulo describe cómo se construye la solución a partir del análisis de requerimientos del Capítulo~\ref{cap:requerimientos}. Se presenta la metodología de trabajo adoptada, la arquitectura de la solución y su infraestructura de red, las tecnologías seleccionadas y su justificación, el modelo de datos y, finalmente, la estrategia de validación del sistema.
+Este capítulo describe cómo se construye la solución a partir del análisis de requerimientos del Capítulo~\ref{cap:requerimientos}. Se presenta la metodología de trabajo adoptada, la arquitectura de la solución y su infraestructura de red, las tecnologías seleccionadas y su justificación, el diseño de la interfaz, el modelo de datos, la estrategia de validación del sistema y, finalmente, el estado de avance de la implementación.
 
 % ═════════════════════════════════════════════════════════════════════════════
 \section{Metodología}
@@ -149,6 +149,7 @@ La Figura~\ref{fig:despliegue} sintetiza el entorno de ejecución actual y la to
 
 \begin{figure}[H]
     \centering\color{nuevo}
+    \resizebox{0.97\textwidth}{!}{%
     \begin{tikzpicture}
         \node[c4container, text width=2.6cm] (api) at (-6,1.9) {API + panel web\\ (contenedores)};
         \node[c4db, text width=2.2cm] (dbl) at (-6,-0.8) {PostgreSQL\\ (contenedor)};
@@ -167,7 +168,8 @@ La Figura~\ref{fig:despliegue} sintetiza el entorno de ejecución actual y la to
               label=above:{\footnotesize Entorno actual --- local}] {};
         \node[boundary, dashed, fit=(ren)(ver)(sup), inner sep=5mm,
               label=above:{\footnotesize Topología prevista --- nube}] {};
-    \end{tikzpicture}
+    \end{tikzpicture}%
+    }
     \caption{Entorno de ejecución actual (local, contenedorizado) y topología de destino prevista}
     \label{fig:despliegue}
 \end{figure}
@@ -194,16 +196,16 @@ La selección de tecnologías responde a los requerimientos no funcionales y a l
 
     Backend & Python con FastAPI (asíncrono) & Concurrencia nativa para operaciones de entrada/salida, documentación de API autogenerada (RNF-MNT-03) y validación de datos integrada (RNF-SEC-04). \\
     Persistencia & PostgreSQL & Motor relacional maduro, con amplia disponibilidad en servicios gestionados (RNF-INF-01) y con extensiones geoespaciales disponibles para una eventual optimización de las consultas de proximidad. \\
-    Acceso a datos & Mapeo objeto-relacional asíncrono & Aísla la lógica de negocio del motor de base de datos y facilita las pruebas (patrón repositorio, RNF-MNT-01). \\
-    Autenticación & Tokens de acceso y refresco con \emph{hashing} de contraseñas & Sesiones seguras sin estado y almacenamiento resistente de credenciales (RNF-SEC-01). \\
-    Ruteo y distancias & Servicio de ruteo por calles con alternativa propia & Cálculo de desvío real y de distancias para el \emph{matching} y el CO\textsubscript{2}, con degradación automática (RNF-AVL-01). \\
-    Modelo de IA & Red convolucional preentrenada con aprendizaje por transferencia & Clasificación volumétrica de la carga con un conjunto de datos acotado, entrenada por el equipo (RNF-UADE-01). \\
+    Acceso a datos & Mapeo objeto-relacional asíncrono (SQLAlchemy) & Aísla la lógica de negocio del motor de base de datos y facilita las pruebas (patrón repositorio, RNF-MNT-01). \\
+    Autenticación & Tokens JWT de acceso y refresco con \emph{hashing} de contraseñas (Argon2) & Sesiones seguras sin estado y almacenamiento resistente de credenciales (RNF-SEC-01). \\
+    Ruteo y distancias & Servicio de ruteo por calles (OSRM sobre OpenStreetMap) con alternativa propia (Haversine con factor de circuito urbano) & Cálculo de desvío real y de distancias para el \emph{matching} y el CO\textsubscript{2}, con degradación automática (RNF-AVL-01). \\
+    Modelo de IA & Red convolucional preentrenada (MobileNetV2 sobre TensorFlow/Keras) con aprendizaje por transferencia & Clasificación volumétrica de la carga con un conjunto de datos acotado, entrenada por el equipo (RNF-UADE-01). \\
     Aplicación móvil & React Native con Expo & Desarrollo multiplataforma desde una única base de código, con distribución de paquetes instalables. \\
-    Panel web & Aplicación de página única & Interfaz de escritorio para PyMEs y administración (tablas densas y gráficos) que consume la misma API. \\
+    Panel web & Aplicación de página única (React con TypeScript) & Interfaz de escritorio para PyMEs y administración (tablas densas y gráficos) que consume la misma API. \\
     Almacenamiento de imágenes & Almacenamiento en disco con identificadores aleatorios & Persistencia de las fotos de los paquetes bajo nombres no enumerables (RNF-SEC-03). \\
-    Infraestructura & Contenedores & Entorno reproducible entre integrantes del equipo y portabilidad hacia una plataforma como servicio sin modificar el código (RNF-INF-02). \\
+    Infraestructura & Contenedores (Docker y Docker Compose) & Entorno reproducible entre integrantes del equipo y portabilidad hacia una plataforma como servicio sin modificar el código (RNF-INF-02). \\
     Observabilidad & Registro estructurado de eventos & Trazabilidad de la operación (RNF-OBS-01). \\
-    Pruebas & Marco de pruebas automatizadas & Verificación de los módulos críticos y de los flujos de integración (RNF-MNT-02). \\
+    Pruebas & Marco de pruebas automatizadas (pytest) & Verificación de los módulos críticos y de los flujos de integración (RNF-MNT-02). \\
 \end{longtable}
 
 En el núcleo del componente de inteligencia artificial se emplea aprendizaje por transferencia sobre una red convolucional preentrenada: en lugar de entrenar un modelo desde cero —inviable con el volumen de datos disponible—, se reutiliza una arquitectura con capacidades visuales genéricas y se la adapta al dominio del problema, cumpliendo el requisito de un modelo entrenado por el equipo (RNF-UADE-01) y la restricción de inferencia local sin servicios de terceros.
@@ -371,4 +373,38 @@ En el backend, la verificación se apoya en un conjunto de pruebas automatizadas
 El modelo de clasificación de carga se evalúa exclusivamente sobre el conjunto de prueba, separado de forma estratificada y reservado hasta la instancia de evaluación. El procedimiento está implementado y automatizado: reporta la exactitud global, la precisión, la exhaustividad y la medida F por categoría, y la matriz de confusión, prestando atención a las confusiones entre categorías adyacentes. Complementariamente, ejecuta un análisis de sesgos que agrupa el conjunto de prueba según las condiciones de captura —iluminación, ángulo y fondo— y según la presencia de un objeto de referencia, calculando la exactitud por grupo para detectar y documentar las condiciones en las que el desempeño se degrada (RNF-UADE-01). Este análisis alimenta tanto las mitigaciones del modelo como las recomendaciones de uso en la interfaz.
 
 A la fecha de esta entrega se entrenó una primera versión del clasificador mediante aprendizaje por transferencia sobre una red convolucional preentrenada, con un conjunto de datos de 1.079 imágenes repartidas de forma estratificada entre entrenamiento, validación y prueba. Esta versión constituye la línea base sobre la que se mide la mejora del modelo; la ampliación del conjunto de datos y la evaluación definitiva sobre el conjunto de prueba forman parte del trabajo previsto para la etapa final.
+
+% ═════════════════════════════════════════════════════════════════════════════
+\section{Avance de la implementación}
+
+% ═══════════════════════════════════════════════════════════════════════════
+% PENDIENTE DE COMPLETAR
+% Reemplazar cada \marcador por la captura real correspondiente:
+%   \includegraphics[width=...]{figures/demo-NOMBRE}
+% Sugerencias de capturas: pantalla de la app móvil corriendo (solicitud de
+% envío o listado de pedidos), panel web con datos, documentación interactiva
+% de la API (/docs) y salida de la corrida de pruebas automatizadas.
+% ═══════════════════════════════════════════════════════════════════════════
+
+Al momento de esta entrega, el prototipo presenta avances verificables en sus tres frentes. El backend implementa los módulos de dominio descritos en la Figura~\ref{fig:c4-componentes} —autenticación, usuarios, transportistas, envíos, trayectos, asignación, visión, seguimiento, impacto ambiental, organizaciones y administración— con su documentación interactiva autogenerada (RNF-MNT-03) y el conjunto de pruebas automatizadas por módulo y de integración de punta a punta descrito en la sección precedente. El algoritmo de asignación opera con el filtro duro de desvío y los pesos configurables desde administración (RF-ADM-03), y el clasificador de carga cuenta con la primera versión entrenada ya mencionada, integrada a la API. La aplicación móvil y el panel web se encuentran en desarrollo sobre esa misma API, cubriendo los flujos de solicitud de envío, publicación de trayecto, listado de pedidos compatibles y monitoreo. Las Figuras~\ref{fig:demo-api} y~\ref{fig:demo-clientes} documentan este avance.
+
+\begin{figure}[H]
+    \centering\color{nuevo}
+    \marcador[0.46\textwidth]{5.5cm}{Captura: documentación\\ interactiva de la API\\ con los módulos del sistema}
+    \hfill
+    \marcador[0.46\textwidth]{5.5cm}{Captura: corrida de las\\ pruebas automatizadas\\ del backend}
+    \caption{Avance del backend: API documentada y pruebas automatizadas}
+    \label{fig:demo-api}
+\end{figure}
+
+\begin{figure}[H]
+    \centering\color{nuevo}
+    \marcador[0.30\textwidth]{6cm}{Captura: app móvil\\ (flujo de solicitud\\ de envío)}
+    \hfill
+    \marcador[0.30\textwidth]{6cm}{Captura: app móvil\\ (listado de pedidos\\ del transportista)}
+    \hfill
+    \marcador[0.30\textwidth]{6cm}{Captura: panel web\\ (monitoreo /\\ organizaciones)}
+    \caption{Avance de las aplicaciones cliente sobre la API}
+    \label{fig:demo-clientes}
+\end{figure}
 }% <<< FIN CONTENIDO NUEVO (entrega 50%) >>>

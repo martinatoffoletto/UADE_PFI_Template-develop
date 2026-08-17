@@ -229,8 +229,25 @@ user personas.
 > ya está en el documento y queda **pendiente de completar**:
 > - Cap. 3, sección "Entrevistas semiestructuradas": guion listo; faltan el
 >   análisis de resultados y las conclusiones.
-> - Anexo C (`chapters/appendix/interviews.tex`): plantilla para 3 entrevistas;
->   faltan las fichas y las transcripciones.
+> - Anexo C (`chapters/appendix/interviews.tex`): plantilla para 5 entrevistas
+>   (E1–E5); faltan las fichas y las transcripciones.
+
+> **Pendientes de material (auditoría ago-2026).** Solo requieren material real
+> de las autoras; el andamiaje ya está en el documento:
+> - Mockups (Cap. 5 §Diseño de la interfaz): 8 `\marcador` a reemplazar por
+>   wireframes/capturas de Figma.
+> - Demo (Cap. 5 §Avance de la implementación, sección nueva): 5 `\marcador`
+>   para capturas reales (API /docs, corrida de pytest, app móvil ×2, panel web).
+> - Entrevistas (son 5): análisis/conclusiones (Cap. 3) y transcripciones
+>   E1–E5 (Anexo C).
+>
+> Resueltos en la auditoría: imágenes de arquetipo de las user personas
+> (avatares TikZ en Cap. 3, reemplazables por foto con `\includegraphics`);
+> tabla de tecnologías con nombres concretos (SQLAlchemy, JWT/Argon2,
+> OSRM/OSM, MobileNetV2 TF/Keras, React+TS, Docker, pytest) verificados contra
+> el código de `../DePaso`; `summary.tex` actualizado de 25%→50% con cifras
+> corregidas (69,8% / 75%); cronograma del Anexo A actualizado a ago-2026 con
+> barra de entrevistas; métricas verificables en objetivos específicos 4 y 5.
 
 **Encuesta** ✓ completada
 - Microsoft Forms, lanzada el 22-may-2026. 145 respuestas completas; 133 (91,7%)
