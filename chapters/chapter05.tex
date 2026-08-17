@@ -209,6 +209,58 @@ La selección de tecnologías responde a los requerimientos no funcionales y a l
 En el núcleo del componente de inteligencia artificial se emplea aprendizaje por transferencia sobre una red convolucional preentrenada: en lugar de entrenar un modelo desde cero —inviable con el volumen de datos disponible—, se reutiliza una arquitectura con capacidades visuales genéricas y se la adapta al dominio del problema, cumpliendo el requisito de un modelo entrenado por el equipo (RNF-UADE-01) y la restricción de inferencia local sin servicios de terceros.
 
 % ═════════════════════════════════════════════════════════════════════════════
+\section{Diseño de la interfaz}
+
+% ═══════════════════════════════════════════════════════════════════════════
+% PENDIENTE DE COMPLETAR
+% Reemplazar cada \marcador por la captura o el wireframe correspondiente:
+%   \includegraphics[width=0.9\linewidth]{figures/mockup-NOMBRE}
+% Al incorporar las pantallas, revisar que el texto de cada párrafo describa
+% lo que efectivamente se ve en la imagen.
+% ═══════════════════════════════════════════════════════════════════════════
+
+El diseño de la interfaz traduce los casos de uso del Capítulo~\ref{cap:requerimientos} en pantallas concretas. Se organiza en torno a los dos frentes de la solución: la aplicación móvil, que cubre los flujos del remitente y del transportista, y el panel web, orientado a la gestión de las PyMEs y a la administración de la plataforma. Los criterios que guían el diseño responden a los requerimientos no funcionales de usabilidad (RNF-UX-01) y a los hallazgos de la investigación de usuarios: transparencia del precio antes de confirmar, visibilidad del desvío y de la ganancia para el transportista, y presencia del dato ambiental sin que interfiera con la decisión principal.
+
+Las Figuras~\ref{fig:mockup-remitente} y~\ref{fig:mockup-transportista} presentan las pantallas centrales de la aplicación móvil, y la Figura~\ref{fig:mockup-panel} las del panel web.
+
+\begin{figure}[H]
+    \centering\color{nuevo}
+    \marcador[0.30\textwidth]{6.5cm}{Solicitud de envío:\\ origen, destino\\ y fotografía}
+    \hfill
+    \marcador[0.30\textwidth]{6.5cm}{Cotización:\\ tres tarifas\\ y CO\textsubscript{2} estimado}
+    \hfill
+    \marcador[0.30\textwidth]{6.5cm}{Seguimiento\\ del envío\\ en curso}
+    \caption{Aplicación móvil: flujo del remitente}
+    \label{fig:mockup-remitente}
+\end{figure}
+
+El flujo del remitente prioriza que el precio y la categoría de carga queden resueltos antes de confirmar, ya que el costo es el principal criterio de elección relevado en la encuesta. La pantalla de cotización expone las tres alternativas tarifarias en simultáneo, de modo que la elección entre inmediatez y ahorro sea explícita y no una consecuencia no advertida de la configuración por defecto.
+
+\begin{figure}[H]
+    \centering\color{nuevo}
+    \marcador[0.30\textwidth]{6.5cm}{Publicación\\ del trayecto\\ habitual}
+    \hfill
+    \marcador[0.30\textwidth]{6.5cm}{Listado de pedidos\\ compatibles con\\ desvío y ganancia}
+    \hfill
+    \marcador[0.30\textwidth]{6.5cm}{Envío en curso:\\ estados y\\ entrega}
+    \caption{Aplicación móvil: flujo del transportista}
+    \label{fig:mockup-transportista}
+\end{figure}
+
+El flujo del transportista se apoya en la distinción entre conductor ocasional y repartidor dedicado: la pantalla de publicación del trayecto está pensada para declararse una vez y repetirse, y el listado de pedidos muestra el desvío y la ganancia estimada de cada oferta, los dos datos que la investigación de usuarios identificó como determinantes de la decisión de aceptar.
+
+\begin{figure}[H]
+    \centering\color{nuevo}
+    \marcador[0.46\textwidth]{6cm}{Panel de la PyME:\\ envíos programados\\ y finanzas}
+    \hfill
+    \marcador[0.46\textwidth]{6cm}{Panel de administración:\\ monitoreo operativo\\ y validación de transportistas}
+    \caption{Panel web: gestión de PyMEs y administración}
+    \label{fig:mockup-panel}
+\end{figure}
+
+El panel web concentra las tareas que requieren una vista de conjunto y resultan incómodas en una pantalla pequeña: la programación de envíos de la organización, el seguimiento de sus finanzas y, del lado de la administración, el monitoreo operativo y la validación de los transportistas.
+
+% ═════════════════════════════════════════════════════════════════════════════
 \section{Modelo de datos}
 
 El modelo de datos se organiza en torno a las entidades del dominio. La Tabla~\ref{tab:entidades} describe las principales; las relaciones más relevantes vinculan a un usuario con su perfil de transportista, a este con sus trayectos publicados, y a cada envío con su cliente, su transportista asignado, su clasificación de carga y sus eventos de estado.

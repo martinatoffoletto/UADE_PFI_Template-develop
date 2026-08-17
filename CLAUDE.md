@@ -220,8 +220,17 @@ cambiaron:
 Proceso sistemático para comprender a los usuarios mediante técnicas empíricas.
 Aporta evidencia para tomar decisiones de diseño en lugar de basarlas en supuestos.
 
-Técnicas usadas: encuesta (permanece abierta) y user personas. **No se realizan
-entrevistas** — no reintroducirlas en el documento.
+Técnicas usadas: encuesta (permanece abierta), entrevistas semiestructuradas y
+user personas.
+
+> **Cambio de decisión (ago-2026).** La entrega del 25% se hizo sin entrevistas
+> y esta guía indicaba no reintroducirlas. La devolución de la cátedra las pidió
+> explícitamente para la entrega del 50%, así que se incorporaron. El andamiaje
+> ya está en el documento y queda **pendiente de completar**:
+> - Cap. 3, sección "Entrevistas semiestructuradas": guion listo; faltan el
+>   análisis de resultados y las conclusiones.
+> - Anexo C (`chapters/appendix/interviews.tex`): plantilla para 3 entrevistas;
+>   faltan las fichas y las transcripciones.
 
 **Encuesta** ✓ completada
 - Microsoft Forms, lanzada el 22-may-2026. 145 respuestas completas; 133 (91,7%)

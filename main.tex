@@ -142,6 +142,20 @@
 \definecolor{nuevo}{RGB}{0,0,205}
 \newcommand{\nuevo}[1]{{\color{nuevo}#1}}
 
+% Marcador de posición para material todavía no incorporado (fotos de user
+% personas, mockups, capturas de la demo). Dibuja un recuadro punteado del
+% tamaño indicado con una leyenda adentro.
+%   Uso: \marcador[ancho]{alto}{leyenda}
+%   Al incorporar el material real, se reemplaza la línea completa por:
+%   \includegraphics[width=...]{figures/nombre-del-archivo}
+\newcommand{\marcador}[3][0.45\textwidth]{%
+    \begin{tikzpicture}
+        \node[draw=black!45, dashed, thick, rounded corners=3pt, fill=black!4,
+              minimum width=#1, minimum height=#2, align=center, inner sep=4pt,
+              font=\footnotesize\itshape, text=black!55] {#3};
+    \end{tikzpicture}%
+}
+
 % TikZ para los diagramas del dise\~no (C4, casos de uso, secuencia, despliegue, DER)
 \usepackage{tikz}
 \usetikzlibrary{positioning, arrows.meta, shapes.geometric, shapes.multipart, fit, backgrounds, calc}
