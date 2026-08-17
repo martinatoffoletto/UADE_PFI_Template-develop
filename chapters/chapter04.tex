@@ -22,7 +22,7 @@ Un mismo usuario puede desempeñar simultáneamente los roles de remitente y tra
 % ═════════════════════════════════════════════════════════════════════════════
 \section{Requerimientos funcionales}
 
-Los requerimientos funcionales se agrupan por subsistema. Cada uno se identifica con un código de la forma \texttt{RF-XXX-NN}, donde \texttt{XXX} indica el subsistema.
+Los requerimientos funcionales se agrupan por subsistema y se presentan ordenados de mayor a menor criticidad para el proyecto. El criterio es de dependencia: primero los subsistemas sin los cuales la plataforma no existe (cuentas de usuario y ciclo de vida del envío), luego los que habilitan la oferta de transporte, a continuación los tres componentes que constituyen la contribución diferencial del proyecto (asignación inteligente, clasificación de la carga por visión computacional y cálculo del impacto ambiental) y, por último, los subsistemas de soporte a la operación. Cada requerimiento se identifica con un código de la forma \texttt{RF-XXX-NN}, donde \texttt{XXX} indica el subsistema. La Tabla~\ref{tab:rf} los detalla.
 
 \begin{longtable}{p{2.4cm}p{11.2cm}}
     \caption{Requerimientos funcionales del sistema}
@@ -44,30 +44,32 @@ Los requerimientos funcionales se agrupan por subsistema. Cada uno se identifica
 
     \multicolumn{2}{l}{\textbf{Usuarios y cuentas (RF-USR)}} \\
     RF-USR-01 & Registrar a un remitente con sus datos de contacto y credenciales. \\
-    RF-USR-02 & Registrar a un transportista indicando tipo de vehículo, licencia y patente. \\
-    RF-USR-03 & Autenticar a un usuario mediante sus credenciales y otorgarle una sesión. \\
-    RF-USR-04 & Permitir la recuperación de la contraseña olvidada. \\
+    RF-USR-02 & Registrar el perfil de transportista indicando tipo de movilidad, capacidad de carga y patente, exigida solo para los vehículos motorizados. \\
+    RF-USR-03 & Autenticar a un usuario mediante sus credenciales y otorgarle una sesión renovable. \\
+    RF-USR-04 & Permitir la recuperación de la contraseña olvidada y su cambio desde una sesión activa. \\
     RF-USR-05 & Consultar y editar el perfil propio. \\
-    RF-USR-06 & Operar con rol dual (remitente y transportista) y alternar el modo activo. \\
-    RF-USR-07 & Permitir que el administrador valide y habilite a los transportistas. \\
-    \midrule
-    \multicolumn{2}{l}{\textbf{Transportistas y trayectos (RF-CAR)}} \\
-    RF-CAR-01 & Publicar un trayecto habitual (modalidad colaborativa) con origen, destino y ventana horaria. \\
-    RF-CAR-02 & Publicar una ventana de disponibilidad (modalidad dedicada) por zona y franja horaria. \\
-    RF-CAR-03 & Consultar el listado de pedidos compatibles y aceptarlos o rechazarlos. \\
-    RF-CAR-04 & Actualizar el estado del envío asignado (arribo al retiro, en tránsito, entregado). \\
-    RF-CAR-05 & Consultar el historial de envíos, ingresos, reputación y CO\textsubscript{2} evitado. \\
-    RF-CAR-06 & Aplicar una penalización de reputación cuando el transportista cancela un envío aceptado. \\
+    RF-USR-06 & Permitir que un mismo usuario opere como remitente y como transportista, incorporando un perfil de transportista a su cuenta. \\
+    RF-USR-07 & Permitir que el administrador valide y habilite a los transportistas, requisito para poder aceptar envíos. \\
     \midrule
     \multicolumn{2}{l}{\textbf{Envíos (RF-SHP)}} \\
     RF-SHP-01 & Crear una solicitud de envío indicando origen, destino, categoría de carga y modalidad. \\
-    RF-SHP-02 & Cotizar el envío comparando la modalidad dedicada y la colaborativa. \\
+    RF-SHP-02 & Cotizar el envío por anticipado exponiendo los tres niveles tarifarios (inmediato, programado y colaborativo), el ahorro estimado de CO\textsubscript{2} y la cantidad de trayectos colaborativos compatibles disponibles en ese momento. \\
     RF-SHP-03 & Permitir el ingreso manual de la categoría de carga como alternativa a la clasificación automática. \\
     RF-SHP-04 & Registrar el pago simulado del envío reteniendo la comisión de la plataforma (esquema de garantía). \\
     RF-SHP-05 & Gestionar el ciclo de vida del envío mediante una máquina de estados con transiciones válidas. \\
     RF-SHP-06 & Consultar el detalle y el historial de los envíos propios. \\
     RF-SHP-07 & Cancelar un envío, revirtiendo el pago según su estado. \\
     RF-SHP-08 & Calificar a la contraparte al finalizar el envío. \\
+    \midrule
+    \multicolumn{2}{l}{\textbf{Transportistas y trayectos (RF-CAR)}} \\
+    RF-CAR-01 & Publicar un trayecto habitual (modalidad colaborativa) con origen, destino y ventana horaria, con la posibilidad de declararlo recurrente por días de la semana. \\
+    RF-CAR-02 & Publicar una ventana de disponibilidad (modalidad dedicada) por zona y franja horaria, sin destino fijo. \\
+    RF-CAR-03 & Consultar y gestionar los trayectos y ventanas propios, pudiendo modificarlos o desactivarlos. \\
+    RF-CAR-04 & Consultar el listado de pedidos compatibles con el trayecto propio y aceptar los de interés. \\
+    RF-CAR-05 & Declararse en línea o fuera de línea para recibir asignaciones dedicadas por demanda. \\
+    RF-CAR-06 & Actualizar el estado del envío asignado (arribo al retiro, en tránsito, entregado). \\
+    RF-CAR-07 & Consultar el resumen de envíos, ingresos, reputación y CO\textsubscript{2} evitado. \\
+    RF-CAR-08 & Aplicar una penalización de reputación cuando el transportista se baja de un envío ya aceptado, reabriendo el envío para una nueva asignación. \\
     \midrule
     \multicolumn{2}{l}{\textbf{Asignación inteligente (RF-MAT)}} \\
     RF-MAT-01 & Ordenar a los transportistas candidatos de un envío según un puntaje multivariable. \\
@@ -80,17 +82,18 @@ Los requerimientos funcionales se agrupan por subsistema. Cada uno se identifica
     RF-VIS-03 & Admitir un objeto de referencia opcional en la foto para asistir la estimación. \\
     RF-VIS-04 & Registrar cada clasificación realizada para su auditoría y posterior reentrenamiento. \\
     \midrule
+    \multicolumn{2}{l}{\textbf{Impacto ambiental (RF-CO2)}} \\
+    RF-CO2-01 & Calcular el ahorro de CO\textsubscript{2} de un envío colaborativo frente a su escenario dedicado equivalente. \\
+    RF-CO2-02 & Acumular y presentar el impacto ambiental por usuario, con equivalencias comprensibles. \\
+    \midrule
+    \multicolumn{2}{l}{\textbf{Capacidad (RF-CAP)}} \\
+    RF-CAP-01 & Determinar la capacidad disponible de cada vehículo descontando los envíos en curso, e impedir la asignación de un envío que la exceda. \\
+    RF-CAP-02 & Reservar el vehículo por completo cuando el envío es dedicado, impidiendo que se combine con otros envíos simultáneos. \\
+    \midrule
     \multicolumn{2}{l}{\textbf{Seguimiento (RF-TRK)}} \\
     RF-TRK-01 & Permitir al transportista publicar su posición durante un envío activo. \\
     RF-TRK-02 & Permitir al remitente consultar la ubicación del envío en tiempo real. \\
     RF-TRK-03 & Conservar el historial de trazas de cada envío. \\
-    \midrule
-    \multicolumn{2}{l}{\textbf{Capacidad (RF-CAP)}} \\
-    RF-CAP-01 & Gestionar la capacidad disponible de cada vehículo, reservándola y liberándola según los envíos en curso. \\
-    \midrule
-    \multicolumn{2}{l}{\textbf{Impacto ambiental (RF-CO2)}} \\
-    RF-CO2-01 & Calcular el ahorro de CO\textsubscript{2} de un envío colaborativo frente a su escenario dedicado equivalente. \\
-    RF-CO2-02 & Acumular y presentar el impacto ambiental por usuario, con equivalencias comprensibles. \\
     \midrule
     \multicolumn{2}{l}{\textbf{Organizaciones / PyMEs (RF-ORG)}} \\
     RF-ORG-01 & Gestionar organizaciones (comercio y/o flota) y sus miembros. \\
@@ -99,15 +102,16 @@ Los requerimientos funcionales se agrupan por subsistema. Cada uno se identifica
     RF-ORG-04 & Consultar las finanzas de la organización, distinguiendo el dinero puesto del dinero ganado. \\
     \midrule
     \multicolumn{2}{l}{\textbf{Administración (RF-ADM)}} \\
-    RF-ADM-01 & Proveer un panel de monitoreo operativo de la plataforma. \\
-    RF-ADM-02 & Exponer estadísticas agregadas del sistema. \\
-    RF-ADM-03 & Moderar usuarios y configurar los pesos del algoritmo de asignación sin necesidad de un nuevo despliegue. \\
+    RF-ADM-01 & Proveer un panel de monitoreo operativo con la actividad reciente de la plataforma. \\
+    RF-ADM-02 & Exponer estadísticas agregadas y el estado de los servicios del sistema. \\
+    RF-ADM-03 & Configurar los pesos del algoritmo de asignación sin necesidad de un nuevo despliegue, validando que la suma se mantenga consistente. \\
+    RF-ADM-04 & Dar de alta manualmente una cuenta de organización, creando en un solo paso el usuario responsable y su organización. \\
 \end{longtable}
 
 % ═════════════════════════════════════════════════════════════════════════════
 \section{Requerimientos no funcionales}
 
-Los requerimientos no funcionales establecen las restricciones de calidad que condicionan el diseño de la solución.
+Los requerimientos no funcionales establecen las restricciones de calidad que condicionan el diseño de la solución. Se ordenan también por criticidad: encabezan la seguridad, por tratarse de una plataforma que maneja datos personales y de geolocalización sujetos a la normativa vigente, y la exigencia de un modelo de inteligencia artificial propio, que define el componente central del proyecto; siguen las restricciones operativas y, al final, las de costo y portabilidad. La Tabla~\ref{tab:rnf} los detalla.
 
 \begin{longtable}{p{2.6cm}p{11cm}}
     \caption{Requerimientos no funcionales del sistema}
@@ -127,63 +131,59 @@ Los requerimientos no funcionales establecen las restricciones de calidad que co
     \multicolumn{2}{l}{\textbf{Seguridad (RNF-SEC)}} \\
     RNF-SEC-01 & La autenticación se basa en tokens de acceso de vigencia corta y tokens de refresco; las contraseñas se almacenan con un algoritmo de \emph{hashing} robusto. \\
     RNF-SEC-02 & Se limita la tasa de intentos de inicio de sesión para mitigar ataques de fuerza bruta. \\
-    RNF-SEC-03 & Las imágenes de los paquetes se almacenan con acceso restringido mediante URLs firmadas de vigencia acotada. \\
+    RNF-SEC-03 & Las imágenes de los paquetes se almacenan bajo identificadores aleatorios no predecibles, de modo que no resulten enumerables, y se sirven desde una ruta dedicada. \\
     RNF-SEC-04 & Toda solicitud entrante se valida contra un esquema antes de procesarse. \\
+    \midrule
+    \multicolumn{2}{l}{\textbf{Requisitos académicos (RNF-UADE)}} \\
+    RNF-UADE-01 & El modelo de clasificación de carga debe ser entrenado por el equipo (se admite aprendizaje por transferencia), sin recurrir a servicios de inferencia de terceros. \\
+    \midrule
+    \multicolumn{2}{l}{\textbf{Disponibilidad (RNF-AVL)}} \\
+    RNF-AVL-01 & Ante la caída de un servicio externo o la falta de conectividad, el sistema degrada con gracia y no interrumpe las funciones esenciales. \\
     \midrule
     \multicolumn{2}{l}{\textbf{Rendimiento (RNF-PERF)}} \\
     RNF-PERF-01 & La clasificación de una imagen debe resolverse en menos de 2 segundos. \\
     RNF-PERF-02 & El seguimiento en tiempo real tolera una latencia de actualización de hasta 30 segundos. \\
     \midrule
-    \multicolumn{2}{l}{\textbf{Disponibilidad (RNF-AVL)}} \\
-    RNF-AVL-01 & Ante la caída de un servicio externo o la falta de conectividad, el sistema degrada con gracia y no interrumpe las funciones esenciales. \\
-    \midrule
     \multicolumn{2}{l}{\textbf{Mantenibilidad (RNF-MNT)}} \\
     RNF-MNT-01 & El sistema se organiza de forma modular y por capas, con responsabilidades separadas. \\
-    RNF-MNT-02 & Los módulos críticos (autenticación, envíos y asignación) mantienen una cobertura de pruebas automatizadas de al menos el 60\%. \\
+    RNF-MNT-02 & Los módulos críticos (autenticación, envíos, asignación, visión, seguimiento y organizaciones) cuentan con pruebas automatizadas, incluidas pruebas de los flujos de integración de punta a punta. \\
     RNF-MNT-03 & La interfaz de programación (API) se documenta de forma automática. \\
-    \midrule
-    \multicolumn{2}{l}{\textbf{Costo y portabilidad (RNF-INF)}} \\
-    RNF-INF-01 & La plataforma opera dentro de un presupuesto acotado, sobre servicios de nivel gratuito. \\
-    RNF-INF-02 & El sistema es portable: puede migrar de proveedor sin modificar el código de la aplicación. \\
     \midrule
     \multicolumn{2}{l}{\textbf{Usabilidad y observabilidad (RNF-UX / RNF-OBS)}} \\
     RNF-UX-01 & La interfaz emplea español rioplatense, contraste accesible y realimentación visual de cada acción del usuario. \\
     RNF-OBS-01 & El sistema registra eventos de forma estructurada para su observabilidad. \\
     \midrule
-    \multicolumn{2}{l}{\textbf{Requisitos académicos (RNF-UADE)}} \\
-    RNF-UADE-01 & El modelo de clasificación de carga debe ser entrenado por el equipo (se admite aprendizaje por transferencia), sin recurrir a servicios de inferencia de terceros. \\
+    \multicolumn{2}{l}{\textbf{Costo y portabilidad (RNF-INF)}} \\
+    RNF-INF-01 & La plataforma opera dentro de un presupuesto acotado cubierto por el equipo, contratando los planes necesarios para asegurar la disponibilidad durante el desarrollo y la defensa. \\
+    RNF-INF-02 & El sistema es portable: puede migrar de proveedor sin modificar el código de la aplicación. \\
 \end{longtable}
 
 % ═════════════════════════════════════════════════════════════════════════════
 \section{Casos de uso}
 
-Se especifican los casos de uso correspondientes a los flujos centrales del sistema. La Figura~\ref{fig:casos-uso} resume, mediante un diagrama de casos de uso, la relación entre los actores y las funcionalidades. A continuación, cada caso indica su actor principal, precondiciones, flujo principal, flujos alternativos y postcondiciones. Los requerimientos funcionales que cada caso satisface se referencian entre paréntesis.
+Se especifican los casos de uso correspondientes a los flujos centrales del sistema, ordenados de mayor a menor relevancia para la propuesta. Los flujos secundarios —moderación de usuarios, gestión de organizaciones y consultas de historial— quedan cubiertos por los requerimientos funcionales sin una especificación detallada. La Figura~\ref{fig:casos-uso} resume la relación entre los actores y las funcionalidades. A continuación, cada caso indica su actor principal, precondiciones, flujo principal, flujos alternativos y postcondiciones. Los requerimientos funcionales que cada caso satisface se referencian entre paréntesis.
 
-\begin{figure}[ht]
+\begin{figure}[H]
     \centering\color{nuevo}
-    \resizebox{0.92\textwidth}{!}{%
+    \resizebox{0.88\textwidth}{!}{%
     \begin{tikzpicture}
         % Casos de uso (columna central)
-        \node[ucase] (cu1) at (0,5)    {CU-01 Solicitar envío};
-        \node[ucase] (cu2) at (0,3.6)  {CU-02 Clasificar carga};
-        \node[ucase] (cu3) at (0,2.2)  {CU-03 Asignar (\emph{matching})};
-        \node[ucase] (cu4) at (0,0.8)  {CU-04 Publicar trayecto};
-        \node[ucase] (cu5) at (0,-0.6) {CU-05 Aceptar pedido};
-        \node[ucase] (cu6) at (0,-2)   {CU-06 Seguir envío};
-        \node[ucase] (cu7) at (0,-3.4) {CU-07 Calificar};
-        \node[ucase] (cu8) at (0,-4.8) {CU-08 Validar transportista};
+        \node[ucase] (cu1) at (0,4)    {CU-01 Solicitar envío};
+        \node[ucase] (cu2) at (0,2.4)  {CU-02 Asignar (\emph{matching})};
+        \node[ucase] (cu3) at (0,0.8)  {CU-03 Clasificar carga};
+        \node[ucase] (cu4) at (0,-0.8) {CU-04 Publicar trayecto};
+        \node[ucase] (cu5) at (0,-2.4) {CU-05 Aceptar pedido};
+        \node[ucase] (cu6) at (0,-4)   {CU-06 Seguir y cerrar envío};
         % Actores
-        \node (rem) at (-6,3)    {}; \pic at (rem) {actor}; \node[font=\footnotesize, below=1.6cm of rem]{Remitente};
-        \node (sis) at (-6,-1.8) {}; \pic at (sis) {actor}; \node[font=\footnotesize, below=1.6cm of sis]{Sistema};
-        \node (car) at (6,0.6)   {}; \pic at (car) {actor}; \node[font=\footnotesize, below=1.6cm of car]{Transportista};
-        \node (adm) at (6,-4.4)  {}; \pic at (adm) {actor}; \node[font=\footnotesize, below=1.6cm of adm]{Administrador};
+        \node (rem) at (-6,2.4)  {}; \pic at (rem) {actor}; \node[font=\footnotesize, below=1.6cm of rem]{Remitente};
+        \node (sis) at (-6,-2.2) {}; \pic at (sis) {actor}; \node[font=\footnotesize, below=1.6cm of sis]{Sistema};
+        \node (car) at (6,-1.4)  {}; \pic at (car) {actor}; \node[font=\footnotesize, below=1.6cm of car]{Transportista};
         % Frontera del sistema
-        \node[boundary, fit=(cu1)(cu2)(cu3)(cu4)(cu5)(cu6)(cu7)(cu8), inner sep=4mm, label=above:{\footnotesize DePaso}] {};
+        \node[boundary, fit=(cu1)(cu2)(cu3)(cu4)(cu5)(cu6), inner sep=4mm, label=above:{\footnotesize DePaso}] {};
         % Asociaciones
-        \draw (rem) -- (cu1); \draw (rem) -- (cu6); \draw (rem) -- (cu7);
+        \draw (rem) -- (cu1); \draw (rem) -- (cu3); \draw (rem) -- (cu6);
         \draw (sis) -- (cu2); \draw (sis) -- (cu3);
-        \draw (car) -- (cu4); \draw (car) -- (cu5); \draw (car) -- (cu6); \draw (car) -- (cu7);
-        \draw (adm) -- (cu8);
+        \draw (car) -- (cu4); \draw (car) -- (cu5); \draw (car) -- (cu6);
     \end{tikzpicture}%
     }
     \caption{Diagrama de casos de uso del sistema}
@@ -199,58 +199,61 @@ Se especifican los casos de uso correspondientes a los flujos centrales del sist
     \item \textbf{Flujo principal}:
     \begin{enumerate}[leftmargin=2em]
         \item El remitente indica el origen y el destino del envío.
-        \item El remitente fotografía el paquete; el sistema clasifica la carga (CU-02) o el remitente ingresa la categoría manualmente (RF-SHP-03).
-        \item El sistema cotiza el envío, comparando la modalidad dedicada y la colaborativa e indicando el CO\textsubscript{2} estimado (RF-SHP-02, RF-CO2-01).
+        \item El remitente fotografía el paquete; el sistema clasifica la carga (CU-03) o el remitente ingresa la categoría manualmente (RF-SHP-03).
+        \item El sistema cotiza el envío exponiendo los tres niveles tarifarios, el ahorro estimado de CO\textsubscript{2} y los trayectos colaborativos compatibles disponibles en ese momento (RF-SHP-02, RF-CO2-01).
         \item El remitente elige la modalidad y confirma la solicitud (RF-SHP-01).
-        \item El remitente abona el envío; el sistema retiene la comisión bajo un esquema de garantía (RF-SHP-04).
-        \item El sistema crea el envío en estado \emph{pendiente} e inicia la asignación (CU-03).
+        \item El remitente abona el envío; el sistema retiene el monto bajo un esquema de garantía (RF-SHP-04).
+        \item El sistema crea el envío en estado \emph{pendiente} e inicia la asignación (CU-02).
     \end{enumerate}
     \item \textbf{Flujos alternativos}:
     \begin{itemize}[leftmargin=2em]
         \item[2a.] Si la confianza de la clasificación es baja, el sistema solicita la categoría manual (RF-VIS-02).
-        \item[5a.] Si el pago no se completa, el envío no se crea y la solicitud queda descartada.
+        \item[4a.] Si la carga es una mudanza o flete, el sistema restringe la elección a la modalidad dedicada.
+        \item[5a.] Si el pago no se completa, el envío permanece impago y no se ofrece a los transportistas.
     \end{itemize}
     \item \textbf{Postcondiciones}: existe un envío en estado \emph{pendiente} listo para ser asignado.
 \end{itemize}
 
 % ─────────────────────────────────────────────────────────────────────────────
-\subsection{CU-02 --- Clasificar la carga mediante una fotografía}
-
-\begin{itemize}[leftmargin=2em]
-    \item \textbf{Actor principal}: Sistema. \quad \textbf{Actor secundario}: Remitente.
-    \item \textbf{Precondiciones}: el remitente aportó una fotografía del paquete.
-    \item \textbf{Flujo principal}:
-    \begin{enumerate}[leftmargin=2em]
-        \item El remitente captura la imagen, opcionalmente junto a un objeto de referencia (RF-VIS-03).
-        \item El sistema infiere la categoría volumétrica y su nivel de confianza (RF-VIS-01).
-        \item Si la confianza supera el umbral, el sistema propone la categoría; en caso contrario, deriva al ingreso manual (RF-VIS-02).
-        \item El sistema registra la clasificación para su auditoría (RF-VIS-04).
-    \end{enumerate}
-    \item \textbf{Flujos alternativos}:
-    \begin{itemize}[leftmargin=2em]
-        \item[2a.] Si el servicio de clasificación no está disponible, el sistema ofrece directamente el ingreso manual (RNF-AVL-01).
-    \end{itemize}
-    \item \textbf{Postcondiciones}: el envío queda asociado a una categoría de carga.
-\end{itemize}
-
-% ─────────────────────────────────────────────────────────────────────────────
-\subsection{CU-03 --- Asignar un transportista mediante \emph{matching}}
+\subsection{CU-02 --- Asignar un transportista mediante \emph{matching}}
 
 \begin{itemize}[leftmargin=2em]
     \item \textbf{Actor principal}: Sistema.
     \item \textbf{Precondiciones}: existe un envío en estado \emph{pendiente}.
     \item \textbf{Flujo principal}:
     \begin{enumerate}[leftmargin=2em]
-        \item El sistema aplica los filtros duros: compatibilidad de vehículo y carga, capacidad suficiente y desvío por debajo del máximo admitido (RF-MAT-02).
-        \item Para cada candidato, calcula un puntaje que combina compatibilidad geográfica, desvío, carga, reputación y ventana horaria (RF-MAT-01).
-        \item Ordena a los candidatos y expone el envío en el listado de los transportistas compatibles (RF-MAT-03).
-        \item Cuando un transportista acepta (CU-05), el envío pasa a estado \emph{asignado} y el sistema notifica al remitente.
+        \item El sistema descarta a los transportistas que no superan los filtros duros: compatibilidad entre vehículo y categoría de carga, capacidad disponible suficiente y desvío por debajo del máximo admitido (RF-MAT-02, RF-CAP-01).
+        \item Para cada candidato restante, calcula un puntaje que combina compatibilidad geográfica, desvío, carga, reputación y ventana horaria, y conserva el desglose de cada componente (RF-MAT-01).
+        \item Ordena a los candidatos por puntaje y expone el envío en el listado de los transportistas compatibles (RF-MAT-03).
+        \item Cuando un transportista acepta (CU-05), el envío pasa a estado \emph{asignado} y el remitente puede consultar los datos del transportista asignado.
     \end{enumerate}
     \item \textbf{Flujos alternativos}:
     \begin{itemize}[leftmargin=2em]
-        \item[1a.] Si ningún candidato supera los filtros duros, el envío permanece pendiente y se reintenta la asignación.
+        \item[1a.] Si ningún candidato supera los filtros duros, el envío permanece pendiente y vuelve a evaluarse cuando se publican nuevos trayectos.
+        \item[2a.] Si el servicio externo de ruteo no responde, el desvío se estima con el cálculo propio de distancias (RNF-AVL-01).
     \end{itemize}
     \item \textbf{Postcondiciones}: el envío queda asignado a un transportista o continúa pendiente.
+\end{itemize}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\subsection{CU-03 --- Clasificar la carga mediante una fotografía}
+
+\begin{itemize}[leftmargin=2em]
+    \item \textbf{Actor principal}: Sistema. \quad \textbf{Actor secundario}: Remitente.
+    \item \textbf{Precondiciones}: el remitente aportó una fotografía del paquete.
+    \item \textbf{Flujo principal}:
+    \begin{enumerate}[leftmargin=2em]
+        \item El remitente captura la imagen, opcionalmente junto a un objeto de referencia que asista la estimación de escala (RF-VIS-03).
+        \item El sistema infiere la categoría volumétrica y su nivel de confianza (RF-VIS-01).
+        \item Si la confianza supera el umbral, el sistema propone la categoría; en caso contrario, deriva al ingreso manual (RF-VIS-02).
+        \item El sistema registra la clasificación, junto con la aceptación o corrección del usuario, para su auditoría y posterior reentrenamiento (RF-VIS-04).
+    \end{enumerate}
+    \item \textbf{Flujos alternativos}:
+    \begin{itemize}[leftmargin=2em]
+        \item[1a.] Si el archivo no es una imagen válida o excede el tamaño admitido, el sistema lo rechaza e informa el motivo.
+        \item[2a.] Si el modelo no está disponible, el sistema ofrece directamente el ingreso manual (RNF-AVL-01).
+    \end{itemize}
+    \item \textbf{Postcondiciones}: el envío queda asociado a una categoría de carga.
 \end{itemize}
 
 % ─────────────────────────────────────────────────────────────────────────────
@@ -258,13 +261,17 @@ Se especifican los casos de uso correspondientes a los flujos centrales del sist
 
 \begin{itemize}[leftmargin=2em]
     \item \textbf{Actor principal}: Transportista.
-    \item \textbf{Precondiciones}: el transportista está habilitado por el administrador (RF-USR-07).
+    \item \textbf{Precondiciones}: el usuario incorporó un perfil de transportista a su cuenta (RF-USR-06).
     \item \textbf{Flujo principal}:
     \begin{enumerate}[leftmargin=2em]
-        \item El transportista registra el origen, el destino y la ventana horaria de su recorrido habitual (RF-CAR-01) o su ventana de disponibilidad dedicada (RF-CAR-02).
+        \item El transportista registra el origen, el destino y la ventana horaria de su recorrido habitual, indicando si se repite en determinados días (RF-CAR-01), o bien su ventana de disponibilidad dedicada por zona (RF-CAR-02).
         \item El sistema valida los datos y publica el trayecto o la ventana como activos.
-        \item El sistema comienza a evaluar los envíos pendientes compatibles con ese trayecto (CU-03).
+        \item El sistema comienza a evaluar los envíos pendientes compatibles con ese trayecto (CU-02).
     \end{enumerate}
+    \item \textbf{Flujos alternativos}:
+    \begin{itemize}[leftmargin=2em]
+        \item[1a.] El transportista modifica o desactiva un trayecto ya publicado, que deja de considerarse en la asignación (RF-CAR-03).
+    \end{itemize}
     \item \textbf{Postcondiciones}: el transportista figura como disponible para recibir pedidos compatibles.
 \end{itemize}
 
@@ -273,62 +280,40 @@ Se especifican los casos de uso correspondientes a los flujos centrales del sist
 
 \begin{itemize}[leftmargin=2em]
     \item \textbf{Actor principal}: Transportista.
-    \item \textbf{Precondiciones}: el transportista tiene un trayecto o disponibilidad activos y capacidad libre (RF-CAP-01).
+    \item \textbf{Precondiciones}: el transportista fue validado por el administrador (RF-USR-07) y tiene un trayecto o una ventana de disponibilidad activos.
     \item \textbf{Flujo principal}:
     \begin{enumerate}[leftmargin=2em]
-        \item El transportista consulta su listado de pedidos compatibles, con el desvío y la ganancia estimada de cada uno (RF-CAR-03).
+        \item El transportista consulta su listado de pedidos compatibles, con el desvío y la ganancia estimada de cada uno (RF-CAR-04).
         \item Selecciona un pedido y lo acepta.
-        \item El sistema reserva la capacidad del vehículo y asigna el envío (RF-CAP-01).
-        \item El transportista actualiza el estado a medida que avanza: arribo al retiro, en tránsito y entregado (RF-CAR-04, RF-SHP-05).
+        \item El sistema verifica que el transportista esté habilitado, que su vehículo admita la categoría de carga y que disponga de capacidad suficiente, y asigna el envío (RF-CAP-01, RF-CAP-02).
+        \item El transportista actualiza el estado a medida que avanza: arribo al retiro, en tránsito y entregado (RF-CAR-06, RF-SHP-05).
     \end{enumerate}
     \item \textbf{Flujos alternativos}:
     \begin{itemize}[leftmargin=2em]
-        \item[2a.] Si el transportista cancela luego de aceptar, el sistema penaliza su reputación (RF-CAR-06).
+        \item[2a.] Si el transportista aún no fue validado o su vehículo no admite la categoría de carga, el sistema rechaza la aceptación.
+        \item[2b.] Si el envío ya fue tomado por otro transportista, el sistema informa que dejó de estar disponible.
+        \item[4a.] Si el transportista se baja luego de aceptar, el sistema penaliza su reputación y el envío vuelve a quedar pendiente (RF-CAR-08).
     \end{itemize}
     \item \textbf{Postcondiciones}: el envío queda en curso bajo la responsabilidad del transportista.
 \end{itemize}
 
 % ─────────────────────────────────────────────────────────────────────────────
-\subsection{CU-06 --- Seguir el envío en tiempo real}
+\subsection{CU-06 --- Seguir y cerrar el envío}
 
 \begin{itemize}[leftmargin=2em]
     \item \textbf{Actor principal}: Remitente. \quad \textbf{Actor secundario}: Transportista.
-    \item \textbf{Precondiciones}: el envío está en tránsito.
+    \item \textbf{Precondiciones}: el envío está asignado y en curso.
     \item \textbf{Flujo principal}:
     \begin{enumerate}[leftmargin=2em]
         \item El transportista publica periódicamente su posición durante el envío (RF-TRK-01).
         \item El remitente consulta la ubicación del envío, que se actualiza de forma continua (RF-TRK-02).
-        \item Al entregarse, el sistema libera el pago al transportista y persiste el CO\textsubscript{2} ahorrado (RF-SHP-05, RF-CO2-01).
+        \item Al registrarse la entrega, el sistema libera el pago retenido al transportista y persiste el ahorro de CO\textsubscript{2} de la operación (RF-SHP-05, RF-CO2-01).
+        \item Cada parte califica a la otra con una puntuación y un comentario opcional; el sistema actualiza la reputación acumulada, que retroalimenta futuras asignaciones (RF-SHP-08, RF-MAT-01).
     \end{enumerate}
-    \item \textbf{Postcondiciones}: el envío queda entregado y su traza se conserva (RF-TRK-03).
-\end{itemize}
-
-% ─────────────────────────────────────────────────────────────────────────────
-\subsection{CU-07 --- Calificar a la contraparte}
-
-\begin{itemize}[leftmargin=2em]
-    \item \textbf{Actor principal}: Remitente o Transportista.
-    \item \textbf{Precondiciones}: el envío fue entregado.
-    \item \textbf{Flujo principal}:
-    \begin{enumerate}[leftmargin=2em]
-        \item Cada parte califica a la otra con una puntuación y un comentario opcional (RF-SHP-08).
-        \item El sistema actualiza la reputación acumulada de la contraparte.
-    \end{enumerate}
-    \item \textbf{Postcondiciones}: las reputaciones quedan actualizadas y disponibles para futuros \emph{matchings} (RF-MAT-01).
-\end{itemize}
-
-% ─────────────────────────────────────────────────────────────────────────────
-\subsection{CU-08 --- Validar a un transportista}
-
-\begin{itemize}[leftmargin=2em]
-    \item \textbf{Actor principal}: Administrador.
-    \item \textbf{Precondiciones}: existe un transportista registrado pendiente de validación.
-    \item \textbf{Flujo principal}:
-    \begin{enumerate}[leftmargin=2em]
-        \item El administrador revisa los datos y la documentación del transportista (RF-USR-07).
-        \item Aprueba o rechaza la solicitud (RF-ADM-03).
-        \item Si se aprueba, el transportista queda habilitado para publicar trayectos y recibir pedidos.
-    \end{enumerate}
-    \item \textbf{Postcondiciones}: el transportista queda habilitado o rechazado.
+    \item \textbf{Flujos alternativos}:
+    \begin{itemize}[leftmargin=2em]
+        \item[3a.] Si el remitente cancela antes de la entrega, el sistema revierte el pago según el estado en que se encuentre el envío (RF-SHP-07).
+    \end{itemize}
+    \item \textbf{Postcondiciones}: el envío queda entregado, su traza y sus eventos se conservan (RF-TRK-03) y las reputaciones quedan actualizadas.
 \end{itemize}
 }% <<< FIN CONTENIDO NUEVO (entrega 50%) >>>

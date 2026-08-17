@@ -102,7 +102,7 @@ En el AMBA coexisten dos grandes categorías de soluciones, analizadas a continu
 
 Ninguna de las soluciones relevadas combina un modelo colaborativo basado en trayectorias, clasificación de carga por visión computacional y cálculo de ahorro de CO\textsubscript{2}. La Tabla~\ref{tab:comparativa} sintetiza el posicionamiento de DePaso frente a las plataformas existentes.
 
-\begin{table}[ht]
+\begin{table}[H]
     \caption{Posicionamiento de DePaso frente a plataformas existentes en el AMBA}
     \label{tab:comparativa}
     \centering
@@ -138,7 +138,7 @@ Ninguna de las soluciones relevadas combina un modelo colaborativo basado en tra
 
 La Tabla~\ref{tab:antecedentes} sintetiza los trabajos seleccionados: para cada uno se registran objetivo, enfoque metodológico, tecnologías empleadas, resultados principales, limitaciones reconocidas por los propios autores y aporte concreto para DePaso.
 
-\begin{table}[ht]
+\begin{table}[H]
     \caption{Matriz de antecedentes: trabajos seleccionados}
     \label{tab:antecedentes}
     \centering
@@ -285,7 +285,6 @@ La matriz FODA sintetiza los factores internos (fortalezas y debilidades) y exte
         \begin{itemize}[leftmargin=1.2em,topsep=1pt,itemsep=1pt]
             \item Arranque en frío: sin masa crítica ni datos históricos propios.
             \item Dependencia de la adopción simultánea de ambos lados del mercado.
-            \item Exactitud del clasificador acotada por un conjunto de datos propio limitado.
             \item Cobertura ante daños todavía sin resolver.
             \item Tarifa determinística, sin elasticidad dinámica; equipo y presupuesto acotados.
         \end{itemize} \\
@@ -313,7 +312,7 @@ La matriz FODA sintetiza los factores internos (fortalezas y debilidades) y exte
 
 Los factores externos se apoyan en la evidencia ya citada: la presión de costos corresponde al incremento del 22,2~\% registrado en el primer semestre de 2026 \parencite{CEDOL2025}, el crecimiento proyectado de la demanda al 78~\% hacia 2030 \parencite{WEF2020} y la relevancia ambiental al 14~\% de las emisiones nacionales atribuibles al transporte \parencite{InventarioGEI2024}. La incertidumbre regulatoria abarca tanto el debate sobre el trabajo en plataformas \parencite{OIT2020} como la asignación de responsabilidad por la carga que establece el Código Civil y Comercial \parencite{CCyC2014}.
 
-La lectura cruzada de la matriz orienta la estrategia en tres direcciones. Las fortalezas se apalancan sobre las oportunidades: el modelo híbrido y la transparencia ambiental se dirigen al segmento desatendido de PyMEs, cuya demanda ya está validada. Las debilidades se neutralizan mediante decisiones de diseño explícitas: el arranque en frío se aborda con un \emph{matching} determinístico que opera sin datos históricos, a diferencia de los mecanismos de subasta \parencite{AkamatsuOyama2023} y de aprendizaje por refuerzo \parencite{SalehEtAl2024} que los requieren, y la exactitud acotada del clasificador se compensa con el ingreso manual como alternativa, decisión coherente con la dificultad de estimar volúmenes exactos desde cámaras móviles \parencite{NaumannEtAl2023}. Finalmente, las amenazas se contrarrestan con la construcción temprana del efecto de red y con la definición precisa de responsabilidades en los términos y condiciones, que atiende la principal preocupación relevada entre los transportistas.
+La lectura cruzada de la matriz orienta la estrategia en tres direcciones. Las fortalezas se apalancan sobre las oportunidades: el modelo híbrido y la transparencia ambiental se dirigen al segmento desatendido de PyMEs, cuya demanda ya está validada. Las debilidades se neutralizan mediante decisiones de diseño explícitas: el arranque en frío se aborda con un \emph{matching} determinístico que opera sin datos históricos, a diferencia de los mecanismos de subasta \parencite{AkamatsuOyama2023} y de aprendizaje por refuerzo \parencite{SalehEtAl2024} que los requieren. La clasificación automática de la carga, por su parte, se complementa con el ingreso manual de la categoría, alternativa prevista desde el diseño y coherente con la dificultad de estimar volúmenes exactos mediante cámaras móviles que señala la literatura \parencite{NaumannEtAl2023}. Finalmente, las amenazas se contrarrestan con la construcción temprana del efecto de red y con la definición precisa de responsabilidades en los términos y condiciones, que atiende la principal preocupación relevada entre los transportistas.
 
 % ─────────────────────────────────────────────────────────────────────────────
 \subsection{Estrategia de diferenciación}
