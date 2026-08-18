@@ -20,7 +20,7 @@ La arquitectura se describe siguiendo el modelo \textbf{C4}, de mayor a menor ni
 
 \begin{itemize}[leftmargin=2em]
     \item \textbf{Contexto.} El sistema atiende a los cuatro actores identificados en el Capítulo~\ref{cap:requerimientos} —remitente, transportista, PyME u organización y administrador—, con la salvedad de que la organización se distingue internamente en dos variantes según su vínculo con la plataforma: la que opera una flota de transportistas y la que es comercio y programa sus propios envíos. El acceso ocurre a través de dos frentes —una aplicación móvil para clientes y transportistas y un panel web para PyMEs y administración— sobre un único backend. Sus dependencias externas son mínimas y reemplazables: un servicio de ruteo (con alternativa de cálculo propia), un servicio de mapas y geocodificación, y la persistencia de datos e imágenes.
-    \item \textbf{Contenedores.} Las unidades desplegables por separado son: la aplicación móvil, el panel web, la API REST, la base de datos y el almacenamiento de las imágenes de los paquetes. Las aplicaciones cliente se comunican con la API sobre HTTPS con autenticación por token; la API concentra toda la lógica de negocio y el acceso a datos.
+    \item \textbf{Contenedores.} Las unidades desplegables por separado son: la aplicación móvil, el panel web, la API REST, la base de datos y el almacenamiento de las imágenes de los paquetes. Las aplicaciones cliente se comunican con la API sobre HTTPS con autenticación por token; la API concentra toda la lógica de negocio y el acceso a datos. El modelo de clasificación no constituye un contenedor desplegable por separado ni un sistema externo: es un artefacto versionado que la API carga en memoria al iniciar, y por eso se representa con trazo discontinuo.
     \item \textbf{Componentes.} Dentro de la API, cada módulo de dominio respeta una separación estricta en cuatro capas —enrutamiento (HTTP y validación), servicio (lógica de negocio), repositorio (acceso a datos) y esquemas—, con una regla de dependencia unidireccional. Los módulos implementados abarcan autenticación, usuarios, transportistas, envíos, trayectos, asignación, visión, seguimiento, impacto ambiental, organizaciones y administración.
 \end{itemize}
 
@@ -66,7 +66,7 @@ La Figura~\ref{fig:c4-contenedores} desglosa el sistema en sus contenedores desp
         \node[c4ext] (osrm) at (5,0.6)     {Servicio de\\ ruteo};
         \node[c4db]  (db)   at (-2.9,-2.6) {Base de\\ datos};
         \node[c4db]  (st)   at (0.2,-2.6)  {Almacenamiento\\ de imágenes};
-        \node[c4ext] (ml)   at (3.2,-2.6)  {Modelo de\\ IA (.\,keras)};
+        \node[c4store] (ml) at (3.2,-2.6)  {Modelo entrenado\\ (artefacto .\,keras)};
         \draw[c4arrow] (app) -- (api) node[c4lbl] {HTTPS + \emph{token}};
         \draw[c4arrow] (web) -- (api) node[c4lbl] {HTTPS + \emph{token}};
         \draw[c4arrow] (api) -- (db);
@@ -311,7 +311,7 @@ El modelo de datos se organiza en torno a las entidades del dominio. La Tabla~\r
 
     Usuario & Datos de contacto y credenciales; tipo (particular o comercial) y roles (cliente, transportista). \\
     Transportista & Perfil asociado a un usuario: tipo de vehículo, patente, capacidad de carga, estado de validación, reputación y disponibilidad. \\
-    Trayecto & Recorrido habitual (colaborativo) o ventana de disponibilidad (dedicada), con origen, destino, ventana horaria y recurrencia semanal opcional. \\
+    Trayecto & Recorrido habitual (colaborativo) o ventana de disponibilidad (dedicada), con origen, ventana horaria y recurrencia semanal opcional. El destino solo se registra en la modalidad colaborativa: la ventana dedicada no lo fija, por lo que el atributo admite valor nulo. \\
     Envío & Solicitud de transporte: origen, destino, modalidad, categoría de carga, estado, estado de pago, precio, ventana horaria y CO\textsubscript{2} ahorrado. \\
     Evento de envío & Registro de auditoría de cada transición de estado del envío, con marca temporal y ubicación. \\
     Clasificación & Resultado de la clasificación de la carga: imagen, categoría predicha, confianza, aceptación y categoría manual eventual. \\
@@ -358,7 +358,7 @@ La Figura~\ref{fig:der} presenta el diagrama entidad-relación. Cada relación s
         \draw[rel] (tra)  -- (tray) node[vrb,pos=0.5]{publica} node[card,pos=0.08]{1} node[card,pos=0.92]{0..N};
         \draw[rel] (org)  -- (env)  node[vrb,pos=0.45]{programa} node[card,pos=0.04]{0..1} node[card,pos=0.96]{0..N};
         % Dependientes del envío
-        \draw[rel] (env)  -- (cla)  node[vrb,pos=0.5]{clasifica} node[card,pos=0.08]{1} node[card,pos=0.92]{0..N};
+        \draw[rel] (env)  -- (cla)  node[vrb,pos=0.5]{clasifica} node[card,pos=0.08]{0..1} node[card,pos=0.92]{0..N};
         \draw[rel] (env)  -- (evt)  node[vrb,pos=0.5]{audita} node[card,pos=0.08]{1} node[card,pos=0.92]{1..N};
         \draw[rel] (env)  -- (cal)  node[vrb,pos=0.5]{recibe} node[card,pos=0.08]{1} node[card,pos=0.92]{0..1};
         \draw[rel] (env)  -- (gps)  node[card,pos=0.1]{0..1} node[card,pos=0.9]{0..N};
@@ -369,7 +369,7 @@ La Figura~\ref{fig:der} presenta el diagrama entidad-relación. Cada relación s
     \label{fig:der}
 \end{figure}
 
-Por legibilidad, el diagrama omite tres claves foráneas que no definen la estructura del modelo sino que evitan recorrer el envío en cada consulta: la calificación referencia también al transportista y al cliente, para resolver el promedio de reputación sin necesidad de una reunión de tablas; la clasificación referencia al usuario que la solicitó, incluso cuando todavía no existe un envío asociado; y el evento de envío registra qué usuario provocó la transición. Tampoco se representa la entidad de pesos de asignación descrita en la Tabla~\ref{tab:entidades}, por tratarse de parámetros de configuración sin relación con el resto del modelo.
+La cardinalidad mínima de la relación entre \emph{Envío} y \emph{Clasificación} es cero del lado del envío: la clasificación se produce mientras el remitente arma la solicitud, de modo que existe antes que el envío y puede no llegar a asociarse a ninguno si la solicitud se abandona. Por legibilidad, el diagrama omite además tres claves foráneas que no definen la estructura del modelo sino que evitan recorrer el envío en cada consulta: la calificación referencia también al transportista y al cliente, para resolver el promedio de reputación sin necesidad de una reunión de tablas; la clasificación referencia al usuario que la solicitó, lo que permite recuperarla en ese estado intermedio; y el evento de envío registra qué usuario provocó la transición. Tampoco se representa la entidad de pesos de asignación descrita en la Tabla~\ref{tab:entidades}, por tratarse de parámetros de configuración sin relación con el resto del modelo.
 
 % ─────────────────────────────────────────────────────────────────────────────
 \subsection{Fuentes de datos y su relación con la arquitectura}

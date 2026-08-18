@@ -169,6 +169,30 @@ la capacidad ociosa de sus trayectos habituales.
 - **Verificación de cifras:** `docs/encuesta/verify_numbers.py` contrasta cada
   número de la encuesta citado en el documento contra el CSV. Correrlo tras tocar
   cifras: al 17-ago-2026 pasa completo.
+- **Auditoría externa con IA (17-ago-2026).** Se pasó el informe por dos modelos
+  con `docs/prompt-auditoria.md`. Correcciones aplicadas: CU-06 ya no dice que el
+  CO₂ se persiste al entregar (se calcula al aceptar, coincide con el código y con
+  la Fig. de secuencia); RF-MAT-02 explicita el **15 %** de desvío; RF-MAT-03 aclara
+  que el listado se ordena por el puntaje de RF-MAT-01 (ese es el uso operativo del
+  scoring: el ranking de transportistas es admin-only); RF-SHP-04 separa monto
+  retenido / comisión / saldo liberado; la tabla de entidades aclara que el destino
+  del Trayecto es nulo en la ventana dedicada; el DER pasa a **0..1** del lado Envío
+  en la relación con Clasificación (la clasificación existe antes que el envío); el
+  modelo `.keras` deja de ser `c4ext` y se dibuja como artefacto interno (`c4store`);
+  el FODA deja de listar datos propios como oportunidades **externas**; y se dejó de
+  afirmar que la brecha WTP/WTA «valida la viabilidad económica» (resumen, abstract
+  y conclusión) — ahora es «compatibilidad preliminar», pendiente del análisis de
+  costos.
+  - **Rechazado a propósito:** el ±8,5 % de margen de error del Cap. 3 es texto del
+    25% ya entregado y el propio párrafo aclara que el objetivo es exploratorio y
+    no estimar la población; no se toca.
+  - **Corrección revertida:** la auditoría sugirió detallar en RF-SHP-04 el reparto
+    entre comisión y saldo del transportista. **No se hace**: el pago es simulado
+    en el MVP (no se integra pasarela) y la comisión se define recién con el
+    análisis económico. RF-SHP-04 quedó como retención en garantía + liberación a
+    la entrega, sin nombrar la comisión, y el FODA dice «margen disponible para la
+    plataforma». La única mención que sobrevive es el hallazgo 5 del Cap. 3
+    («no tolera comisiones altas»), que es texto del 25% ya entregado.
 - **Rúbrica del 50% (ago-2026).** Los ejemplos entre paréntesis de la rúbrica son
   ilustrativos («etc.»): NO hacen falta matriz BCG (se compara un portafolio y
   DePaso es producto único preoperativo) ni triple P (no se hizo análisis

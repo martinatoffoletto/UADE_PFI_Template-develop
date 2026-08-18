@@ -54,7 +54,7 @@ Los requerimientos funcionales se agrupan por subsistema y se presentan ordenado
     RF-SHP-01 & Crear una solicitud de envío indicando origen, destino, categoría de carga, modalidad y una descripción del contenido. \\
     RF-SHP-02 & Cotizar el envío por anticipado exponiendo los tres niveles tarifarios (inmediato, programado y colaborativo), el ahorro estimado de CO\textsubscript{2} y la cantidad de trayectos colaborativos compatibles disponibles en ese momento. \\
     RF-SHP-03 & Permitir el ingreso manual de la categoría de carga como alternativa a la clasificación automática. \\
-    RF-SHP-04 & Registrar el pago simulado del envío reteniendo la comisión de la plataforma (esquema de garantía). \\
+    RF-SHP-04 & Registrar el pago del envío bajo un esquema de garantía: el monto queda retenido desde la confirmación y se libera al transportista al concretarse la entrega. El pago se simula en el prototipo; la integración con una pasarela real queda fuera del alcance de esta etapa. \\
     RF-SHP-05 & Gestionar el ciclo de vida del envío mediante una máquina de estados con transiciones válidas. \\
     RF-SHP-06 & Consultar el detalle y el historial de los envíos propios. \\
     RF-SHP-07 & Cancelar un envío, revirtiendo el pago según su estado. \\
@@ -72,8 +72,8 @@ Los requerimientos funcionales se agrupan por subsistema y se presentan ordenado
     \midrule
     \multicolumn{2}{l}{\textbf{Asignación inteligente (RF-MAT)}} \\
     RF-MAT-01 & Ordenar a los transportistas candidatos de un envío según un puntaje multivariable. \\
-    RF-MAT-02 & Aplicar filtros duros de compatibilidad (vehículo/carga, capacidad y desvío máximo) antes del puntaje. \\
-    RF-MAT-03 & Generar, para cada transportista, el listado de pedidos compatibles con su trayecto o disponibilidad. \\
+    RF-MAT-02 & Aplicar filtros duros de compatibilidad antes del puntaje: correspondencia entre vehículo y categoría de carga, capacidad disponible suficiente y desvío no superior al 15\,\% del trayecto original del transportista. \\
+    RF-MAT-03 & Generar, para cada transportista, el listado de pedidos compatibles con su trayecto o disponibilidad, ordenado por el mismo puntaje de RF-MAT-01. \\
     \midrule
     \multicolumn{2}{l}{\textbf{Clasificación de la carga (RF-VIS)}} \\
     RF-VIS-01 & Clasificar automáticamente la carga en una categoría volumétrica a partir de una fotografía. \\
@@ -314,7 +314,7 @@ El caso CU-02 no aparece asociado al remitente ni al transportista porque el ord
     \begin{enumerate}[leftmargin=2em]
         \item El transportista publica periódicamente su posición durante el envío (RF-TRK-01).
         \item El remitente consulta la ubicación del envío, que se actualiza de forma continua (RF-TRK-02).
-        \item Al registrarse la entrega, el sistema libera el pago retenido al transportista y persiste el ahorro de CO\textsubscript{2} de la operación (RF-SHP-05, RF-CO2-01).
+        \item Al registrarse la entrega, el sistema libera el pago retenido al transportista. El ahorro de CO\textsubscript{2} ya fue calculado y persistido al aceptarse el envío, cuando se conocen el trayecto y el vehículo del transportista (RF-SHP-05, RF-CO2-01).
         \item Cada parte califica a la otra con una puntuación y un comentario opcional; el sistema actualiza la reputación acumulada, que retroalimenta futuras asignaciones (RF-SHP-08, RF-MAT-01).
     \end{enumerate}
     \item \textbf{Flujos alternativos}:
