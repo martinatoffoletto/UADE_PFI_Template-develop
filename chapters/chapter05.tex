@@ -244,15 +244,15 @@ En el núcleo del componente de inteligencia artificial se emplea aprendizaje po
 
 El diseño de la interfaz traduce los casos de uso del Capítulo~\ref{cap:requerimientos} en pantallas concretas. Se organiza en torno a los dos frentes de la solución: la aplicación móvil, que cubre los flujos del remitente y del transportista, y el panel web, orientado a la gestión de las PyMEs y a la administración de la plataforma. Los criterios que guían el diseño responden a los requerimientos no funcionales de usabilidad (RNF-UX-01) y a los hallazgos de la investigación de usuarios: transparencia del precio antes de confirmar, visibilidad del desvío y de la ganancia para el transportista, y presencia del dato ambiental sin que interfiera con la decisión principal.
 
-Las Figuras~\ref{fig:mockup-remitente} y~\ref{fig:mockup-transportista} presentan las pantallas centrales de la aplicación móvil, y la Figura~\ref{fig:mockup-panel} las del panel web.
+Las Figuras~\ref{fig:mockup-remitente} y~\ref{fig:mockup-transportista} presentan las pantallas centrales de la aplicación móvil, y las Figuras~\ref{fig:mockup-panel} y~\ref{fig:mockup-admin} las del panel web.
 
 \begin{figure}[H]
     \centering\color{nuevo}
-    \marcador[0.30\textwidth]{6.5cm}{Solicitud de envío:\\ origen, destino\\ y fotografía}
+    \mockup{0.30\textwidth}{figures/mockup-solicitud}
     \hfill
-    \marcador[0.30\textwidth]{6.5cm}{Cotización:\\ tres tarifas\\ y CO\textsubscript{2} estimado}
+    \mockup{0.30\textwidth}{figures/mockup-cotizacion}
     \hfill
-    \marcador[0.30\textwidth]{6.5cm}{Seguimiento\\ del envío\\ en curso}
+    \mockup{0.30\textwidth}{figures/mockup-seguimiento}
     \caption{Aplicación móvil: flujo del remitente}
     \label{fig:mockup-remitente}
 \end{figure}
@@ -261,27 +261,41 @@ El flujo del remitente prioriza que el precio y la categoría de carga queden re
 
 \begin{figure}[H]
     \centering\color{nuevo}
-    \marcador[0.30\textwidth]{6.5cm}{Publicación\\ del trayecto\\ habitual}
+    \mockup{0.30\textwidth}{figures/mockup-trayecto}
     \hfill
-    \marcador[0.30\textwidth]{6.5cm}{Listado de pedidos\\ compatibles con\\ desvío y ganancia}
+    \mockup{0.30\textwidth}{figures/mockup-oferta}
     \hfill
-    \marcador[0.30\textwidth]{6.5cm}{Envío en curso:\\ estados y\\ entrega}
+    \mockup{0.30\textwidth}{figures/mockup-encurso}
     \caption{Aplicación móvil: flujo del transportista}
     \label{fig:mockup-transportista}
 \end{figure}
 
-El flujo del transportista se apoya en la distinción entre conductor ocasional y repartidor dedicado: la pantalla de publicación del trayecto está pensada para declararse una vez y repetirse, y el listado de pedidos muestra el desvío y la ganancia estimada de cada oferta, los dos datos que la investigación de usuarios identificó como determinantes de la decisión de aceptar.
+El flujo del transportista se apoya en la distinción entre conductor ocasional y repartidor dedicado: la pantalla de publicación del trayecto está pensada para declararse una vez y repetirse. Cada oferta se presenta encabezada por la ganancia y la distancia al retiro ---el desvío, en las ofertas colaborativas---, los datos que la investigación de usuarios identificó como determinantes de la decisión de aceptar, junto con la descripción de la carga y su valor declarado, que responden a la preocupación por la responsabilidad relevada en las entrevistas. Durante el envío en curso, la aplicación transmite la posición y expone el hito siguiente, además de la opción de darse de baja advirtiendo su efecto sobre la reputación (RF-CAR-08).
 
 \begin{figure}[H]
     \centering\color{nuevo}
-    \marcador[0.46\textwidth]{6cm}{Panel de la PyME:\\ envíos programados\\ y finanzas}
-    \hfill
-    \marcador[0.46\textwidth]{6cm}{Panel de administración:\\ monitoreo operativo\\ y validación de transportistas}
-    \caption{Panel web: gestión de PyMEs y administración}
+    \mockup{\textwidth}{figures/mockup-pyme}
+    \caption{Panel web de la organización: resumen operativo y finanzas}
     \label{fig:mockup-panel}
 \end{figure}
 
+\begin{figure}[H]
+    \centering\color{nuevo}
+    \mockup{\textwidth}{figures/mockup-admin}
+    \caption{Panel web de administración: monitoreo operativo y pesos del algoritmo de asignación}
+    \label{fig:mockup-admin}
+\end{figure}
+
 El panel web concentra las tareas que requieren una vista de conjunto y resultan incómodas en una pantalla pequeña: la programación de envíos de la organización, el seguimiento de sus finanzas y, del lado de la administración, el monitoreo operativo y la validación de los transportistas.
+
+Por último, la Figura~\ref{fig:mockup-cierre} muestra la pantalla de impacto ambiental, que materializa un requerimiento cuyo valor no se percibe durante el envío sino después de él: presenta el CO\textsubscript{2} acumulado del usuario traducido a equivalencias comprensibles y explicita el contrafactual con el que se calcula, el viaje dedicado que no llegó a ocurrir (RF-CO2-01, RF-CO2-02). Situar el dato ambiental en una pantalla propia, y no en el flujo de solicitud, responde al hallazgo de que se trata de un diferencial valorado pero no determinante de la decisión.
+
+\begin{figure}[H]
+    \centering\color{nuevo}
+    \mockup{0.34\textwidth}{figures/mockup-impacto}
+    \caption{Aplicación móvil: impacto ambiental acumulado y su cálculo contrafactual}
+    \label{fig:mockup-cierre}
+\end{figure}
 
 % ═════════════════════════════════════════════════════════════════════════════
 \section{Modelo de datos}
@@ -411,34 +425,19 @@ A la fecha de esta entrega se entrenó una primera versión del clasificador med
 % ═════════════════════════════════════════════════════════════════════════════
 \section{Avance de la implementación}
 
-% ═══════════════════════════════════════════════════════════════════════════
-% PENDIENTE DE COMPLETAR
-% Reemplazar cada \marcador por la captura real correspondiente:
-%   \includegraphics[width=...]{figures/demo-NOMBRE}
-% Sugerencias de capturas: pantalla de la app móvil corriendo (solicitud de
-% envío o listado de pedidos), panel web con datos, documentación interactiva
-% de la API (/docs) y salida de la corrida de pruebas automatizadas.
-% ═══════════════════════════════════════════════════════════════════════════
-
-Al momento de esta entrega, el prototipo presenta avances verificables en sus tres frentes. El backend implementa los módulos de dominio descritos en la Figura~\ref{fig:c4-componentes} —autenticación, usuarios, transportistas, envíos, trayectos, asignación, visión, seguimiento, impacto ambiental, organizaciones y administración— con su documentación interactiva autogenerada (RNF-MNT-03) y el conjunto de pruebas automatizadas por módulo y de integración de punta a punta descrito en la sección precedente. El algoritmo de asignación opera con el filtro duro de desvío y los pesos configurables desde administración (RF-ADM-03), y el clasificador de carga cuenta con la primera versión entrenada ya mencionada, integrada a la API. La aplicación móvil y el panel web se encuentran en desarrollo sobre esa misma API, cubriendo los flujos de solicitud de envío, publicación de trayecto, listado de pedidos compatibles y monitoreo. Las Figuras~\ref{fig:demo-api} y~\ref{fig:demo-clientes} documentan este avance.
+Al momento de esta entrega, el prototipo presenta avances verificables en sus tres frentes. El backend implementa los módulos de dominio descritos en la Figura~\ref{fig:c4-componentes} —autenticación, usuarios, transportistas, envíos, trayectos, asignación, visión, seguimiento, impacto ambiental, organizaciones y administración— con su documentación interactiva autogenerada (RNF-MNT-03) y el conjunto de pruebas automatizadas por módulo y de integración de punta a punta descrito en la sección precedente. El algoritmo de asignación opera con el filtro duro de desvío y los pesos configurables desde administración (RF-ADM-03), y el clasificador de carga cuenta con la primera versión entrenada ya mencionada, integrada a la API. La aplicación móvil y el panel web se encuentran en desarrollo sobre esa misma API: las capturas de las Figuras~\ref{fig:mockup-remitente} a~\ref{fig:mockup-cierre}, tomadas de la aplicación en ejecución contra el backend real, documentan los flujos ya operativos de solicitud de envío, clasificación de la carga, cotización, publicación de trayecto, aceptación de pedidos, seguimiento del envío, impacto ambiental acumulado y monitoreo desde el panel web. Las Figuras~\ref{fig:demo-api} y~\ref{fig:demo-tests} completan ese panorama del lado del servidor.
 
 \begin{figure}[H]
     \centering\color{nuevo}
-    \marcador[0.46\textwidth]{5.5cm}{Captura: documentación\\ interactiva de la API\\ con los módulos del sistema}
-    \hfill
-    \marcador[0.46\textwidth]{5.5cm}{Captura: corrida de las\\ pruebas automatizadas\\ del backend}
-    \caption{Avance del backend: API documentada y pruebas automatizadas}
+    \mockup{\textwidth}{figures/demo-api}
+    \caption{Documentación interactiva de la API, generada automáticamente a partir del código (RNF-MNT-03)}
     \label{fig:demo-api}
 \end{figure}
 
 \begin{figure}[H]
     \centering\color{nuevo}
-    \marcador[0.30\textwidth]{6cm}{Captura: app móvil\\ (flujo de solicitud\\ de envío)}
-    \hfill
-    \marcador[0.30\textwidth]{6cm}{Captura: app móvil\\ (listado de pedidos\\ del transportista)}
-    \hfill
-    \marcador[0.30\textwidth]{6cm}{Captura: panel web\\ (monitoreo /\\ organizaciones)}
-    \caption{Avance de las aplicaciones cliente sobre la API}
-    \label{fig:demo-clientes}
+    \mockup{\textwidth}{figures/demo-tests}
+    \caption{Ejecución del conjunto de pruebas automatizadas (RNF-MNT-02)}
+    \label{fig:demo-tests}
 \end{figure}
 }% <<< FIN CONTENIDO NUEVO (entrega 50%) >>>

@@ -479,6 +479,81 @@ sin pagar igual aparece en el feed.
 
 ---
 
+## Mejoras para la próxima etapa (post-50%)
+
+Lista consolidada (17-ago-2026), ordenada por prioridad. Es un MVP: nada de esto
+bloquea la entrega del 50%.
+
+| # | Mejora | Costo | Prio |
+|---|---|---|---|
+| 1 | **El feed muestra envíos impagos**: el matching no filtra por `payment_status`, contradice CU-01 alt. 5a | 1 línea en `matching/service.py` | Alta |
+| 2 | **Códigos `RF-*` del código desalineados** con el Cap. 4: el código usa `RF-CAR-07` para la penalización (informe: `RF-CAR-08`) y cita un `RF-MAT-05` inexistente. La numeración válida es la del Cap. 4 | ~30 min de grep | Alta |
+| 3 | **Correr el test set** (`evaluate_bias.py` en Colab) antes de comprometer cifras: el objetivo del Cap. 1 (≥70 %) está declarado sobre prueba y nunca se evaluó | 1 corrida | Alta |
+| 4 | **Fotos propias con la botella de 500 ml** para que `ref_flag` aprenda algo (hoy el WARNING del train indica que no aporta) | sesión de fotos | Media |
+| 5 | **Calificación bidireccional** (decidido): quitar `uq_rating_shipment` → único por (shipment, rol), endpoint carrier→cliente, escribir `User.rating` | ~1 día | Media |
+| 6 | **`Classification` no guarda la ruta de la imagen**: agregar la columna convierte esa tabla en dataset de reentrenamiento listo (hoy habría que cruzar por `shipment_id`, que suele ser NULL) | 2 líneas | Media |
+| 7 | **CO₂ recalculado en la entrega con trazas GPS reales** (decidido) + actualizar párrafo y figura de secuencia del Cap. 5 que hoy dicen «al aceptar» | ~1 día | Media |
+| 8 | **Push real** (Expo push) para que CU-04 «el sistema comienza a evaluar» sea literal; hoy es polling del cliente | ~1 día | Media |
+| 9 | **Escalada de precio si nadie acepta** (ver §Pricing): destraba el envío huérfano en `pending` y genera los datos de elasticidad | ~2 días | Media |
+| 10 | Tracking por polling 15 s → SSE/WebSocket desde FastAPI | ~1 día | Baja |
+| 11 | `create_all()` sin migraciones: OK para MVP; introducir Alembic recién si hay datos en producción | — | Baja |
+| 12 | **Cursivas RAE en extranjerismos del texto del 25%** (~15 casos de *matching/tracking/scoring/dataset* en redonda): pasada global recién en la **entrega final**, cuando el diff ya no importe | 10 min | Baja |
+
+**Eventos / Kafka — evaluado y descartado (17-ago-2026).** Kafka no se justifica:
+(a) contradice la justificación escrita del monolito modular (Cap. 5); (b) rompe
+RNF-INF-01 (85 USD); (c) hay un solo consumidor. `ShipmentEvent` ya es un log de
+eventos de dominio (auditoría con actor, marca temporal y ubicación) sin broker.
+Evolución honesta y en orden de costo: Expo push (#8) → SSE (#10) → Redis Streams
+si hiciera falta una cola → Kafka solo si algún día se extraen microservicios.
+
+## Mockups (Cap. 5 §Diseño de la interfaz) — mapeo marcador ↔ pantalla real
+
+Los 8 `\marcador` tienen pantalla ya construida; la recomendación es **capturas
+reales de la app, no Figma** (la rúbrica acepta «wireframes **o pantallas** claras
+y significativas del frontend», y las mismas capturas sirven para la fila Demo):
+
+| Marcador | Pantalla real |
+|---|---|
+| Solicitud: origen, destino y fotografía | `send-flow/AddressScreen` + `PackageScreen` |
+| Cotización: tres tarifas y CO₂ | `send-flow/RouteOfferScreen` (+ `ProductOptionCard`) |
+| Seguimiento del envío en curso | `ShipmentsScreen` + `LiveShipmentCard`/`ShipmentDetailModal` |
+| Publicación del trayecto habitual | `carrier/PublishTripScreen` |
+| Listado de pedidos con desvío y ganancia | feed en `RiderHomeScreen` + `IncomingOfferModal` |
+| Envío en curso: estados y entrega | `CarrierShipmentsScreen` / `ActiveJobPanel` |
+| Panel PyME: envíos y finanzas | `depaso_web` `features/dashboard`+`shipments`+`finance` |
+| Panel admin: monitoreo y validación | `depaso_web` `features/admin` |
+
+**Estado (17-ago-2026).** Las capturas viven en `docs/mockups/` (16 pantallas; las
+que empiezan con `T_`/`t_` son del transportista). **Ya insertadas** —copiadas a
+`figures/`, redimensionadas a 620 px de ancho:
+
+| Figura | Archivo en `figures/` | Origen |
+|---|---|---|
+| Solicitud (foto + categoría IA + descripción) | `mockup-solicitud.png` | `fotopaquete.png` |
+| Cotización (Ya/Hoy/De paso + CO₂) | `mockup-cotizacion.png` | `tiposenvios.png` |
+| Seguimiento del envío | `mockup-seguimiento.png` | `misenvios.png` |
+| Publicación del trayecto | `mockup-trayecto.png` | `t_publicarviaje.png` |
+
+**Faltan 4** (las autoras las rehacen): listado de pedidos con desvío y ganancia
+(la captura actual tiene el feed vacío: «Buscando pedidos…»), envío en curso del
+transportista, y las dos del panel web (PyME y admin).
+
+Se usa el comando **`\mockup{ancho}{ruta}`** (definido en `main.tex`): pone borde
+fino y alinea al tope para convivir en la misma fila con los `\marcador` que
+faltan. Los marcadores móviles se subieron a `9.5cm` de alto para que la fila
+quede pareja con las capturas ya puestas.
+
+**Decisión de las autoras:** las direcciones ficticias / de San Francisco que
+aparecen en algunas capturas del transportista **no se corrigen** — son pantallas
+de diseño, no evidencia del funcionamiento real. No volver a plantearlo.
+
+Sin usar todavía, pero buenos: `T_inicio.png` (comunica la filosofía OD: «listo
+cuando vos quieras», «publicar un viaje que voy a hacer igual») e
+`impactoambiental.png` (RF-CO2-02, hoy sin figura). Se podría ampliar la figura
+del transportista a cuatro pantallas.
+
+---
+
 ## Pricing — decisiones abiertas
 
 > **EN ANÁLISIS.** Nada de esto está implementado ni prometido en el informe.

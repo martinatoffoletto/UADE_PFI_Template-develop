@@ -160,6 +160,20 @@
     \end{tikzpicture}%
 }
 
+% Captura de pantalla de la app, con un borde fino que la delimita del fondo
+% de la p\'agina. Alineada al tope para que conviva en la misma fila con los
+% \marcador que a\'un esperan material.
+%   Uso: \mockup{ancho}{ruta/sin/extension}
+% El ancho pedido incluye el marco: se descuentan el grosor y el padding del
+% \fcolorbox para que \mockup{\textwidth}{...} no se pase del margen.
+\newcommand{\mockup}[2]{%
+    \raisebox{0pt}[\height][0pt]{%
+        \fcolorbox{black!30}{white}{%
+            \includegraphics[width=\dimexpr#1-2\fboxsep-2\fboxrule\relax]{#2}%
+        }%
+    }%
+}
+
 % TikZ para los diagramas del dise\~no (C4, casos de uso, secuencia, despliegue, DER)
 \usepackage{tikz}
 \usetikzlibrary{positioning, arrows.meta, shapes.geometric, shapes.multipart, fit, backgrounds, calc}
