@@ -12,13 +12,11 @@ Se identifican cuatro actores que interactúan con la plataforma:
 \begin{itemize}[leftmargin=2em]
     \item \textbf{Remitente}: cliente particular, comercio o PyME que solicita un envío. Publica la carga, recibe una cotización y elige la modalidad.
     \item \textbf{Transportista}: persona que registra su trayecto habitual o su disponibilidad y transporta envíos compatibles con su recorrido. Puede operar con distintos tipos de movilidad.
-    \item \textbf{PyME / organización}: entidad que agrupa a uno o varios usuarios y, opcionalmente, una flota de transportistas; programa envíos y consulta sus finanzas.
+    \item \textbf{PyME / organización}: cuenta empresarial que agrupa a varios usuarios habilitados para operar en su nombre, con roles diferenciados de administración. Adopta uno de dos tipos. La \emph{organización comercio} programa y paga los envíos de la empresa, y administra qué usuarios pueden hacerlo. La \emph{organización fletera} administra una flota propia de transportistas, a los que da de alta y de baja. En ambos casos dispone de una vista de finanzas que distingue el dinero invertido en envíos del generado por su flota.
     \item \textbf{Administrador}: valida transportistas, modera la operación y ajusta los parámetros del sistema.
 \end{itemize}
 
 Un mismo usuario puede desempeñar simultáneamente los roles de remitente y transportista.
-
-Los tres componentes automáticos del proyecto —la clasificación de la carga, el ordenamiento por \emph{matching} y el cálculo del impacto ambiental— no se modelan como un actor. Un actor, por definición, es una entidad externa al sistema, y estos procesos se ejecutan dentro de él: en todos los casos son disparados por alguno de los cuatro actores anteriores como parte de un caso de uso, y así se representan.
 
 % ═════════════════════════════════════════════════════════════════════════════
 \section{Requerimientos funcionales}
@@ -53,7 +51,7 @@ Los requerimientos funcionales se agrupan por subsistema y se presentan ordenado
     RF-USR-07 & Permitir que el administrador valide y habilite a los transportistas, requisito para poder aceptar envíos. \\
     \midrule
     \multicolumn{2}{l}{\textbf{Envíos (RF-SHP)}} \\
-    RF-SHP-01 & Crear una solicitud de envío indicando origen, destino, categoría de carga y modalidad. \\
+    RF-SHP-01 & Crear una solicitud de envío indicando origen, destino, categoría de carga, modalidad y una descripción del contenido. \\
     RF-SHP-02 & Cotizar el envío por anticipado exponiendo los tres niveles tarifarios (inmediato, programado y colaborativo), el ahorro estimado de CO\textsubscript{2} y la cantidad de trayectos colaborativos compatibles disponibles en ese momento. \\
     RF-SHP-03 & Permitir el ingreso manual de la categoría de carga como alternativa a la clasificación automática. \\
     RF-SHP-04 & Registrar el pago simulado del envío reteniendo la comisión de la plataforma (esquema de garantía). \\
@@ -208,11 +206,11 @@ El caso CU-02 no aparece asociado al remitente ni al transportista porque el ord
     \item \textbf{Flujo principal}:
     \begin{enumerate}[leftmargin=2em]
         \item El remitente indica el origen y el destino del envío.
-        \item El remitente fotografía el paquete; el sistema clasifica la carga (CU-03) o el remitente ingresa la categoría manualmente (RF-SHP-03).
+        \item El remitente fotografía el paquete y acompaña la fotografía con una descripción de su contenido; el sistema clasifica la carga (CU-03) o el remitente ingresa la categoría manualmente (RF-SHP-03).
         \item El sistema cotiza el envío exponiendo los tres niveles tarifarios, el ahorro estimado de CO\textsubscript{2} y los trayectos colaborativos compatibles disponibles en ese momento (RF-SHP-02, RF-CO2-01).
-        \item El remitente elige la modalidad y confirma la solicitud (RF-SHP-01).
-        \item El remitente abona el envío; el sistema retiene el monto bajo un esquema de garantía (RF-SHP-04).
-        \item El sistema crea el envío en estado \emph{pendiente} e inicia la asignación (CU-02).
+        \item El remitente elige la modalidad y confirma la solicitud; el sistema crea el envío en estado \emph{pendiente} (RF-SHP-01).
+        \item El remitente abona el envío ya creado; el sistema retiene el monto bajo un esquema de garantía (RF-SHP-04).
+        \item El envío queda disponible para los transportistas cuyo trayecto resulte compatible (CU-02).
     \end{enumerate}
     \item \textbf{Flujos alternativos}:
     \begin{itemize}[leftmargin=2em]

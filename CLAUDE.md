@@ -360,6 +360,173 @@ Construidas a partir de la investigación de usuarios ya cerrada; no quedan pend
 
 ---
 
+## Clasificador de carga — estado y decisiones abiertas
+
+> **Todo lo de esta sección SIGUE EN ANÁLISIS.** Nada está decidido ni
+> comprometido en el informe. Anotado el 17-ago-2026 para no perder el hilo.
+
+**Estado real del modelo.** `cargo_classifier_v1.keras` (20-jul-2026): MobileNetV2
++ GAP + `concat(ref_flag)` + Dense(128) + Dropout(0,3) + Dense(4). Dataset de
+1.079 imágenes, split 755/162/162, **66,05 % de accuracy en validación**. El
+**conjunto de prueba nunca se evaluó** (sigue congelado): correr
+`python evaluate_bias.py --data-dir dataset/ --model-dir models/` en Colab —el
+dataset no está en el repo, vive en Drive—. Ojo: el objetivo del Cap. 1 está
+declarado **sobre el conjunto de prueba**, así que hasta correrlo no se sabe si
+se cumple.
+
+**Objetivo declarado (ya actualizado en el Cap. 1):** accuracy ≥ **70 %** sobre
+test + los errores concentrados en **categorías adyacentes**. Se sacó la
+justificación anterior («supera la línea base aleatoria del 25 %», que es
+defenderse contra el azar) y se reemplazó por dos razones de dominio: la
+ambigüedad intrínseca de estimar volumen desde una imagen 2D
+\parencite{NaumannEtAl2023} y el carácter *human-in-the-loop* del sistema
+(RF-VIS-02 deriva a manual con baja confianza; RF-SHP-03 permite carga manual).
+
+**Debilidad metodológica detectada.** Hoy la etiqueta se deriva del **tipo de
+objeto**, no del tamaño: `CATEGORY_TO_OI_CLASSES` mapea `Suitcase→l`,
+`Furniture→xl`, etc. Esa asignación la decidió el equipo, no el dato. Consecuencia:
+el modelo es un reconocedor de objetos con una tabla de conversión pegada — no
+mide nada. Bajo `Furniture` entra tanto una mesita como un ropero.
+
+**Datasets candidatos (EN ANÁLISIS, no adoptados).** Ambos traen medidas reales,
+lo que permitiría derivar la categoría del volumen en vez del tipo de objeto:
+- **Objectron** (Google, github.com/google-research-datasets/Objectron): 15 k
+  videos / 4 M imágenes anotadas con caja 3D (alto × ancho × profundidad reales).
+  Categorías: bikes, books, bottles, cameras, cereal boxes, chairs, cups, laptops,
+  shoes. **Fotos de celular en entornos reales, 10 países** → mismo dominio que la
+  app. Le falta el rango XL (no hay camas, sofás, heladeras).
+- **ABO — Amazon Berkeley Objects** (amazon-berkeley-objects.s3.amazonaws.com):
+  147.702 productos con **dimensiones y peso** en metadata + 398.212 imágenes, y
+  `description` / `product_type` / `material` → material para el multimodal sin
+  inventar texto. Cubre XL. Contras: fotos de **catálogo** (fondo blanco, estudio)
+  → *domain shift* respecto de la foto real; licencia **CC BY-NC** (uso académico
+  OK, hay que declararla).
+- Ninguno alcanza solo; la idea sería combinarlos con los dos actuales.
+- Si se avanza, el entregable fuerte para la defensa es la **comparación**
+  etiquetado-por-tipo-de-objeto vs. etiquetado-por-dimensiones-reales sobre el
+  mismo test.
+
+**Objeto de referencia.** El informe dice «objeto de referencia» en genérico
+(RF-VIS-03, CU-03), **nunca nombra uno concreto** → se puede cambiar sin tocar el
+documento. Decisión de las autoras: botella **de 500 ml**, aclarando el tamaño.
+Nota técnica: una tarjeta tipo DNI sería geométricamente superior (plana,
+rectangular, tamaño normado ISO/IEC 7810 → permite rectificar perspectiva), pero
+la botella se ve mejor en cargas grandes. **Lo crítico es que el objeto sea el
+mismo en el dataset de entrenamiento y en producción**: hoy `train_classifier.py`
+emite un WARNING porque casi no hay imágenes con `ref_flag=1`, así que la entrada
+de referencia probablemente **no está aportando nada** todavía.
+
+**Multimodal (imagen + descripción) — a futuro.** La app ya guarda `description`
+en `shipments` y `labels.csv` ya tiene la columna `objeto`; el modelo ya es
+multi-entrada, así que sumar un brazo de texto es trivial en código. Dos riesgos:
+(1) **fuga de etiqueta** — si se rellena `objeto` con la clase de Open Images de
+la que se bajó la imagen, el texto *es* la etiqueta y el accuracy sería ficticio;
+(2) el texto de entrenamiento tiene que parecerse al que escribe un usuario real,
+no a una etiqueta limpia. Alternativa de bajo riesgo: fusión tardía (el texto
+desempata solo cuando la confianza de la imagen es baja). Fundamento: el texto
+resuelve la ambigüedad de escala que la foto no puede resolver («heladera» da el
+volumen; la imagen sola, no).
+
+---
+
+## Casos de uso ↔ código: pendientes de implementar
+
+Auditoría del 17-ago-2026 de los CU del Cap. 4 contra el código. Se corrigió en el
+informe el **orden de creación y pago** (CU-01: el envío se crea primero, `POST
+/shipments`, y recién después se paga, `POST /shipments/{id}/pay`; el texto decía
+lo inverso). Los tres puntos siguientes **quedan declarados en el informe y hay que
+implementarlos** — decisión de las autoras, porque son coherentes con el diseño:
+
+1. **Calificación bidireccional** (CU-06 paso 4, RF-SHP-08, y `CLAUDE.md` del
+   proyecto: «ambos roles se califican mutuamente»). Hoy solo el cliente califica
+   al transportista: `rate_shipment` exige `shipment.client_id == client_id` y el
+   modelo `Rating` tiene `UniqueConstraint("shipment_id")`, que **impide una
+   segunda calificación por envío**. Para implementarlo: quitar/ampliar ese
+   constraint (p. ej. único por `(shipment_id, rater_role)`), agregar el endpoint
+   para que el transportista califique, y **actualizar `User.rating`**, que hoy
+   existe en la tabla, arranca en 5.0 y no se escribe nunca. Respaldo en las
+   entrevistas: E5 teme la acusación falsa del destinatario; E1 señaló que las
+   plataformas evalúan el producto y no el transporte.
+
+2. **Persistir el CO₂ en la entrega** (CU-06 paso 3). Hoy se calcula y guarda en
+   `accept_shipment` —ahí se conocen trayecto y vehículo— y `_on_delivered` solo
+   libera el pago. **Ojo:** el Cap. 5 tiene un párrafo y el diagrama de secuencia
+   que explican *deliberadamente* que el valor definitivo se fija al aceptar. Si se
+   pasa a persistir también en la entrega, hay que decidir qué se guarda —lo
+   razonable es **recalcular con el recorrido real de las trazas GPS**, que es más
+   preciso que el trayecto planificado— y **actualizar ese párrafo y la
+   Figura del diagrama de secuencia**, que hoy dicen lo contrario.
+
+3. **Evaluación proactiva al publicar un trayecto** (CU-04 paso 3 y CU-02 alt. 1a:
+   «el sistema comienza a evaluar los envíos pendientes compatibles»). Hoy
+   `publish_route` solo publica; no hay scheduler ni background job y el matching
+   corre **cuando el transportista abre su feed** (pull, no push). Matiz
+   importante: el comportamiento observable ya existe —`useShipmentNotifications`
+   hace `setInterval` sobre `getFeed()` y avisa de ofertas nuevas—, así que para el
+   usuario el sistema «le avisa». Lo que falta para que el CU sea literal es que el
+   disparo venga del servidor, y eso exige infraestructura de push que hoy no hay.
+
+**Verificado y correcto** (no tocar): todas las validaciones de CU-05
+(`is_verified`, `is_active`, compatibilidad vehículo-carga, XL nunca colaborativo,
+capacidad, reserva total del vehículo en dedicado por RF-CAP-02), CU-03 completo
+(incluido el registro de RF-VIS-04 y el fallback a manual), filtros duros y scoring
+de CU-02, tracking de CU-06, y las dos citas de RNF-AVL-01 (está redactado en
+genérico, cubre tanto el ruteo caído como el modelo no disponible).
+
+**Detectado, sin resolver:** CU-01 alt. 5a dice que un envío impago «no se ofrece a
+los transportistas», pero el matching **no filtra por `payment_status`** — un envío
+sin pagar igual aparece en el feed.
+
+---
+
+## Pricing — decisiones abiertas
+
+> **EN ANÁLISIS.** Nada de esto está implementado ni prometido en el informe.
+> Anotado el 17-ago-2026.
+
+**Cómo cotiza hoy.** `shipments/pricing.py`: tarifa base por categoría
+(s 300 / m 380 / l 520 / xl 900) con descuentos **fijos** —`COLLABORATIVE_DISCOUNT
+= 0.43`, `SCHEDULED_DISCOUNT = 0.18`— y comisión `PLATFORM_COMMISSION_RATE = 0.15`.
+El propio código marca el 18 % como **`To calibrate`** y el 43 % como
+«consistent with survey ranges»: son valores elegidos a ojo, no calibrados.
+
+**Escalada de precio si nadie acepta (idea de las autoras, buena).** No confundir
+con *surge pricing*: el surge es **predictivo** (necesita histórico de demanda, por
+eso el FODA lo declara como debilidad); la escalada es **reactiva** (solo observa
+que pasaron N minutos sin aceptación) y **no necesita datos históricos**, así que
+es implementable desde el día uno. Diseño propuesto:
+- El remitente ve el rango completo al publicar («desde $X, hasta un máximo de $Y
+  si nadie lo toma en 15 min») y **aprueba el techo** → no rompe la transparencia
+  del precio (hallazgo 1: 75 % elige por costo, precio antes de confirmar).
+- Escalones chicos y temporizados, 2–3 como máximo.
+- **El incremento va íntegro al transportista, no a la comisión** (si no, parece
+  que la plataforma gana cuando el usuario espera).
+- Formularlo como «precio garantizado hasta $Y», no «puede subir».
+- Es una subasta ascendente con incrementos temporizados (tiene literatura).
+- Beneficio secundario fuerte: **genera los datos de elasticidad que hoy no
+  existen** (a qué escalón se aceptó, en qué zona y horario), que son justamente
+  los que Oyama & Akamatsu señalan como requisito del pricing dinámico. El
+  mecanismo simple arranca al complejo.
+
+**Relevar precios de fletes reales para calibrar.** Es benchmarking de mercado,
+**no** user research (no reabre la investigación de usuarios). Cuidado con la
+inflación: un precio absoluto relevado envejece en semanas. Usarlo para fijar la
+**relación** (cuánto más barato es colaborativo vs. flete tradicional) e indexar
+el valor absoluto con el **Índice de Costos Logísticos de CEDOL**, que ya está
+citado en la introducción (`CEDOL2025`) — así el pricing queda anclado a una
+fuente de la bibliografía y se actualiza solo.
+
+**FODA (ya ajustado en el Cap. 2).** La debilidad «cobertura ante daños» **no se
+saca** por declararse intermediaria: el encuadre jurídico delimita la
+responsabilidad de la plataforma pero **traslada el riesgo al transportista**, y
+el 73,4 % lo señala como su preocupación principal. Sacarla contradiría la
+amenaza «barreras de confianza (73,4 %)» que figura en el mismo cuadro. Se
+reformuló para que quede explícito. También se separó «tarifa determinística» de
+«equipo y presupuesto acotados», que eran dos debilidades de naturaleza distinta
+en un mismo bullet.
+
+---
+
 ## Fuentes principales
 
 - Hernández-Sampieri & Mendoza (2020). *Metodología de la investigación*. McGraw Hill.
