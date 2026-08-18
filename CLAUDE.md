@@ -534,9 +534,17 @@ que empiezan con `T_`/`t_` son del transportista). **Ya insertadas** —copiadas
 | Seguimiento del envío | `mockup-seguimiento.png` | `misenvios.png` |
 | Publicación del trayecto | `mockup-trayecto.png` | `t_publicarviaje.png` |
 
-**Faltan 4** (las autoras las rehacen): listado de pedidos con desvío y ganancia
-(la captura actual tiene el feed vacío: «Buscando pedidos…»), envío en curso del
-transportista, y las dos del panel web (PyME y admin).
+**COMPLETO (17-ago-2026): no queda ningún `\marcador` en el documento.** Se
+sumaron `mockup-oferta` (oferta entrante con ganancia y distancia),
+`mockup-encurso` (envío en curso con «no puedo llevarlo · penaliza reputación»,
+RF-CAR-08 visible), `mockup-impacto` (RF-CO2-01/02 con el contrafactual),
+`mockup-pyme` y `mockup-admin` (paneles web, **a ancho completo y una por
+figura**: a media página eran ilegibles), y para la fila Demo `demo-api`
+(Swagger en `/api/v1/docs`) y `demo-tests` (corrida con 176 passed).
+
+**Descartado a propósito:** la captura de Pagos (`t_mispagos`) **no se usa** —
+muestra «− 15 %» en cada cobro y la comisión no se discute hasta el análisis
+económico. Tampoco se menciona la comisión con cifra en ningún lado del Cap. 5.
 
 Se usa el comando **`\mockup{ancho}{ruta}`** (definido en `main.tex`): pone borde
 fino y alinea al tope para convivir en la misma fila con los `\marcador` que
