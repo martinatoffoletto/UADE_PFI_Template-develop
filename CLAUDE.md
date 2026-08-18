@@ -384,74 +384,97 @@ Construidas a partir de la investigación de usuarios ya cerrada; no quedan pend
 
 ---
 
-## Clasificador de carga — estado y decisiones abiertas
+## Clasificador de carga — v3, decidido el 18-ago-2026
 
-> **Todo lo de esta sección SIGUE EN ANÁLISIS.** Nada está decidido ni
-> comprometido en el informe. Anotado el 17-ago-2026 para no perder el hilo.
+> Antes esta sección decía «todo sigue en análisis». **Ya no**: se auditó el
+> dataset y las decisiones están tomadas. El plan completo vive en
+> `../DePaso/depaso_rest/ml/PLAN_V3.md` y el paso a paso en `TODO_MARTINA.md`
+> del mismo directorio.
 
-**Estado real del modelo.** `cargo_classifier_v1.keras` (20-jul-2026): MobileNetV2
-+ GAP + `concat(ref_flag)` + Dense(128) + Dropout(0,3) + Dense(4). Dataset de
-1.079 imágenes, split 755/162/162, **66,05 % de accuracy en validación**. El
-**conjunto de prueba nunca se evaluó** (sigue congelado): correr
-`python evaluate_bias.py --data-dir dataset/ --model-dir models/` en Colab —el
-dataset no está en el repo, vive en Drive—. Ojo: el objetivo del Cap. 1 está
-declarado **sobre el conjunto de prueba**, así que hasta correrlo no se sabe si
-se cumple.
+**Por qué se rehace.** Se inspeccionó una muestra aleatoria de la clase `xl`:
+de 16 imágenes, **2 eran realmente una mudanza o un flete**. El resto eran un
+puerto con barcos, un hall de conferencias, un gato dentro de una caja, cajas de
+zapatos apiladas. La causa está en una línea de
+`dataset/download_open_images.py`: pedía `label_types=["classifications"]`, que
+anota *«en esta foto aparece un mueble»* y baja la **escena entera**. Ya
+corregido a `["detections"]`, que da el bounding box y permite recortar.
 
-**Objetivo declarado (ya actualizado en el Cap. 1):** accuracy ≥ **70 %** sobre
-test + los errores concentrados en **categorías adyacentes**. Se sacó la
-justificación anterior («supera la línea base aleatoria del 25 %», que es
-defenderse contra el azar) y se reemplazó por dos razones de dominio: la
-ambigüedad intrínseca de estimar volumen desde una imagen 2D
-\parencite{NaumannEtAl2023} y el carácter *human-in-the-loop* del sistema
-(RF-VIS-02 deriva a manual con baja confianza; RF-SHP-03 permite carga manual).
+Encima de ese ruido había un problema de diseño: la etiqueta se derivaba del
+**tipo de objeto** (`Box → m`, `Suitcase → l`), un mapeo decidido por el equipo.
+Una caja de zapatos y una caja de heladera son las dos `Box`. Aunque se limpiara
+el ruido, la tarea seguía mal planteada.
 
-**Debilidad metodológica detectada.** Hoy la etiqueta se deriva del **tipo de
-objeto**, no del tamaño: `CATEGORY_TO_OI_CLASSES` mapea `Suitcase→l`,
-`Furniture→xl`, etc. Esa asignación la decidió el equipo, no el dato. Consecuencia:
-el modelo es un reconocedor de objetos con una tabla de conversión pegada — no
-mide nada. Bajo `Furniture` entra tanto una mesita como un ropero.
+**Qué cambia en v3.** La etiqueta sale de una **medida**, no de un diccionario:
+`alto × ancho × profundidad (cm) → volumen → umbral → s/m/l/xl`. Los umbrales se
+derivan de la **capacidad del vehículo** (`shared/cargo.py`, Tabla 1.I del
+informe): `s` entra en una mochila, `m` en el baúl de una moto, `l` en el baúl de
+un auto, `xl` requiere vehículo de carga. Los litros exactos quedan por calibrar
+contra la distribución real.
 
-**Datasets candidatos (EN ANÁLISIS, no adoptados).** Ambos traen medidas reales,
-lo que permitiría derivar la categoría del volumen en vez del tipo de objeto:
-- **Objectron** (Google, github.com/google-research-datasets/Objectron): 15 k
-  videos / 4 M imágenes anotadas con caja 3D (alto × ancho × profundidad reales).
-  Categorías: bikes, books, bottles, cameras, cereal boxes, chairs, cups, laptops,
-  shoes. **Fotos de celular en entornos reales, 10 países** → mismo dominio que la
-  app. Le falta el rango XL (no hay camas, sofás, heladeras).
-- **ABO — Amazon Berkeley Objects** (amazon-berkeley-objects.s3.amazonaws.com):
-  147.702 productos con **dimensiones y peso** en metadata + 398.212 imágenes, y
-  `description` / `product_type` / `material` → material para el multimodal sin
-  inventar texto. Cubre XL. Contras: fotos de **catálogo** (fondo blanco, estudio)
-  → *domain shift* respecto de la foto real; licencia **CC BY-NC** (uso académico
-  OK, hay que declararla).
-- Ninguno alcanza solo; la idea sería combinarlos con los dos actuales.
-- Si se avanza, el entregable fuerte para la defensa es la **comparación**
-  etiquetado-por-tipo-de-objeto vs. etiquetado-por-dimensiones-reales sobre el
-  mismo test.
+**Fuente principal: ABO (Amazon Berkeley Objects)** — verificado en Colab:
+**43.002 productos con dimensiones completas**, peso, tipo, material, y **13.990
+con nombre en español**. Con umbrales de tanteo (8/50/200 L) las cuatro
+categorías quedan pobladas: `s 24.950 · m 7.164 · l 3.572 · xl 7.316`. Contra:
+son fotos de **catálogo** (fondo blanco) → *domain shift*, así que hay que
+mezclar con imágenes de entornos reales (Objectron, Open Images con
+`detections`, fotos propias). Licencia **CC BY-NC**: uso académico correcto,
+**hay que declararla en el informe**.
 
-**Objeto de referencia.** El informe dice «objeto de referencia» en genérico
-(RF-VIS-03, CU-03), **nunca nombra uno concreto** → se puede cambiar sin tocar el
-documento. Decisión de las autoras: botella **de 500 ml**, aclarando el tamaño.
-Nota técnica: una tarjeta tipo DNI sería geométricamente superior (plana,
-rectangular, tamaño normado ISO/IEC 7810 → permite rectificar perspectiva), pero
-la botella se ve mejor en cargas grandes. **Lo crítico es que el objeto sea el
-mismo en el dataset de entrenamiento y en producción**: hoy `train_classifier.py`
-emite un WARNING porque casi no hay imágenes con `ref_flag=1`, así que la entrada
-de referencia probablemente **no está aportando nada** todavía.
+**Impacto en el informe.** El §2.1.6 dice «del orden de 1.500 imágenes» y
+**Open Images figura en el plan de datos ya entregado**. Cambiar de fuente es
+defendible —es un hallazgo metodológico, no un error de improvisación— y Open
+Images no desaparece: sigue sirviendo para `s` con `detections`. El Cap. 5
+§Validación cita **1.079** (el v1) y hay que actualizarlo cuando v3 esté
+entrenado; **solo ese número**.
 
-**Multimodal (imagen + descripción) — a futuro.** La app ya guarda `description`
-en `shipments` y `labels.csv` ya tiene la columna `objeto`; el modelo ya es
-multi-entrada, así que sumar un brazo de texto es trivial en código. Dos riesgos:
-(1) **fuga de etiqueta** — si se rellena `objeto` con la clase de Open Images de
-la que se bajó la imagen, el texto *es* la etiqueta y el accuracy sería ficticio;
-(2) el texto de entrenamiento tiene que parecerse al que escribe un usuario real,
-no a una etiqueta limpia. Alternativa de bajo riesgo: fusión tardía (el texto
-desempata solo cuando la confianza de la imagen es baja). Fundamento: el texto
-resuelve la ambigüedad de escala que la foto no puede resolver («heladera» da el
-volumen; la imagen sola, no).
+**Objeto de referencia — por las dos vías (decidido).** Botella de **500 ml**.
+(1) *Declarada en la descripción*: el remitente escribe «al lado hay una botella
+de 500 ml»; usa un campo que ya existe y dice cuál es la referencia, o sea su
+medida. (2) *Medición geométrica*: detectar la botella, calcular el factor
+píxeles/cm y medir el paquete contra él — visión clásica con OpenCV, no deep
+learning, y completamente explicable (se puede mostrar el cálculo), coherente
+con la línea de scoring auditable del proyecto. Se cubren mutuamente: la
+geometría da precisión, el texto funciona aunque la detección falle. El informe
+dice «objeto de referencia» en genérico (RF-VIS-03, CU-03) y **nunca nombra uno
+concreto**, así que esto no obliga a tocar el documento.
 
----
+**Multimodal (imagen + descripción) — decidido, en dos etapas.** Fundamento: la
+literatura de estimación monocular indica que, ante la ambigüedad de escala, *si
+se conoce la clase del objeto se puede usar el tamaño típico de esa clase*. Un
+léxico «heladera → tal volumen» no es una muleta: es la solución reconocida.
+- *Arranque — fusión tardía*: el texto no se entrena; un diccionario objeto →
+  volumen típico desempata cuando la confianza de la imagen es baja. Sin riesgo
+  de fuga de etiqueta y explicable. Es un enfoque publicado (arXiv 2008.06179,
+  1611.09534): se cita.
+- *Después — brazo de texto entrenado*: el modelo ya es multi-entrada y
+  `labels.csv` ya tiene la columna `objeto`. **Ojo con la fuga de etiqueta**: si
+  se rellena `objeto` con la clase de Open Images de la que se bajó la imagen, y
+  la categoría se deriva de esa misma clase, el texto *es* la etiqueta.
+
+**Qué NO se toca.** (a) `MyDrive/depaso_ml/models/` y `models_v2/` con sus
+`reports/`: son la evidencia de la progresión test **0,62 → 0,71** y del
+análisis de sesgos; en la defensa sostienen que el problema se detectó
+**midiendo**. (b) La **categoría XL se mantiene** —ya está entregada, y sirve
+para avisarle a quien no sabe que su sillón de seis cuerpos necesita un flete—.
+(c) Las cuatro categorías y el objetivo del Cap. 1 (**≥ 70 % sobre test**, con
+los errores en categorías **adyacentes**).
+
+**Dos agujeros medidos que v3 tiene que cerrar.** `has_reference_object` es
+**0 en los tres splits** (el modelo tiene la entrada pero nunca aprendió nada de
+ella) y los campos `lighting`/`angle`/`background` son `"unknown"` en el **100 %**
+de las imágenes, así que **el análisis de sesgos que promete RNF-UADE-01 está
+vacío**: las cuatro filas del reporte dan el mismo número. Las dos cosas se
+arreglan con la sesión de fotos propias (Paso 2 del `TODO_MARTINA.md`).
+
+**El entregable fuerte para la defensa** no es el accuracy final: es la
+**comparación etiquetado-por-tipo-de-objeto (v2) vs. etiquetado-por-dimensiones
+-reales (v3)** sobre el mismo test. Muestra método: se detectó un sesgo en el
+propio diseño, se midió y se corrigió.
+
+**Colab.** Sesión `depaso-ia` con T4. `colab new -s depaso-ia --gpu T4`,
+`colab exec -s depaso-ia -f script.py`, `colab download`, y **siempre**
+`colab stop -s depaso-ia` al terminar (si no, consume créditos). `drivemount` y
+`auth` exigen una persona en la terminal: **no los puede correr un agente**.
 
 ## Casos de uso ↔ código: pendientes de implementar
 
@@ -512,8 +535,8 @@ bloquea la entrega del 50%.
 |---|---|---|---|
 | 1 | **El feed muestra envíos impagos**: el matching no filtra por `payment_status`, contradice CU-01 alt. 5a | 1 línea en `matching/service.py` | Alta |
 | 2 | **Códigos `RF-*` del código desalineados** con el Cap. 4: el código usa `RF-CAR-07` para la penalización (informe: `RF-CAR-08`) y cita un `RF-MAT-05` inexistente. La numeración válida es la del Cap. 4 | ~30 min de grep | Alta |
-| 3 | **Correr el test set** (`evaluate_bias.py` en Colab) antes de comprometer cifras: el objetivo del Cap. 1 (≥70 %) está declarado sobre prueba y nunca se evaluó | 1 corrida | Alta |
-| 4 | **Fotos propias con la botella de 500 ml** para que `ref_flag` aprenda algo (hoy el WARNING del train indica que no aporta) | sesión de fotos | Media |
+| 3 | ~~Correr el test set~~ **HECHO**: v1 da **0,62** y existía un v2 (28-jul) sin documentar que da **0,71**. Reemplazado por → **rehacer el dataset con dimensiones reales (v3)**, ver `ml/PLAN_V3.md` | varios días | Alta |
+| 4 | **Fotos propias con la botella de 500 ml**: `has_reference_object` es **0 en los tres splits**, y `lighting`/`angle`/`background` son `"unknown"` en el **100 %** → el análisis de sesgos de RNF-UADE-01 está **vacío** | sesión de fotos | Alta |
 | 5 | **Calificación bidireccional** (decidido): quitar `uq_rating_shipment` → único por (shipment, rol), endpoint carrier→cliente, escribir `User.rating` | ~1 día | Media |
 | 6 | **`Classification` no guarda la ruta de la imagen**: agregar la columna convierte esa tabla en dataset de reentrenamiento listo (hoy habría que cruzar por `shipment_id`, que suele ser NULL) | 2 líneas | Media |
 | 7 | **CO₂ recalculado en la entrega con trazas GPS reales** (decidido) + actualizar párrafo y figura de secuencia del Cap. 5 que hoy dicen «al aceptar» | ~1 día | Media |
