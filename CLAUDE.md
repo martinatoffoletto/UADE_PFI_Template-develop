@@ -545,6 +545,7 @@ bloquea la entrega del 50%.
 | 10 | Tracking por polling 15 s → SSE/WebSocket desde FastAPI | ~1 día | Baja |
 | 11 | `create_all()` sin migraciones: OK para MVP; introducir Alembic recién si hay datos en producción | — | Baja |
 | 12 | **Cursivas RAE en extranjerismos del texto del 25%** (~15 casos de *matching/tracking/scoring/dataset* en redonda): pasada global recién en la **entrega final**, cuando el diff ya no importe | 10 min | Baja |
+| 13 | **Espacio fino antes del `\%` en el texto del 25%** (~24 casos de `69,8\%` en `chapter03.tex`, `surveys.tex`, `schedule_of_activities.tex`): el texto nuevo del 50% ya usa `~\%` (norma RAE). Misma lógica que la fila 12: pasada global en la **entrega final** | 5 min | Baja |
 
 **Eventos / Kafka — evaluado y descartado (17-ago-2026).** Kafka no se justifica:
 (a) contradice la justificación escrita del monolito modular (Cap. 5); (b) rompe
@@ -608,6 +609,207 @@ cuando vos quieras», «publicar un viaje que voy a hacer igual») e
 del transportista a cuatro pantallas.
 
 ---
+
+
+## Revisión de estilo del tutor (19-ago-2026) — aplicada
+
+Pedido: corregir redundancia y profesionalizar lo nuevo de `50%-final`; auditar
+mayúsculas, orden de la bibliografía, ortografía y gramática; y revisar
+FODA / cinco fuerzas de Porter.
+
+Existe el skill **`rae-informes`** (`.claude/skills/rae-informes/SKILL.md`) con el
+checklist RAE del proyecto: usarlo al redactar o revisar prosa en `chapters/*.tex`.
+
+Correcciones aplicadas (las dos primeras las señaló el tutor por nombre):
+- «La muestra se conformó mediante un muestreo…» → «Se aplicó un muestreo…» (Cap. 3).
+- «Se dedica a hacer fletes» → «Fletero independiente» (user persona Carlos Gómez);
+  su cita representativa repetía «clientes» dos veces, se reescribió.
+- Otras redundancias: «el Capítulo 5 desarrolla la metodología de desarrollo»,
+  «la transcripción… y la transcripción…», «fotografía el paquete y acompaña la
+  fotografía», «mercado de dos lados… de ambos lados», «estado asignado…
+  transportista asignado», y tres secciones que abrían repitiendo su propio título
+  (Arquitectura de la solución / Diseño de la interfaz / Modelo de datos).
+- Extranjerismos del texto **nuevo** a cursiva: *backend*, *frontend*, *stack*,
+  *token(s)*, *software*, *matching*, *crowdsourced delivery*, *gig-workers*,
+  *user personas*. El texto del 25% queda para la pasada final (fila 12).
+- Tipografía: comillas rectas `"…"` → angulares «…» en las citas de las user
+  personas; guion corto como separador en las fichas de persona → `\textperiodcentered`;
+  `\%` → `~\%` en todo el texto nuevo (fila 13 para el resto).
+- Calcos: «a nivel de objeto» → «por objeto»; «contenedorizado» → «en contenedores».
+
+**Verificado y sin cambios:** mayúsculas (los títulos ya usan mayúscula solo en la
+primera palabra; los roles van en minúscula); bibliografía (las 17 entradas de
+`biblio.bib` están citadas y las 17 claves citadas existen; `sorting=nyt` ordena
+alfabéticamente); compilación limpia (87 pp., sin referencias ni citas indefinidas,
+sin `Overfull` mayor a 25 pt).
+
+**Detalle cosmético conocido, no se toca:** tres claves BibTeX llevan un año que ya
+no coincide con el `YEAR` de la entrada tras la actualización a las versiones de
+journal (`AkamatsuOyama2023`→2024, `LuyEtAl2023`→2024, `SalehEtAl2024`→2026,
+`OyamaAkamatsu2024`→2025). La clave es una etiqueta interna: no se imprime en
+ningún lado con `style=iso-numeric`. Renombrarlas obliga a tocar todos los
+`\parencite` sin beneficio visible.
+
+**FODA y Porter:** no hay skill instalado de análisis estratégico (`find-skills`
+puede buscar uno). Se revisaron a mano contra la rúbrica: las cinco fuerzas están
+completas y cada una cierra con evidencia citada; el FODA tiene los cuatro
+cuadrantes más la lectura cruzada, y la estrategia de diferenciación cierra el
+apartado. La fila «Competencias» de la rúbrica queda cubierta.
+
+## Auditoría final de la entrega del 50% — 19-ago-2026
+
+Se verificaron los **ocho ítems de la rúbrica** y **todos los diagramas contra el
+código de `../DePaso`** (no contra los `.md`). Los ocho ítems quedan cubiertos:
+Requerimientos (Tablas 4.I/4.II + 6 CU + Fig 4.1), Mockups (Figs 5.6--5.10),
+Diagramas (CU, C4 x3, secuencia, despliegue, DER), Competencias (Porter 2.III,
+FODA 2.IV, estrategia), Tecnologías (§5.3.1 lenguajes + §5.2.1 red + Fig 5.5),
+Modelo de datos (DER 5.11 + Tabla 5.II + **Tabla 5.III de fuentes de datos**, que
+es la que cubre el «datasources» del estándar), Demo (Figs 5.12/5.13) y Tabla
+comparativa (2.I).
+
+**Verificado contra el código y correcto — no volver a revisar:** los 11 módulos
+de dominio coinciden exactamente con `modules/`; las **12 cardinalidades del DER**
+se corresponden una por una con los `models.py` (`carriers.user_id` unique →
+`0..1`; `shipments.carrier_id` nullable → `0..1`; `uq_rating_shipment` → `0..1`;
+`classifications.shipment_id` nullable → `0..1`/`0..N`; las dos asociativas N:M
+con su `UniqueConstraint`); el CO₂ se persiste en `accept_shipment`; se crea un
+evento `PENDING` al crear el envío, lo que justifica el `1..N`; las imágenes van a
+`uploads/packages` con `uuid4().hex` (RNF-SEC-03).
+
+**Defectos corregidos en los diagramas:**
+- **Fig 5.3 dibujaba tres capas y el texto declaraba cuatro.** Se agregó la caja
+  *Esquemas*, transversal a enrutamiento y servicios. El repo confirma las cuatro
+  (`router/service/repository/schemas`).
+- Fig 5.4: las etiquetas no tapaban las líneas de vida y la de «Base de datos»
+  atravesaba cuatro textos → estilo `lb` con `fill=white`.
+- Fig 5.2: `.\,keras` dejaba un espacio espurio; dos flechas sin rótulo; «o
+  alternativa» no nombraba nada.
+- Fig 5.11 y su texto: se agregó el verbo «acumula» (única relación binaria sin
+  verbo) y se aclaró que **las entidades asociativas no llevan verbo** y **cómo se
+  lee la cardinalidad** (la contigua a una entidad cuenta instancias de esa
+  entidad). Antes el texto afirmaba que toda relación llevaba verbo y cinco no.
+- **`roles` no existe en el código**: `User` solo tiene `user_type`. Ser
+  transportista se deriva de tener perfil `Carrier`, que el DER ya muestra con
+  «posee perfil de». Se corrigió la caja del DER y la Tabla 5.II.
+- **`owner_user_id`** es una cuarta clave foránea omitida en el DER: el texto
+  decía «tres».
+- La separación en cuatro capas **no rige en los 11 módulos**: `admin`, `auth`,
+  `co2` y `vision` no tienen `repository.py`. Se matizó a «los módulos con
+  persistencia propia».
+
+**Decisión de despliegue: Docker (19-ago-2026).** El informe afirmaba que la API
+corre «dentro de un contenedor sobre una plataforma como servicio» y apoyaba en
+eso la portabilidad de RNF-INF-02, pero `render.yaml` declaraba `runtime: python`
+con `pip install` — o sea, un build propio de Render que ignoraba el `Dockerfile`
+existente. En vez de bajar la afirmación del informe se **alineó el repo**, porque
+todavía no está decidido el proveedor y una imagen es el artefacto que no ata a
+ninguno: `render.yaml` pasó a `runtime: docker` + `dockerfilePath`, y el CMD del
+`Dockerfile` pasó de `--port 8000` fijo a `--port ${PORT:-8000}` (las PaaS
+inyectan `$PORT`; en local, sin la variable, sigue en 8000 y `docker-compose` no
+se rompe). **El texto del informe no se tocó: ahora es literalmente cierto.**
+
+**Detectados y NO corregidos (decisión de las autoras):**
+- `password_reset_tokens` no figura en el DER ni en la Tabla 5.II ni entre las
+  omisiones declaradas. Es una tabla técnica, no de dominio.
+- `main.py:103` hace `CREATE EXTENSION IF NOT EXISTS postgis` y `docker-compose`
+  usa la imagen `postgis/postgis`. **El informe igual es preciso**: no hay
+  columnas `geometry` ni funciones `ST_`, la geo se resuelve con haversine, y la
+  tabla del stack dice «con extensiones geoespaciales disponibles para una
+  eventual optimización». No cambiar el informe por esto.
+
+## Espaciado de títulos y cursivas del índice — 19-ago-2026
+
+**Títulos sin margen superior (resuelto).** `titlesec` aplica el espacio *anterior*
+con `\addvspace`, que **solo agrega la diferencia** respecto del espacio ya
+acumulado. Con `{0pt}{12pt}{6pt}` un título que venía después de un `enumerate`,
+un `longtable` o una figura quedaba **pegado** al bloque anterior (caso visible:
+§3.7 «User personas», que tocaba el ítem 7 de los hallazgos accionables). En
+`main.tex` el espacio anterior pasó a ser elástico y mayor que el que dejan esos
+entornos:
+
+| Nivel | Antes | Ahora |
+|---|---|---|
+| `\section` | `{0pt}{12pt}{6pt}` | `{0pt}{20pt plus 6pt minus 4pt}{8pt}` |
+| `\subsection` | `{0pt}{12pt}{6pt}` | `{0pt}{17pt plus 5pt minus 3pt}{6pt}` |
+| `\subsubsection` | `{0pt}{12pt}{6pt}` | `{0pt}{14pt plus 4pt minus 2pt}{6pt}` |
+
+`\chapter` no se tocó (arranca página). Se eliminaron los tres `\vspace{1em}`
+sueltos de `chapter01.tex`: eran parches locales a este mismo problema y ahora
+duplicarían el espacio. **No volver a parchear con `\vspace` manual**; si un
+título aparece pegado, subir el valor en `\titlespacing`.
+
+Nota: un título de sección seguido *inmediatamente* por uno de subsección (p. ej.
+1.2 → 1.2.1, sin texto en medio) queda algo justo por el mismo motivo. Es el
+comportamiento estándar de LaTeX y se dejó así: separarlos más los desvincula
+visualmente.
+
+**Cursivas solo en el cuerpo (decisión de las autoras, 19-ago-2026).** Los
+extranjerismos van en cursiva **únicamente en el texto corrido**: nunca en un
+título de sección, en un epígrafe de figura o tabla, ni por lo tanto en el índice.
+Se probó primero conservarlos en cursiva en el título y limpiarlos del índice con
+el argumento corto opcional (`\section[User personas]{\emph{User personas}}`);
+**se descartó**: las autoras quieren los encabezados enteros en redonda.
+
+Quedaron así (sin `\emph` y sin argumento corto):
+
+```latex
+\section{User personas}
+\subsection{Stack tecnológico por capa}
+\subsection{CU-02 --- Asignar un transportista mediante matching}
+\caption{Componentes del backend: módulos de dominio en cuatro capas (C4, nivel 3)}
+```
+
+En el cuerpo esas mismas palabras **sí** llevan cursiva (`\emph{user personas}`,
+`\emph{backend}`, `\emph{matching}`, `\emph{stack}`). Comprobación rápida de que
+no se coló ninguna:
+
+```bash
+grep -rn '\\\(chapter\|section\|subsection\|subsubsection\|caption\)\*\?\(\[[^]]*\]\)\?{[^}]*\\\(emph\|textit\|textsl\)' chapters/
+```
+
+## Figura de la encuesta (Cap. 3 §3.4) — 19-ago-2026
+
+`fig:encuesta` en `chapters/chapter03.tex`: barras horizontales en dos bloques,
+**DEMANDA (remitentes)** y **OFERTA (transportistas potenciales)**. Es el único
+gráfico de la encuesta y está en **TikZ nativo** (sin pgfplots), como el resto de
+los diagramas del repo.
+
+**Por qué así y no una torta.** Los indicadores son porcentajes de sí/no sobre
+**bases distintas** (n = 116, 98, 94): no son partes de un todo y una torta
+obligaría a sumar 100 % falsamente. Las barras horizontales además dejan escribir
+el `n` de cada fila, que es lo que §3.4 se compromete a explicitar.
+
+**Por qué dos bloques.** Carga el argumento estructural del proyecto —un mercado
+de dos lados necesita ambos validados a la vez— y conecta con la debilidad del
+FODA «dependencia de la adopción simultánea de ambos lados». Un ranking único de
+ocho barras se evaluó y se descartó: es más legible pero puramente descriptivo.
+
+**Paleta neutra, en grises (decidido el 19-ago-2026).** Se probó primero con los
+colores de marca de la app (`forest #0B3B2E`, `emerald #10B981`, `amber #E89E2A`
+sobre el crema `#F4EFE3`, tomados de `../DePaso/depaso_app/tailwind.config.js`) y
+las autoras lo descartaron: **queda raro** en el informe, se lee como pieza de
+marketing y no como figura de datos. Las definiciones `dp*` se retiraron del
+preámbulo de `main.tex`; si alguna vez se quiere volver, están en el commit y en
+el `tailwind.config.js`. Ahora: demanda `black!78`, oferta `black!50`, guías
+`black!18`. **Sin panel de fondo**: el gráfico va directo sobre el blanco de la
+página. Se probó un `black!3` de fondo y también se descartó — no agregar
+rectángulo de fondo de ningún color.
+
+**La última barra (73,4 % preocupación por daños) va sin relleno, a propósito.**
+Es el único indicador **negativo** del gráfico: mide una barrera de adopción, no
+una adhesión. En grises no alcanza con un tono distinto —se leería como «otra
+categoría más»—, así que lleva relleno claro (`black!12`) **con contorno**
+(`black!55`), que la marca como una medida de otra naturaleza, y el pie lo aclara.
+No rellenarla como las demás ni moverla junto a las otras dos: leerla como logro
+sería un error de lectura.
+
+**Cifras verificadas** con `docs/encuesta/verify_numbers.py` (correrlo desde
+`docs/encuesta/`, usa una ruta relativa): las siete pasan.
+
+**Trampa de TikZ encontrada:** `\hyphenpenalty=10000` dentro de la clave `font=`
+de un estilo de nodo rompe con «Missing number, treated as zero» (choca con
+`\protect`), y `latexmk` queda en estado de error aunque el PDF salga igual. Para
+evitar que una etiqueta se parta, usar un `\\` explícito en el texto del nodo.
 
 ## Pricing — decisiones abiertas
 

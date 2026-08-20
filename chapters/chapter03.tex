@@ -25,7 +25,7 @@ La investigación de usuarios se basa en el análisis de las opiniones recolecta
 % ─────────────────────────────────────────────────────────────────────────────
 \section{Metodología de la investigación de usuarios}
 
-El enfoque combina dos técnicas complementarias. \nuevo{La primera es una encuesta cuantitativa, orientada a establecer la adhesión a la propuesta a escala; la segunda, un ciclo de entrevistas semiestructuradas, orientado a comprender el razonamiento detrás de esas respuestas.} La encuesta se seleccionó como técnica inicial porque el problema abordado atraviesa a la población general del AMBA (cualquier persona puede ser remitente y, potencialmente, transportista) y no se concentra en un sector específico ni en un grupo acotado de expertos del dominio. Frente a esa heterogeneidad de perfiles, una técnica cuantitativa de amplio alcance permite validar la adhesión al modelo y comparar segmentos entre sí. \nuevo{Ahora bien, una encuesta informa cuántas personas sostienen una posición, pero no por qué la sostienen: las entrevistas semiestructuradas se incorporan precisamente para anclar los hallazgos cuantitativos en el contexto narrativo de quienes los expresan.} Como técnica complementaria se construyeron user personas, que sintetizan cualitativamente los perfiles relevados. Se definieron preguntas de investigación claras y específicas, vinculadas a variables medibles que permiten validar las hipótesis sobre las necesidades y preferencias de los usuarios. Además, se realizó una prueba piloto con un grupo reducido de participantes para asegurar la claridad y relevancia de las preguntas antes de proceder con su distribución general.
+El enfoque combina dos técnicas complementarias. \nuevo{La primera es una encuesta cuantitativa, orientada a establecer la adhesión a la propuesta a escala; la segunda, un ciclo de entrevistas semiestructuradas, orientado a comprender el razonamiento detrás de esas respuestas.} La encuesta se seleccionó como técnica inicial porque el problema abordado atraviesa a la población general del AMBA (cualquier persona puede ser remitente y, potencialmente, transportista) y no se concentra en un sector específico ni en un grupo acotado de expertos del dominio. Frente a esa heterogeneidad de perfiles, una técnica cuantitativa de amplio alcance permite validar la adhesión al modelo y comparar segmentos entre sí. \nuevo{Ahora bien, una encuesta informa cuántas personas sostienen una posición, pero no por qué la sostienen: las entrevistas semiestructuradas se incorporan precisamente para anclar los hallazgos cuantitativos en el contexto narrativo de quienes los expresan.} Como técnica complementaria se construyeron \emph{user personas}, que sintetizan cualitativamente los perfiles relevados. Se definieron preguntas de investigación claras y específicas, vinculadas a variables medibles que permiten validar las hipótesis sobre las necesidades y preferencias de los usuarios. Además, se realizó una prueba piloto con un grupo reducido de participantes para asegurar la claridad y relevancia de las preguntas antes de proceder con su distribución general.
 Teniendo en cuenta que la encuesta fue orientada a residentes o trabajadores del AMBA, las preguntas de investigación seleccionadas fueron: (1)~¿con qué frecuencia y qué tipos de servicios logísticos utilizan? (2)~¿cuáles son los problemas más frecuentes que surgen durante el uso de estos servicios? (3)~¿se encuentran dispuestos a adoptar el modelo colaborativo? (4)~¿qué valor perciben en la clasificación por foto y el cálculo de CO\textsubscript{2}? (5)~¿a qué precio mínimo y con qué vehículo estarían dispuestos a participar como transportistas?
 
 % ─────────────────────────────────────────────────────────────────────────────
@@ -33,9 +33,68 @@ Teniendo en cuenta que la encuesta fue orientada a residentes o trabajadores del
 
 La encuesta se estructuró y distribuyó mediante la plataforma Microsoft Forms y obtuvo 145 respuestas completas, de las cuales el 91,7\% (133 personas) corresponde a residentes o trabajadores del AMBA. El 83,5\% de la muestra se identifica como particular o consumidor final y el 8,3\% se desempeña en una PyME, comercio o emprendimiento. Dado que el formulario aplicó bifurcaciones por perfil, la base de cada indicador (n) se explicita en cada caso: las preguntas del bloque de uso de servicios fueron respondidas por 116 personas y las del bloque de transportista, por quienes manifestaron disposición a transportar (entre 94 y 98 según la pregunta, tal como se indica en la Tabla~\ref{tab:hallazgos}).
 
-La muestra se conformó mediante un muestreo no probabilístico por conveniencia. Bajo el supuesto de máxima varianza, una base de 133 casos implica un margen de error teórico de aproximadamente $\pm$8,5\% con un nivel de confianza del 95\%. Dado que el objetivo de la encuesta es exploratorio (orientar decisiones de diseño y validar la dirección de los supuestos del proyecto, no efectuar estimaciones poblacionales precisas), el tamaño alcanzado resulta suficiente: los hallazgos que sustentan las conclusiones se ubican lo bastante lejos del punto de indiferencia (50\%) como para mantenerse válidos aun considerando dicho margen de error.
+Se aplicó un muestreo no probabilístico por conveniencia. Bajo el supuesto de máxima varianza, una base de 133 casos implica un margen de error teórico de aproximadamente $\pm$8,5\% con un nivel de confianza del 95\%. Dado que el objetivo de la encuesta es exploratorio (orientar decisiones de diseño y validar la dirección de los supuestos del proyecto, no efectuar estimaciones poblacionales precisas), el tamaño alcanzado resulta suficiente: los hallazgos que sustentan las conclusiones se ubican lo bastante lejos del punto de indiferencia (50\%) como para mantenerse válidos aun considerando dicho margen de error.
 
 Los hallazgos cuantitativos con mayor impacto en las decisiones de diseño se sintetizan en la Tabla~\ref{tab:hallazgos}.
+\nuevo{La Figura~\ref{fig:encuesta} contrasta los indicadores de los dos lados del mercado, que la plataforma necesita validados de forma simultánea para operar.}
+
+\begin{figure}[H]
+    \centering\color{nuevo}
+    \begin{tikzpicture}[
+        x=0.066cm, y=1cm,
+        rot/.style={font=\scriptsize, text=black!85, anchor=east, align=right, text width=5.2cm},
+        val/.style={font=\scriptsize\bfseries, anchor=west, inner sep=2.5pt},
+        blq/.style={font=\footnotesize\bfseries, anchor=west, text=black!85},
+        eje/.style={font=\scriptsize, text=black!50, anchor=north},
+    ]
+        % Guías verticales y escala
+        \foreach \x in {25,50,75,100} {
+            \draw[black!18, line width=0.4pt] (\x,-5.28) -- (\x,0.62);
+            \node[eje] at (\x,-5.34) {\x};
+        }
+        \draw[black!40, line width=0.6pt] (0,-5.28) -- (0,0.62);
+        \node[eje] at (0,-5.34) {0};
+        \node[eje, anchor=north west] at (103,-5.34) {\%};
+
+        % ── Bloque 1: demanda ──────────────────────────────────────────────
+        \node[blq] at (0,0.36)
+            {DEMANDA \textemdash{} remitentes \textnormal{\scriptsize(n = 116)}};
+        \foreach [count=\i] \lbl/\v/\txt in {
+            {Usaría la clasificación por foto}/80.2/{80,2},
+            {Elige el servicio por costo}/75.0/{75,0},
+            {Predispuesto al modelo colaborativo}/69.8/{69,8},
+            {Valora conocer el CO\textsubscript{2} ahorrado}/53.4/{53,4}}
+        {
+            \pgfmathsetmacro{\y}{0.30-0.62*\i}
+            \node[rot] at (-8,\y) {\lbl};
+            \fill[black!78, rounded corners=1.5pt] (0,\y-0.17) rectangle (\v,\y+0.17);
+            \node[val, text=black!78] at (\v,\y) {\txt\,\%};
+        }
+
+        % ── Bloque 2: oferta ───────────────────────────────────────────────
+        \draw[black!22, line width=0.5pt] (-80,-2.55) -- (110,-2.55);
+        \node[blq] at (0,-2.90)
+            {OFERTA \textemdash{} transportistas potenciales};
+        \foreach [count=\i] \lbl/\v/\txt in {
+            {Motivado por un ingreso extra sin desvío \textnormal{\scriptsize(n = 98)}}/91.8/{91,8},
+            {Interesado en transportar \textnormal{\scriptsize(n = 116)}}/84.5/{84,5}}
+        {
+            \pgfmathsetmacro{\y}{-2.96-0.62*\i}
+            \node[rot] at (-8,\y) {\lbl};
+            \fill[black!50, rounded corners=1.5pt] (0,\y-0.17) rectangle (\v,\y+0.17);
+            \node[val, text=black!60] at (\v,\y) {\txt\,\%};
+        }
+        % Indicador negativo: relleno claro con contorno, para que no se lea como adhesión
+        \pgfmathsetmacro{\y}{-2.96-0.62*3}
+        \node[rot] at (-8,\y) {Preocupado por la responsabilidad\\ante daños \textnormal{\scriptsize(n = 94)}};
+        \draw[fill=black!12, draw=black!55, line width=0.7pt, rounded corners=1.5pt]
+            (0,\y-0.17) rectangle (73.4,\y+0.17);
+        \node[val, text=black!60] at (73.4,\y) {73,4\,\%};
+    \end{tikzpicture}
+    \caption[Indicadores clave de la encuesta, por lado del mercado]{Indicadores clave de la encuesta, por lado del mercado. La barra sin relleno mide una barrera de adopción y no una adhesión: es la proporción de transportistas potenciales que declara la responsabilidad ante daños como su principal preocupación}
+    \label{fig:encuesta}
+\end{figure}
+
 
 \begin{table}[H]
 	\caption{Hallazgos cuantitativos clave de la encuesta (145 respuestas)}
@@ -148,7 +207,7 @@ Los tres requerimientos que se derivan de ello —evidencia de custodia, declara
 % ─────────────────────────────────────────────────────────────────────────────
 \section{User personas}
 
-A partir de los datos obtenidos en la investigación de usuarios se construyeron tres user personas, que sintetizan los perfiles más relevantes para DePaso y guían las decisiones de diseño de la plataforma:
+A partir de los datos obtenidos en la investigación de usuarios se construyeron tres \emph{user personas}, que sintetizan los perfiles más relevantes para DePaso y guían las decisiones de diseño de la plataforma:
 
 \bigskip
 \noindent
@@ -166,7 +225,7 @@ A partir de los datos obtenidos en la investigación de usuarios se construyeron
 \end{minipage}\hfill
 \begin{minipage}[c]{0.72\textwidth}
     {\textbf{Juan García}} \\
-    34 años - Dueño de PyME - Lanús, Buenos Aires
+    34 años \textperiodcentered{} Dueño de PyME \textperiodcentered{} Lanús, Buenos Aires
 \end{minipage}
 
 \begin{itemize}[leftmargin=2em]
@@ -179,7 +238,7 @@ A partir de los datos obtenidos en la investigación de usuarios se construyeron
   \item\textbf{Comportamientos y hábitos relevantes} \hfill \\
 	Actualmente coordina los envíos a través de WhatsApp con cada cliente, lo que le demanda tiempo y genera incertidumbre sobre la llegada de los pedidos.
   \item\textbf{Cita representativa} \hfill \\
-    \textit{"Necesito una forma de enviar mis productos sin tener que pagar un flete completo cada vez, y sin tener que estar pendiente de coordinar con cada cliente todo el tiempo."}
+    \textit{«Necesito una forma de enviar mis productos sin tener que pagar un flete completo cada vez, y sin tener que estar pendiente de coordinar con cada cliente todo el tiempo.»}
 \end{itemize}
 
 \noindent
@@ -197,7 +256,7 @@ A partir de los datos obtenidos en la investigación de usuarios se construyeron
 \end{minipage}\hfill
 \begin{minipage}[c]{0.72\textwidth}
     {\textbf{María Álvarez}} \\
-    40 años - Trabaja en recursos humanos en una oficina en Microcentro - Caballito, CABA
+    40 años \textperiodcentered{} Trabaja en recursos humanos en el Microcentro \textperiodcentered{} Caballito, CABA
 \end{minipage}
 
 \begin{itemize}[leftmargin=2em]
@@ -210,7 +269,7 @@ A partir de los datos obtenidos en la investigación de usuarios se construyeron
   \item\textbf{Comportamientos y hábitos relevantes} \hfill \\
 	Usa el auto y por lo general viaja con el baúl vacío. \nuevo{Como valor secundario, le resulta atractivo que ese mismo trayecto evite que otro vehículo tenga que salir a la calle solo para llevar lo que ella ya puede llevar de paso.} El precio mínimo que esperaría cobrar ronda los \$3.000--\$4.000 por llevar un paquete chico.
   \item\textbf{Cita representativa} \hfill \\
-    \textit{"Todos los días hago el mismo viaje al centro con el baúl vacío; si pudiera sacar algo a cambio sin complicarme la rutina, lo haría."}
+    \textit{«Todos los días hago el mismo viaje al centro con el baúl vacío; si pudiera sacar algo a cambio sin complicarme la rutina, lo haría.»}
 \end{itemize}
 
 \noindent
@@ -228,7 +287,7 @@ A partir de los datos obtenidos en la investigación de usuarios se construyeron
 \end{minipage}\hfill
 \begin{minipage}[c]{0.72\textwidth}
     {\textbf{Carlos Gómez}} \\
-    55 años - Se dedica a hacer fletes - Quilmes, Buenos Aires
+    55 años \textperiodcentered{} Fletero independiente \textperiodcentered{} Quilmes, Buenos Aires
 \end{minipage}
 
 \begin{itemize}[leftmargin=2em]
@@ -241,5 +300,5 @@ A partir de los datos obtenidos en la investigación de usuarios se construyeron
   \item\textbf{Comportamientos y hábitos relevantes} \hfill \\
 	No le importa el desvío porque se desplaza específicamente para cada pedido a demanda del cliente.
   \item\textbf{Cita representativa} \hfill \\
-    \textit{"Quisiera tener una forma más estructurada de conseguir clientes para mis fletes y al mismo tiempo generar un espacio con referencias que otros potenciales clientes puedan consultar para confiar en mi servicio."}
+    \textit{«Quisiera una forma más estructurada de conseguir trabajo y, al mismo tiempo, un espacio con referencias que respalden mi servicio ante quien todavía no me conoce.»}
 \end{itemize}

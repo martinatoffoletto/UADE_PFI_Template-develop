@@ -206,7 +206,7 @@ El caso CU-02 no aparece asociado al remitente ni al transportista porque el ord
     \item \textbf{Flujo principal}:
     \begin{enumerate}[leftmargin=2em]
         \item El remitente indica el origen y el destino del envío.
-        \item El remitente fotografía el paquete y acompaña la fotografía con una descripción de su contenido; el sistema clasifica la carga (CU-03) o el remitente ingresa la categoría manualmente (RF-SHP-03).
+        \item El remitente fotografía el paquete y acompaña la imagen con una descripción de su contenido; el sistema clasifica la carga (CU-03) o el remitente ingresa la categoría manualmente (RF-SHP-03).
         \item El sistema cotiza el envío exponiendo los tres niveles tarifarios, el ahorro estimado de CO\textsubscript{2} y los trayectos colaborativos compatibles disponibles en ese momento (RF-SHP-02, RF-CO2-01).
         \item El remitente elige la modalidad y confirma la solicitud; el sistema crea el envío en estado \emph{pendiente} (RF-SHP-01).
         \item El remitente abona el envío ya creado; el sistema retiene el monto bajo un esquema de garantía (RF-SHP-04).
@@ -222,7 +222,7 @@ El caso CU-02 no aparece asociado al remitente ni al transportista porque el ord
 \end{itemize}
 
 % ─────────────────────────────────────────────────────────────────────────────
-\subsection{CU-02 --- Asignar un transportista mediante \emph{matching}}
+\subsection{CU-02 --- Asignar un transportista mediante matching}
 
 \begin{itemize}[leftmargin=2em]
     \item \textbf{Actor principal}: Administrador (inspección). El mismo procesamiento se ejecuta, incluido en CU-05, cuando el transportista consulta su listado de pedidos compatibles.
@@ -232,7 +232,7 @@ El caso CU-02 no aparece asociado al remitente ni al transportista porque el ord
         \item El sistema descarta a los transportistas que no superan los filtros duros: compatibilidad entre vehículo y categoría de carga, capacidad disponible suficiente y desvío por debajo del máximo admitido (RF-MAT-02, RF-CAP-01).
         \item Para cada candidato restante, calcula un puntaje que combina compatibilidad geográfica, desvío, carga, reputación y ventana horaria, y conserva el desglose de cada componente (RF-MAT-01).
         \item Ordena a los candidatos por puntaje y expone el envío en el listado de los transportistas compatibles (RF-MAT-03).
-        \item Cuando un transportista acepta (CU-05), el envío pasa a estado \emph{asignado} y el remitente puede consultar los datos del transportista asignado.
+        \item Cuando un transportista acepta (CU-05), el envío pasa a estado \emph{asignado} y el remitente puede consultar los datos del transportista.
     \end{enumerate}
     \item \textbf{Flujos alternativos}:
     \begin{itemize}[leftmargin=2em]
