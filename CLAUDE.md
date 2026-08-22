@@ -26,7 +26,9 @@ Transportista — persona que registra su ruta habitual y recibe pedidos
 compatibles con su recorrido sin desvíos significativos. No es repartidor de
 tiempo completo: aprovecha un viaje que ya iba a hacer. Puede participar con
 cualquier movilidad (auto, moto, bicicleta, a pie, utilitario o camión).
-Un mismo usuario puede operar en ambos roles.
+Los roles no se combinan en un mismo perfil: quien opere en ambos sentidos tiene
+un perfil de remitente y otro de transportista, y alterna entre ellos (decidido el
+21-ago-2026, ver §Revisión del 50%).
 
 Modalidades de envío
 Dedicada — se asigna un transportista completo al envío según el tipo de
@@ -148,9 +150,9 @@ la capacidad ociosa de sus trayectos habituales.
   total del orden de **1.500 imágenes**»; **se deja tal cual** y las autoras
   completarán el dataset hasta esa cifra con más descargas de Open Images, en vez
   de bajar el número en el informe. No «corregirlo» a 1.079.
-  - Cap. 5 §Validación sí cita **1.079**, que es el conjunto real con el que se
-    entrenó `cargo_classifier_v1`. Al reentrenar con el dataset completo hay que
-    actualizar ese número (y solo ese).
+  - Cap. 5 §Validación **ya no cita ninguna cifra de dataset**: el 21-ago-2026 se
+    quitó el párrafo del v1 (1.079 imágenes) porque el modelo se rehace de cero.
+    No volver a poner un número hasta tener v3 evaluado.
 - **Alineación informe ↔ repo `../DePaso` (17-ago-2026).** Se auditaron todos los
   `.md` de ambos repos contra el código. Corregido: actores unificados en **cuatro** (Cap. 4 y Cap. 5, con la
   organización desdoblada en fletera/comercio solo dentro del C4); **PostGIS
@@ -424,8 +426,9 @@ mezclar con imágenes de entornos reales (Objectron, Open Images con
 **Open Images figura en el plan de datos ya entregado**. Cambiar de fuente es
 defendible —es un hallazgo metodológico, no un error de improvisación— y Open
 Images no desaparece: sigue sirviendo para `s` con `detections`. El Cap. 5
-§Validación cita **1.079** (el v1) y hay que actualizarlo cuando v3 esté
-entrenado; **solo ese número**.
+§Validación ya no cita ninguna cifra (se quitó el 21-ago-2026): el informe habla
+del modelo **en futuro** y no declara avances. No reintroducir números hasta
+tener v3 evaluado sobre test.
 
 **Objeto de referencia — por las dos vías (decidido).** Botella de **500 ml**.
 (1) *Declarada en la descripción*: el remitente escribe «al lado hay una botella
@@ -525,6 +528,141 @@ los transportistas», pero el matching **no filtra por `payment_status`** — un
 sin pagar igual aparece en el feed.
 
 ---
+
+## Revisión del 50% — 21-ago-2026 (decisiones de las autoras)
+
+Ronda de auditoría sobre el informe compilado, contrastada contra `../DePaso`.
+Se aplicaron **19 ediciones** en Caps. 3, 4 y 5. Compila limpio: 89 pp., sin
+referencias ni citas indefinidas, sin `Overfull` mayor a 25 pt.
+
+**Los tres cambios de fondo:**
+
+1. **Roles separados por perfil (RF-USR-06 reescrito).** Antes prometía que «un
+   mismo usuario opera como remitente y transportista». Se cambió a **mantener
+   separados ambos perfiles**, cada uno con su validación y su reputación, y
+   permitir alternar entre ellos sin volver a autenticarse (modelo tipo
+   Instagram: una sesión, dos perfiles). Motivo: la app gatea por
+   `users.user_type`, que es un campo único, y `User.rating` / `Carrier.reputation`
+   ya son dos columnas separadas — la separación es lo que el sistema hace y
+   además es lo correcto (son juicios sobre conductas distintas). Tocó también
+   §Actores del Cap. 4 y la precondición de CU-04.
+
+2. **El pago deja de ser una retención de fondos (RF-SHP-04 reescrito).**
+   `shipments.payment_status` es **una columna de texto**: no hay pasarela, ni
+   cuenta, ni fondos. Decir «retención en garantía» describe un *escrow* con
+   implicancias regulatorias que el proyecto no tiene. Ahora el RF describe **el
+   estado del pago** (pendiente → abonado → liberado → reintegrado) y declara que
+   el movimiento de fondos se simula íntegramente. Se barrieron las otras cuatro
+   menciones: CU-01 paso 5, CU-06 paso 3, la etiqueta de la Fig. 5.4 y el cierre
+   del párrafo del CO₂. **No volver a escribir «retenido» ni «en garantía».**
+
+3. **El informe no declara nada sobre el estado del modelo de IA.** §5.6
+   Validación pasó a **futuro** (se quitaron «el procedimiento está implementado
+   y automatizado», el detalle del análisis de sesgos y el párrafo del v1 con las
+   1.079 imágenes) y §5.7 dice «módulo integrado a la API, **con el modelo en
+   desarrollo**». Los RF-VIS se reescribieron a nivel de **qué entra y qué sale**,
+   sin mecanismo: RF-VIS-01 = *fotografía + descripción → categoría + confianza*.
+   Motivo: v3 arranca de cero y `ml/size_rule.py` ya muestra que la arquitectura
+   cambió (la red estima **dimensiones** y una regla las corta en s/m/l/xl, no es
+   un clasificador de cuatro salidas). Comprometer el mecanismo obliga a
+   defenderlo en diciembre. **Nada de v3, ABO, umbrales ni la comparación v2/v3
+   entra al informe hasta tener la medición en la mano.**
+
+**Los otros cambios aplicados:**
+
+- **Foto obligatoria (RF-SHP-01).** Ahora exige «una fotografía del paquete, que
+  se conserva como constancia del estado en que se despachó». La obligatoriedad
+  es **como registro, no como insumo de la IA**, así sobrevive aunque el
+  clasificador falle o no esté. RF-SHP-03 (ingreso manual) queda intacto: es la
+  corrección, no un camino que evite la foto.
+- **Cap. 3, entrevistas.** De «tres requerimientos derivados» a **dos**, y ya no
+  se «planifican»: quedan cubiertos por RF-SHP-01 (foto + descripción). El
+  **desglose de peajes y estacionamiento queda fuera del alcance** — sigue
+  figurando como hallazgo en la tabla de entrevistas, pero el informe no promete
+  implementarlo. No volver a ponerlo como requerimiento.
+- **Almacenamiento de objetos.** El informe declara ahora un servicio de
+  almacenamiento de objetos para las fotos (no disco local), justificado por
+  escalabilidad: no atar las imágenes al ciclo de vida de la instancia ni impedir
+  replicarla. Con eso la caja de la Fig. 5.2 **sí** es un contenedor legítimo. Se
+  agregó el nodo a la Fig. 5.5 (topología prevista) y al párrafo de topología.
+  **Ojo: el código todavía escribe en `uploads/packages/` sin volumen** → las
+  fotos se pierden en cada reinicio. Ver el TODO de código.
+- **Calificación: solo puntaje.** Se quitó «comentario» de CU-06, de la Tabla 5.II
+  y del nodo del DER. La bidireccionalidad **se mantiene declarada** y se va a
+  implementar (sigue siendo la mejora #5).
+- **RNF-PERF-02: 30 s → 45 s.** El peor caso real es 35 s (`useGpsPublisher`
+  publica cada 20 s + `ShipmentDetailModal` consulta cada 15 s), o sea que 30 s
+  no se cumplía. 45 deja margen.
+- **Tabla 5.I, fila Observabilidad.** «Registro estructurado de eventos» →
+  «Registro estructurado en formato JSON (structlog)», con la justificación
+  explicitando que es **sobre la salida estándar del servicio, sin depender de una
+  plataforma de observabilidad externa**. Decisión de las autoras: que no parezca
+  que hay Splunk/Kafka montado. RNF-OBS-01 **no se tocó**.
+- **Fig. 3.1.** El pie ya no dice «la barra sin relleno» (era falso: tiene
+  `black!12`) — nombra directo la barra de responsabilidad ante daños.
+- **Párrafo de la cardinalidad Envío–Clasificación.** Reescrito poniendo la
+  conclusión primero: «La clasificación puede existir sin envío asociado, y de ahí
+  el mínimo cero en ese extremo».
+- **Tabla 5.II, fila Usuario.** Se aclara que el perfil de transportista «se
+  administra con independencia del perfil de remitente», para no chocar con el
+  nuevo RF-USR-06.
+
+**Verificado y correcto — no volver a revisar:** las 14 cardinalidades del DER una
+por una contra los `models.py`; las Figs. 5.1, 5.3 y 5.4; la Tabla 5.III completa
+(la separación «servicio de ruteo» vs. «cálculo propio de distancias» está bien
+resuelta y es la respuesta a «¿el filtro de desvío mide lo que dice medir?»);
+HTTP vs. HTTPS (el informe ya lo explica bien: HTTPS es HTTP dentro de TLS y lo
+termina el proveedor, por eso el `Dockerfile` usa `--proxy-headers`); «sitio
+estático» para el panel (`vite build` → `dist/`, nginx en el compose);
+TypeScript al 100 % (102 archivos `.ts/.tsx` en la app, 39 en el panel, cero
+`.js`); el párrafo WTP/WTA de la conclusión («compatibilidad preliminar», no
+viabilidad).
+
+**Rechazado a propósito:** «MiPyMEs» en Porter se deja — es el vocabulario del
+informe del ICC, que define esa población; cambiarlo a «PyMEs» alteraría a qué
+grupo corresponde el 44 %. Y se probó rotular la flecha de la Fig. 5.5 como
+«HTTP (red local)»: **colisiona con la etiqueta «red local»** de la flecha
+API→PostgreSQL. Quedó en «HTTP».
+
+**Barrido final (21-ago-2026).** Se auditó el documento **entero** —incluidos
+resumen, abstract, conclusión y anexos— contra los cinco temas de la revisión.
+Aparecieron **dos afirmaciones de avance en IA fuera del Cap. 5**, que habían
+quedado sueltas y se corrigieron:
+- `conclusion.tex`: «una primera versión **entrenada** del clasificador de carga»
+  → «el módulo de estimación de la categoría de carga integrado al servicio».
+  También «requerimientos para la etapa siguiente» → «incorporados al Cap. 4»
+  (coherencia con el cambio del Cap. 3), y «**Ampliación** del conjunto de datos»
+  → «**Construcción** del conjunto de datos» en trabajo futuro.
+- `appendix/schedule_of_activities.tex` (Anexo A): «el clasificador de carga
+  cuenta con una primera versión **entrenada en julio**; este **adelanto** respecto
+  de la planificación original otorga mayor margen…» → se eliminó la afirmación
+  entera; ahora dice que la construcción del dataset y el desarrollo del
+  clasificador **continúan en curso**.
+
+**Regla que queda:** las afirmaciones sobre el modelo viven en **cuatro** archivos
+además del Cap. 5 (`summary.tex`, `abstract.tex`, `conclusion.tex` y el Anexo A).
+Al tocar el estado de la IA hay que barrer los cinco, no solo el capítulo.
+*(`summary.tex` y `abstract.tex` describen el clasificador como componente de la
+plataforma, no como logro; además son texto del 25 % y no se tocan.)*
+
+**Verificación de la regla del 25 % (21-ago-2026).** Se comprobó línea por línea,
+contra `25%-final`, que **ninguna de las 39 líneas modificadas en esta ronda
+existía en el documento entregado**. Las 22 diferencias del Cap. 3, las 9 del
+Cap. 1 y las 8 del Cap. 2 frente al 25 % son **anteriores** a esta sesión y
+corresponden a decisiones ya documentadas acá (revisión de estilo del tutor,
+mayúsculas en títulos, comillas angulares, `\textperiodcentered` en las fichas de
+persona, `[ht]`→`[H]`, métricas verificables en los objetivos específicos, e
+inserciones de `\nuevo{}`). Los Caps. 4 y 5 no existían en el 25 %.
+
+Comando para repetir la verificación:
+
+```bash
+git diff --unified=0 -- chapters/ | grep '^-[^-]' | while read -r l; do
+  git grep -qF "${l:1}" 25%-final -- chapters/ && echo "⚠ 25%: ${l:1}"
+done
+```
+
+**TODO de código derivado:** `docs/todo-codigo-informe50.md`.
 
 ## Mejoras para la próxima etapa (post-50%)
 

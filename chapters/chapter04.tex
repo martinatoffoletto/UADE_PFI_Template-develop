@@ -16,7 +16,7 @@ Se identifican cuatro actores que interactúan con la plataforma:
     \item \textbf{Administrador}: valida transportistas, modera la operación y ajusta los parámetros del sistema.
 \end{itemize}
 
-Un mismo usuario puede desempeñar simultáneamente los roles de remitente y transportista.
+Los roles no se combinan en un mismo perfil: una persona que opere en ambos sentidos dispone de un perfil de remitente y otro de transportista, y alterna entre ellos. La separación mantiene independientes la validación y la reputación de cada rol, que responden a conductas distintas y no deben promediarse.
 
 % ═════════════════════════════════════════════════════════════════════════════
 \section{Requerimientos funcionales}
@@ -47,14 +47,14 @@ Los requerimientos funcionales se agrupan por subsistema y se presentan ordenado
     RF-USR-03 & Autenticar a un usuario mediante sus credenciales y otorgarle una sesión renovable. \\
     RF-USR-04 & Permitir la recuperación de la contraseña olvidada y su cambio desde una sesión activa. \\
     RF-USR-05 & Consultar y editar el perfil propio. \\
-    RF-USR-06 & Permitir que un mismo usuario opere como remitente y como transportista, incorporando un perfil de transportista a su cuenta. \\
+    RF-USR-06 & Mantener separados el perfil de remitente y el de transportista, cada uno con su propia validación y su propia reputación, y permitir que una persona alterne entre sus perfiles sin volver a autenticarse. \\
     RF-USR-07 & Permitir que el administrador valide y habilite a los transportistas, requisito para poder aceptar envíos. \\
     \midrule
     \multicolumn{2}{l}{\textbf{Envíos (RF-SHP)}} \\
-    RF-SHP-01 & Crear una solicitud de envío indicando origen, destino, categoría de carga, modalidad y una descripción del contenido. \\
+    RF-SHP-01 & Crear una solicitud de envío indicando origen, destino, categoría de carga, modalidad, una descripción del contenido y una fotografía del paquete, que se conserva como constancia del estado en que se despachó. \\
     RF-SHP-02 & Cotizar el envío por anticipado exponiendo los tres niveles tarifarios (inmediato, programado y colaborativo), el ahorro estimado de CO\textsubscript{2} y la cantidad de trayectos colaborativos compatibles disponibles en ese momento. \\
     RF-SHP-03 & Permitir el ingreso manual de la categoría de carga como alternativa a la clasificación automática. \\
-    RF-SHP-04 & Registrar el pago del envío bajo un esquema de garantía: el monto queda retenido desde la confirmación y se libera al transportista al concretarse la entrega. El pago se simula en el prototipo; la integración con una pasarela real queda fuera del alcance de esta etapa. \\
+    RF-SHP-04 & Registrar el estado de pago del envío a lo largo de su ciclo (pendiente, abonado, liberado y reintegrado), de modo que el envío solo se ofrezca a los transportistas una vez abonado y el saldo se marque como liberado al concretarse la entrega. El movimiento de fondos se simula íntegramente en el prototipo: no se integra una pasarela de pagos ni se administran fondos de terceros. \\
     RF-SHP-05 & Gestionar el ciclo de vida del envío mediante una máquina de estados con transiciones válidas. \\
     RF-SHP-06 & Consultar el detalle y el historial de los envíos propios. \\
     RF-SHP-07 & Cancelar un envío, revirtiendo el pago según su estado. \\
@@ -76,10 +76,10 @@ Los requerimientos funcionales se agrupan por subsistema y se presentan ordenado
     RF-MAT-03 & Generar, para cada transportista, el listado de pedidos compatibles con su trayecto o disponibilidad, ordenado por el mismo puntaje de RF-MAT-01. \\
     \midrule
     \multicolumn{2}{l}{\textbf{Clasificación de la carga (RF-VIS)}} \\
-    RF-VIS-01 & Clasificar automáticamente la carga en una categoría volumétrica a partir de una fotografía. \\
-    RF-VIS-02 & Derivar al ingreso manual cuando la confianza de la clasificación es inferior al umbral definido. \\
-    RF-VIS-03 & Admitir un objeto de referencia opcional en la foto para asistir la estimación. \\
-    RF-VIS-04 & Registrar cada clasificación realizada para su auditoría y posterior reentrenamiento. \\
+    RF-VIS-01 & Estimar la categoría volumétrica de la carga y su nivel de confianza a partir de la fotografía del paquete y de la descripción que aporta el remitente. \\
+    RF-VIS-02 & Derivar al ingreso manual cuando la confianza de la estimación es inferior al umbral definido. \\
+    RF-VIS-03 & Admitir, de forma opcional, un objeto de referencia de dimensiones conocidas en la fotografía, para asistir la estimación de escala. \\
+    RF-VIS-04 & Registrar cada estimación realizada, junto con la aceptación o la corrección del remitente, para su auditoría y posterior reentrenamiento. \\
     \midrule
     \multicolumn{2}{l}{\textbf{Impacto ambiental (RF-CO2)}} \\
     RF-CO2-01 & Calcular el ahorro de CO\textsubscript{2} de un envío colaborativo frente a su escenario dedicado equivalente. \\
@@ -141,7 +141,7 @@ Los requerimientos no funcionales establecen las restricciones de calidad que co
     \midrule
     \multicolumn{2}{l}{\textbf{Rendimiento (RNF-PERF)}} \\
     RNF-PERF-01 & La clasificación de una imagen debe resolverse en menos de 2 segundos. \\
-    RNF-PERF-02 & El seguimiento en tiempo real tolera una latencia de actualización de hasta 30 segundos. \\
+    RNF-PERF-02 & El seguimiento en tiempo real tolera una latencia de actualización de hasta 45 segundos. \\
     \midrule
     \multicolumn{2}{l}{\textbf{Mantenibilidad (RNF-MNT)}} \\
     RNF-MNT-01 & El sistema se organiza de forma modular y por capas, con responsabilidades separadas. \\
@@ -209,7 +209,7 @@ El caso CU-02 no aparece asociado al remitente ni al transportista porque el ord
         \item El remitente fotografía el paquete y acompaña la imagen con una descripción de su contenido; el sistema clasifica la carga (CU-03) o el remitente ingresa la categoría manualmente (RF-SHP-03).
         \item El sistema cotiza el envío exponiendo los tres niveles tarifarios, el ahorro estimado de CO\textsubscript{2} y los trayectos colaborativos compatibles disponibles en ese momento (RF-SHP-02, RF-CO2-01).
         \item El remitente elige la modalidad y confirma la solicitud; el sistema crea el envío en estado \emph{pendiente} (RF-SHP-01).
-        \item El remitente abona el envío ya creado; el sistema retiene el monto bajo un esquema de garantía (RF-SHP-04).
+        \item El remitente abona el envío ya creado, que queda registrado como pagado (RF-SHP-04).
         \item El envío queda disponible para los transportistas cuyo trayecto resulte compatible (CU-02).
     \end{enumerate}
     \item \textbf{Flujos alternativos}:
@@ -247,13 +247,13 @@ El caso CU-02 no aparece asociado al remitente ni al transportista porque el ord
 
 \begin{itemize}[leftmargin=2em]
     \item \textbf{Actor principal}: Remitente. \quad \textbf{Incluido en}: CU-01.
-    \item \textbf{Precondiciones}: el remitente aportó una fotografía del paquete.
+    \item \textbf{Precondiciones}: el remitente aportó una fotografía del paquete y una descripción de su contenido.
     \item \textbf{Flujo principal}:
     \begin{enumerate}[leftmargin=2em]
-        \item El remitente captura la imagen, opcionalmente junto a un objeto de referencia que asista la estimación de escala (RF-VIS-03).
-        \item El sistema infiere la categoría volumétrica y su nivel de confianza (RF-VIS-01).
+        \item El remitente captura la imagen del paquete y la acompaña con una descripción de su contenido. De forma opcional, puede incluir en la toma un objeto de referencia que asista la estimación de escala (RF-VIS-03).
+        \item El sistema estima la categoría volumétrica y su nivel de confianza (RF-VIS-01).
         \item Si la confianza supera el umbral, el sistema propone la categoría; en caso contrario, deriva al ingreso manual (RF-VIS-02).
-        \item El sistema registra la clasificación, junto con la aceptación o corrección del usuario, para su auditoría y posterior reentrenamiento (RF-VIS-04).
+        \item El sistema registra la estimación, junto con la aceptación o la corrección del usuario, para su auditoría y posterior reentrenamiento (RF-VIS-04).
     \end{enumerate}
     \item \textbf{Flujos alternativos}:
     \begin{itemize}[leftmargin=2em]
@@ -268,7 +268,7 @@ El caso CU-02 no aparece asociado al remitente ni al transportista porque el ord
 
 \begin{itemize}[leftmargin=2em]
     \item \textbf{Actor principal}: Transportista.
-    \item \textbf{Precondiciones}: el usuario incorporó un perfil de transportista a su cuenta (RF-USR-06).
+    \item \textbf{Precondiciones}: el usuario opera bajo su perfil de transportista (RF-USR-06).
     \item \textbf{Flujo principal}:
     \begin{enumerate}[leftmargin=2em]
         \item El transportista registra el origen, el destino y la ventana horaria de su recorrido habitual, indicando si se repite en determinados días (RF-CAR-01), o bien su ventana de disponibilidad dedicada por zona (RF-CAR-02).
@@ -314,8 +314,8 @@ El caso CU-02 no aparece asociado al remitente ni al transportista porque el ord
     \begin{enumerate}[leftmargin=2em]
         \item El transportista publica periódicamente su posición durante el envío (RF-TRK-01).
         \item El remitente consulta la ubicación del envío, que se actualiza de forma continua (RF-TRK-02).
-        \item Al registrarse la entrega, el sistema libera el pago retenido al transportista. El ahorro de CO\textsubscript{2} ya fue calculado y persistido al aceptarse el envío, cuando se conocen el trayecto y el vehículo del transportista (RF-SHP-05, RF-CO2-01).
-        \item Cada parte califica a la otra con una puntuación y un comentario opcional; el sistema actualiza la reputación acumulada, que retroalimenta futuras asignaciones (RF-SHP-08, RF-MAT-01).
+        \item Al registrarse la entrega, el sistema marca el saldo del envío como liberado a favor del transportista. El ahorro de CO\textsubscript{2} ya fue calculado y persistido al aceptarse el envío, cuando se conocen el trayecto y el vehículo del transportista (RF-SHP-05, RF-CO2-01).
+        \item Cada parte califica a la otra con una puntuación; el sistema actualiza la reputación acumulada, que retroalimenta futuras asignaciones (RF-SHP-08, RF-MAT-01).
     \end{enumerate}
     \item \textbf{Flujos alternativos}:
     \begin{itemize}[leftmargin=2em]

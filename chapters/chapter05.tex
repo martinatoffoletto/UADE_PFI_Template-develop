@@ -20,7 +20,7 @@ La arquitectura se describe siguiendo el modelo \textbf{C4}, de mayor a menor ni
 
 \begin{itemize}[leftmargin=2em]
     \item \textbf{Contexto.} El sistema atiende a los cuatro actores identificados en el Capítulo~\ref{cap:requerimientos} —remitente, transportista, PyME u organización y administrador—, con la salvedad de que la organización se distingue internamente en dos variantes según su vínculo con la plataforma: la que opera una flota de transportistas y la que es comercio y programa sus propios envíos. El acceso ocurre a través de dos frentes —una aplicación móvil para clientes y transportistas y un panel web para PyMEs y administración— sobre un único \emph{backend}. Sus dependencias externas son mínimas y reemplazables: un servicio de ruteo (con alternativa de cálculo propia), un servicio de mapas y geocodificación, y la persistencia de datos e imágenes.
-    \item \textbf{Contenedores.} Las unidades desplegables por separado son: la aplicación móvil, el panel web, la API REST, la base de datos y el almacenamiento de las imágenes de los paquetes. Las aplicaciones cliente se comunican con la API sobre HTTPS con autenticación por \emph{token}; la API concentra toda la lógica de negocio y el acceso a datos. El modelo de clasificación no constituye un contenedor desplegable por separado ni un sistema externo: es un artefacto versionado que la API carga en memoria al iniciar, y por eso se representa con trazo discontinuo.
+    \item \textbf{Contenedores.} Las unidades desplegables por separado son: la aplicación móvil, el panel web, la API REST, la base de datos y el almacenamiento de las imágenes de los paquetes. Este último se resuelve mediante un servicio de almacenamiento de objetos, de modo que las fotografías no dependan del ciclo de vida de la instancia que atiende la API ni impidan replicarla para escalar: el sistema las referencia siempre por su dirección, nunca por una ruta del sistema de archivos local. Las aplicaciones cliente se comunican con la API sobre HTTPS con autenticación por \emph{token}; la API concentra toda la lógica de negocio y el acceso a datos. El modelo de clasificación no constituye un contenedor desplegable por separado ni un sistema externo: es un artefacto versionado que la API carga en memoria al iniciar, y por eso se representa con trazo discontinuo.
     \item \textbf{Componentes.} Dentro de la API, cada módulo de dominio respeta una separación estricta en cuatro capas —enrutamiento (HTTP y validación), servicio (lógica de negocio), repositorio (acceso a datos) y esquemas—, con una regla de dependencia unidireccional. La capa de repositorio existe en los módulos con persistencia propia; los que solo componen resultados de otros módulos, como el de impacto ambiental, prescinden de ella. Los módulos implementados abarcan autenticación, usuarios, transportistas, envíos, trayectos, asignación, visión, seguimiento, impacto ambiental, organizaciones y administración.
 \end{itemize}
 
@@ -65,7 +65,7 @@ La Figura~\ref{fig:c4-contenedores} desglosa el sistema en sus contenedores desp
         \node[c4container, minimum width=3.4cm] (api) at (0,0.6) {\textbf{API REST}\\ lógica de negocio};
         \node[c4ext] (osrm) at (5,0.6)     {Servicio de\\ ruteo};
         \node[c4db]  (db)   at (-2.9,-2.6) {Base de\\ datos};
-        \node[c4db]  (st)   at (0.2,-2.6)  {Almacenamiento\\ de imágenes};
+        \node[c4db]  (st)   at (0.2,-2.6)  {Almacenamiento\\ de objetos\\ (imágenes)};
         \node[c4store] (ml) at (3.2,-2.6)  {Modelo entrenado\\ (artefacto \texttt{.keras})};
         \draw[c4arrow] (app) -- (api) node[c4lbl] {HTTPS + \emph{token}};
         \draw[c4arrow] (web) -- (api) node[c4lbl] {HTTPS + \emph{token}};
@@ -134,7 +134,7 @@ Finalmente, la Figura~\ref{fig:secuencia} integra los tres pilares del proyecto 
         \draw[ret] (P|-0,-3.1)  -- (A|-0,-3.1)  node[lb]{categoría + confianza};
         \draw[msg] (A|-0,-4.1)  -- (P|-0,-4.1)  node[lb]{cotizar (tres tarifas + CO\textsubscript{2})};
         \draw[msg] (A|-0,-5.1)  -- (P|-0,-5.1)  node[lb]{crear el envío};
-        \draw[msg] (A|-0,-6.1)  -- (P|-0,-6.1)  node[lb]{pagar (retención en garantía)};
+        \draw[msg] (A|-0,-6.1)  -- (P|-0,-6.1)  node[lb]{registrar el pago (simulado)};
         \draw[msg] (P|-0,-7.1)  -- (D|-0,-7.1)  node[lb]{persistir envío, pago y evento \emph{pendiente}};
         \draw[msg] (R|-0,-8.1)  -- (P|-0,-8.1)  node[lb]{consultar pedidos compatibles};
         \draw[ret] (P|-0,-9.1)  -- (R|-0,-9.1)  node[lb]{listado ordenado por puntaje};
@@ -150,7 +150,7 @@ Finalmente, la Figura~\ref{fig:secuencia} integra los tres pilares del proyecto 
     \label{fig:secuencia}
 \end{figure}
 
-Conviene destacar el momento en que se calcula el impacto ambiental. El ahorro de CO\textsubscript{2} aparece dos veces y con dos significados distintos: en la cotización es una \emph{estimación} optimista, calculada sobre el viaje dedicado equivalente porque todavía no se conoce qué transportista tomará el envío; el valor definitivo se calcula y persiste recién cuando un transportista acepta, ya que solo entonces se conocen su trayecto publicado y su tipo de vehículo, que son los datos que permiten medir el desvío real frente al viaje que esa persona ya iba a hacer. La entrega, en cambio, no recalcula emisiones: únicamente libera el pago retenido.
+Conviene destacar el momento en que se calcula el impacto ambiental. El ahorro de CO\textsubscript{2} aparece dos veces y con dos significados distintos: en la cotización es una \emph{estimación} optimista, calculada sobre el viaje dedicado equivalente porque todavía no se conoce qué transportista tomará el envío; el valor definitivo se calcula y persiste recién cuando un transportista acepta, ya que solo entonces se conocen su trayecto publicado y su tipo de vehículo, que son los datos que permiten medir el desvío real frente al viaje que esa persona ya iba a hacer. La entrega, en cambio, no recalcula emisiones: únicamente marca el saldo como liberado.
 
 % ─────────────────────────────────────────────────────────────────────────────
 \subsection{Arquitectura de red e infraestructura}
@@ -159,7 +159,7 @@ El entorno de ejecución actual es local y se ejecuta en contenedores: la base d
 
 Sobre los protocolos, la comunicación entre las aplicaciones cliente y el servidor se realiza mediante una interfaz REST sobre HTTP, con contenidos en formato JSON y verbos que respetan la semántica del protocolo. La autenticación es sin estado y se resuelve con \emph{tokens} firmados que el cliente adjunta en la cabecera de autorización de cada solicitud, junto con un \emph{token} de refresco de mayor vigencia que permite renovar la sesión sin reingresar credenciales. El servicio externo de ruteo se consume también sobre HTTP; ante su indisponibilidad, el sistema degrada de forma automática a una estimación de distancias propia (RNF-AVL-01). En un escenario publicado, la totalidad del tráfico entre cliente y servidor se transporta sobre HTTPS.
 
-La topología de destino se diseñó bajo la restricción de presupuesto acotado (RNF-INF-01), sobre servicios gestionados: la API dentro de un contenedor sobre una plataforma como servicio, una base de datos PostgreSQL gestionada y el panel web publicado como sitio estático. El dimensionamiento de los planes contratados se ajustará a lo necesario para sostener la disponibilidad del sistema durante el desarrollo y la defensa. La definición de infraestructura correspondiente está escrita y versionada en el repositorio, pero la publicación efectiva del sistema queda pendiente para la etapa final del proyecto. Esta elección preserva la portabilidad (RNF-INF-02): migrar de proveedor implica cambiar dónde se ejecuta el mismo contenedor, no el código de la aplicación.
+La topología de destino se diseñó bajo la restricción de presupuesto acotado (RNF-INF-01), sobre servicios gestionados: la API dentro de un contenedor sobre una plataforma como servicio, una base de datos PostgreSQL gestionada, un servicio de almacenamiento de objetos para las imágenes de los paquetes y el panel web publicado como sitio estático. El dimensionamiento de los planes contratados se ajustará a lo necesario para sostener la disponibilidad del sistema durante el desarrollo y la defensa. La definición de infraestructura correspondiente está escrita y versionada en el repositorio, pero la publicación efectiva del sistema queda pendiente para la etapa final del proyecto. Esta elección preserva la portabilidad (RNF-INF-02): migrar de proveedor implica cambiar dónde se ejecuta el mismo contenedor, no el código de la aplicación.
 
 La Figura~\ref{fig:despliegue} sintetiza el entorno de ejecución actual y la topología de destino prevista.
 
@@ -174,15 +174,17 @@ La Figura~\ref{fig:despliegue} sintetiza el entorno de ejecución actual y la to
         \node[c4container] (ren) at (3.2,1.9) {API\\ (contenedor)};
         \node[c4container] (ver) at (6.4,1.9) {Panel web\\ (sitio estático)};
         \node[c4db] (sup) at (4.8,-0.8) {Base de datos\\ gestionada};
+        \node[c4db, text width=2.2cm] (obj) at (8.1,-0.8) {Almacenamiento\\ de objetos};
         \draw[c4arrow] (api) -- (dbl) node[c4lbl] {red local};
         \draw[c4arrow] (mob) -- (api) node[c4lbl, pos=0.6] {HTTP};
         \draw[c4arrow] (api) -- (gh) node[c4lbl, pos=0.78] {versionado};
         \draw[c4arrow, dashed] (gh) -- (ren) node[c4lbl, pos=0.22] {despliegue pendiente};
         \draw[c4arrow, dashed] (ren) -- (sup) node[c4lbl] {TLS};
         \draw[c4arrow, dashed] (ver) -- (ren) node[c4lbl] {HTTPS};
+        \draw[c4arrow, dashed] (ren) -- (obj) node[c4lbl, pos=0.55] {imágenes};
         \node[boundary, fit=(api)(dbl)(mob), inner sep=5mm,
               label=above:{\footnotesize Entorno actual --- local}] {};
-        \node[boundary, dashed, fit=(ren)(ver)(sup), inner sep=5mm,
+        \node[boundary, dashed, fit=(ren)(ver)(sup)(obj), inner sep=5mm,
               label=above:{\footnotesize Topología prevista --- nube}] {};
     \end{tikzpicture}%
     }
@@ -232,9 +234,9 @@ La Tabla~\ref{tab:stack} resume el \emph{stack} adoptado y su justificación.
     Modelo de IA & Red convolucional preentrenada (MobileNetV2 sobre TensorFlow/Keras) con aprendizaje por transferencia & Clasificación volumétrica de la carga con un conjunto de datos acotado, entrenada por el equipo (RNF-UADE-01). \\
     Aplicación móvil & React Native con Expo & Desarrollo multiplataforma desde una única base de código, con distribución de paquetes instalables. \\
     Panel web & Aplicación de página única (React con TypeScript) & Interfaz de escritorio para PyMEs y administración (tablas densas y gráficos) que consume la misma API. \\
-    Almacenamiento de imágenes & Almacenamiento en disco con identificadores aleatorios & Persistencia de las fotos de los paquetes bajo nombres no enumerables (RNF-SEC-03). \\
+    Almacenamiento de imágenes & Servicio de almacenamiento de objetos, con identificadores aleatorios & Persistencia de las fotos de los paquetes bajo nombres no enumerables (RNF-SEC-03), desacoplada del ciclo de vida de la instancia que atiende la API. \\
     Infraestructura & Contenedores (Docker y Docker Compose) & Entorno reproducible entre integrantes del equipo y portabilidad hacia una plataforma como servicio sin modificar el código (RNF-INF-02). \\
-    Observabilidad & Registro estructurado de eventos & Trazabilidad de la operación (RNF-OBS-01). \\
+    Observabilidad & Registro estructurado en formato JSON (structlog) & Trazabilidad de la operación sobre la salida estándar del servicio, consultable sin depender de una plataforma de observabilidad externa (RNF-OBS-01). \\
     Pruebas & Marco de pruebas automatizadas (pytest) & Verificación de los módulos críticos y de los flujos de integración (RNF-MNT-02). \\
 \end{longtable}
 
@@ -318,14 +320,14 @@ El modelo se organiza en torno a las entidades del dominio. La Tabla~\ref{tab:en
     \bottomrule
     \endlastfoot
 
-    Usuario & Datos de contacto y credenciales, y tipo de cuenta. La condición de transportista no es un atributo: se deriva de tener asociado un perfil de transportista. \\
+    Usuario & Datos de contacto y credenciales, y tipo de cuenta. La condición de transportista no es un atributo del usuario: se deriva de tener asociado un perfil de transportista, que se administra con independencia del perfil de remitente. \\
     Transportista & Perfil asociado a un usuario: tipo de vehículo, patente, capacidad de carga, estado de validación, reputación y disponibilidad. \\
     Trayecto & Recorrido habitual (colaborativo) o ventana de disponibilidad (dedicada), con origen, ventana horaria y recurrencia semanal opcional. El destino solo se registra en la modalidad colaborativa: la ventana dedicada no lo fija, por lo que el atributo admite valor nulo. \\
     Envío & Solicitud de transporte: origen, destino, modalidad, categoría de carga, estado, estado de pago, precio, ventana horaria y CO\textsubscript{2} ahorrado. \\
     Evento de envío & Registro de auditoría de cada transición de estado del envío, con marca temporal y ubicación. \\
     Clasificación & Resultado de la clasificación de la carga: imagen, categoría predicha, confianza, aceptación y categoría manual eventual. \\
     Traza GPS & Posiciones publicadas por el transportista durante un envío, para el seguimiento en tiempo real. \\
-    Calificación & Puntuación y comentario asociados a un envío entregado. \\
+    Calificación & Puntuación asociada a un envío entregado, emitida por cada una de las partes. \\
     Pesos de asignación & Parámetros configurables del algoritmo de \emph{matching}, editables por administración. \\
     Organización & PyME, de tipo comercio o fletera, con sus miembros (los usuarios que la administran), los transportistas vinculados en el caso de la flota y sus envíos. \\
     \bottomrule
@@ -354,7 +356,7 @@ La Figura~\ref{fig:der} presenta el diagrama entidad-relación. Cada relación b
         \node[entity, text width=3cm]   (env)  at (-2.5,-2)    {\textbf{Envío}\nodepart{second}origen, destino, modalidad, categoría, estado, pago, precio, CO\textsubscript{2}};
         \node[entity, text width=2.5cm] (cla)  at (2.6,1.6)    {\textbf{Clasificación}\nodepart{second}categoría, confianza, aceptación};
         \node[entity, text width=2.4cm] (evt)  at (2.6,-2)     {\textbf{Evento de envío}\nodepart{second}estado, marca temporal, posición};
-        \node[entity, text width=2.4cm] (cal)  at (2.6,-5.6)   {\textbf{Calificación}\nodepart{second}estrellas, comentario};
+        \node[entity, text width=2.4cm] (cal)  at (2.6,-5.6)   {\textbf{Calificación}\nodepart{second}estrellas};
         % Dominio B2B: dos relaciones N:M resueltas con entidades asociativas
         \draw[rel] (org)  -- (omem) node[card,pos=0.1]{1} node[card,pos=0.9]{0..N};
         \draw[rel] (omem) -- (usr)  node[card,pos=0.1]{0..N} node[card,pos=0.9]{1};
@@ -378,7 +380,7 @@ La Figura~\ref{fig:der} presenta el diagrama entidad-relación. Cada relación b
     \label{fig:der}
 \end{figure}
 
-La cardinalidad mínima de la relación entre \emph{Envío} y \emph{Clasificación} es cero del lado del envío: la clasificación se produce mientras el remitente arma la solicitud, de modo que existe antes que el envío y puede no llegar a asociarse a ninguno si la solicitud se abandona. Por legibilidad, el diagrama omite además cuatro claves foráneas que no definen la estructura del modelo. Tres de ellas evitan recorrer el envío en cada consulta: la calificación referencia también al transportista y al cliente, para resolver el promedio de reputación sin necesidad de una reunión de tablas; la clasificación referencia al usuario que la solicitó, lo que permite recuperarla en ese estado intermedio; y el evento de envío registra qué usuario provocó la transición. La cuarta identifica al usuario responsable de cada organización, que es además uno de sus miembros. Tampoco se representa la entidad de pesos de asignación descrita en la Tabla~\ref{tab:entidades}, por tratarse de parámetros de configuración sin relación con el resto del modelo.
+La clasificación puede existir sin envío asociado, y de ahí el mínimo cero en ese extremo de la relación: se produce mientras el remitente arma la solicitud, de modo que existe antes que el envío y no llega a asociarse a ninguno si la solicitud se abandona. Por legibilidad, el diagrama omite además cuatro claves foráneas que no definen la estructura del modelo. Tres de ellas evitan recorrer el envío en cada consulta: la calificación referencia también al transportista y al cliente, para resolver el promedio de reputación sin necesidad de una reunión de tablas; la clasificación referencia al usuario que la solicitó, lo que permite recuperarla en ese estado intermedio; y el evento de envío registra qué usuario provocó la transición. La cuarta identifica al usuario responsable de cada organización, que es además uno de sus miembros. Tampoco se representa la entidad de pesos de asignación descrita en la Tabla~\ref{tab:entidades}, por tratarse de parámetros de configuración sin relación con el resto del modelo.
 
 % ─────────────────────────────────────────────────────────────────────────────
 \subsection{Fuentes de datos y su relación con la arquitectura}
@@ -419,14 +421,12 @@ La estrategia de validación combina pruebas automatizadas del \emph{software} y
 
 En el \emph{backend}, la verificación se apoya en un conjunto de pruebas automatizadas organizadas por módulo, que cubren autenticación, envíos, asignación, trayectos, visión, seguimiento, impacto ambiental, organizaciones y administración, junto con pruebas de los flujos de integración de punta a punta (RNF-MNT-02). El diseño favorece esta verificación: los cálculos centrales del \emph{matching} y del CO\textsubscript{2} se implementan como funciones puras y determinísticas, lo que permite comprobar de forma directa la tabla de compatibilidad vehículo-carga, los filtros duros (descarte de la modalidad colaborativa para cargas voluminosas, de la movilidad a pie o en bicicleta en trayectos largos y de los desvíos por encima del máximo admitido), el ordenamiento por proximidad y el cálculo del ahorro de emisiones con coordenadas reales del AMBA.
 
-El modelo de clasificación de carga se evalúa exclusivamente sobre el conjunto de prueba, separado de forma estratificada y reservado hasta esa instancia. El procedimiento está implementado y automatizado: reporta la exactitud global, la precisión, la exhaustividad y la medida F por categoría, y la matriz de confusión, prestando atención a las confusiones entre categorías adyacentes. Sobre esa evaluación se verifican las dos condiciones fijadas en el objetivo específico correspondiente del Capítulo~\ref{cap:introduccion}: una exactitud no inferior al 70~\% y una distribución del error concentrada en categorías contiguas, que es la que la corrección manual del remitente absorbe con menor fricción. Complementariamente, ejecuta un análisis de sesgos que agrupa el conjunto de prueba según las condiciones de captura —iluminación, ángulo y fondo— y según la presencia de un objeto de referencia, calculando la exactitud por grupo para detectar y documentar las condiciones en las que el desempeño se degrada (RNF-UADE-01). Este análisis alimenta tanto las mitigaciones del modelo como las recomendaciones de uso en la interfaz.
-
-A la fecha de esta entrega se entrenó una primera versión del clasificador mediante aprendizaje por transferencia sobre una red convolucional preentrenada, con un conjunto de datos de 1.079 imágenes repartidas de forma estratificada entre entrenamiento, validación y prueba. Esta versión constituye la línea base sobre la que se mide la mejora del modelo; la ampliación del conjunto de datos y la evaluación definitiva sobre el conjunto de prueba forman parte del trabajo previsto para la etapa final.
+La evaluación del modelo de estimación de la categoría de carga se realizará sobre el conjunto de prueba, separado de forma estratificada y reservado hasta esa instancia, y contemplará la exactitud global, las métricas por categoría y la matriz de confusión, junto con el análisis de sesgos por condiciones de captura previsto en el plan de tratamiento de los datos (RNF-UADE-01). Sobre esa evaluación se verificarán las dos condiciones fijadas en el objetivo específico correspondiente del Capítulo~\ref{cap:introduccion}: una exactitud no inferior al 70~\% y una distribución del error concentrada en categorías contiguas, que es la que la corrección manual del remitente absorbe con menor fricción. El desarrollo del modelo se encuentra en curso y su evaluación forma parte del trabajo previsto para la etapa final.
 
 % ═════════════════════════════════════════════════════════════════════════════
 \section{Avance de la implementación}
 
-Al momento de esta entrega, el prototipo presenta avances verificables en sus tres frentes. El \emph{backend} implementa los módulos de dominio descritos en la Figura~\ref{fig:c4-componentes} —autenticación, usuarios, transportistas, envíos, trayectos, asignación, visión, seguimiento, impacto ambiental, organizaciones y administración— con su documentación interactiva autogenerada (RNF-MNT-03) y el conjunto de pruebas automatizadas por módulo y de integración de punta a punta descrito en la sección precedente. El algoritmo de asignación opera con el filtro duro de desvío y los pesos configurables desde administración (RF-ADM-03), y el clasificador de carga cuenta con la primera versión entrenada ya mencionada, integrada a la API. La aplicación móvil y el panel web se encuentran en desarrollo sobre esa misma API: las capturas de las Figuras~\ref{fig:mockup-remitente} a~\ref{fig:mockup-cierre}, tomadas de la aplicación en ejecución contra el \emph{backend} real, documentan los flujos ya operativos de solicitud de envío, clasificación de la carga, cotización, publicación de trayecto, aceptación de pedidos, seguimiento del envío, impacto ambiental acumulado y monitoreo desde el panel web. Las Figuras~\ref{fig:demo-api} y~\ref{fig:demo-tests} completan ese panorama del lado del servidor.
+Al momento de esta entrega, el prototipo presenta avances verificables en sus tres frentes. El \emph{backend} implementa los módulos de dominio descritos en la Figura~\ref{fig:c4-componentes} —autenticación, usuarios, transportistas, envíos, trayectos, asignación, visión, seguimiento, impacto ambiental, organizaciones y administración— con su documentación interactiva autogenerada (RNF-MNT-03) y el conjunto de pruebas automatizadas por módulo y de integración de punta a punta descrito en la sección precedente. El algoritmo de asignación opera con el filtro duro de desvío y los pesos configurables desde administración (RF-ADM-03), y el módulo de estimación de la categoría de carga se encuentra integrado a la API, con el modelo en desarrollo. La aplicación móvil y el panel web se encuentran en desarrollo sobre esa misma API: las capturas de las Figuras~\ref{fig:mockup-remitente} a~\ref{fig:mockup-cierre}, tomadas de la aplicación en ejecución contra el \emph{backend} real, documentan los flujos ya operativos de solicitud de envío, clasificación de la carga, cotización, publicación de trayecto, aceptación de pedidos, seguimiento del envío, impacto ambiental acumulado y monitoreo desde el panel web. Las Figuras~\ref{fig:demo-api} y~\ref{fig:demo-tests} completan ese panorama del lado del servidor.
 
 \begin{figure}[H]
     \centering\color{nuevo}
