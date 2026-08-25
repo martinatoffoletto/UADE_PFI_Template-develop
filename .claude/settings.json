@@ -1,0 +1,17 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "if": "Bash(git commit*)",
+            "statusMessage": "Verificando CLAUDE.md...",
+            "command": "[ -n \"$(git status --porcelain CLAUDE.md 2>/dev/null)\" ] || printf '%s\\n' '{\"systemMessage\":\"Este commit no toca CLAUDE.md. Si cambio el estado del proyecto (decisiones, alcance, pendientes, convenciones), actualizalo para que el contexto no quede desactualizado.\",\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"additionalContext\":\"El commit en curso no modifica CLAUDE.md. Antes de continuar, evalua si este cambio altera algo documentado ahi: decisiones tomadas y su motivo, estado de las entregas, tareas pendientes, o convenciones del repo. Si corresponde, actualiza CLAUDE.md e incluilo en este mismo commit. Si el cambio no afecta nada de eso, segui sin modificarlo y no menciones este recordatorio.\"}}'"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -57,7 +57,7 @@
 % \parbox[b] es para poner texto sobre el bottom
 \newpagestyle{ruled}{
 	\sethead{\includegraphics[width=3.7cm]{./images/UADE_LARGE}}
-			{\parbox[b]{0.43\textwidth}{\raggedright\MakeUppercase{DePaso --- Plataforma de logística urbana colaborativa}}}
+			{\parbox[b]{0.43\textwidth}{\raggedright\MakeUppercase{DePaso --- Logística urbana colaborativa}}}
 			{
 				\raisebox{1.5ex}{%
 					\parbox[b]{0.26\textwidth}{\raggedleft
@@ -87,7 +87,9 @@
 %Lo ideal ser\'{\i}a lo siguiente
 %\setmarginsrb{2.7cm}{4cm}{2.3cm}{2.5cm}{2cm}{0.5cm}{2cm}{0.5cm}
 %Pero estos valores se suman, por lo que en realidad ir\'{\i}a asi:
-\setmarginsrb{2.7cm}{2cm}{2.3cm}{1.5cm}{0cm}{2cm}{0cm}{1cm}
+% headheight debe alcanzar para el logo UADE del encabezado (~1.3cm); se
+% compensa restando de headsep para que el bloque de texto no se desplace.
+\setmarginsrb{2.7cm}{2cm}{2.3cm}{1.5cm}{1.31cm}{0.69cm}{0cm}{1cm}
 % M\'argenes, pero otra opci\'on mas acotada
 % \usepackage[top=4cm,bottom=2.5cm,left=2.7cm,right=2.3cm]{geometry}
 
@@ -135,6 +137,69 @@
 \usepackage{booktabs}
 \usepackage{graphicx}
 \usepackage{float}
+
+% Marcado de contenido nuevo (entrega 50%) para revisión del tutor.
+% Envolver los bloques nuevos con \nuevo{...} o {\color{nuevo} ...}.
+% El documento se entrega en NEGRO: el color queda en 0,0,0 y los marcados
+% \nuevo{...} no se ven. Para volver a resaltar lo nuevo mientras se trabaja,
+% poner {0,0,205}. Las diferencias contra main se ven con ./make-diff.sh.
+\definecolor{nuevo}{RGB}{0,0,0}
+\newcommand{\nuevo}[1]{{\color{nuevo}#1}}
+
+% Marcador de posición para material todavía no incorporado (fotos de user
+% personas, mockups, capturas de la demo). Dibuja un recuadro punteado del
+% tamaño indicado con una leyenda adentro.
+%   Uso: \marcador[ancho]{alto}{leyenda}
+%   Al incorporar el material real, se reemplaza la línea completa por:
+%   \includegraphics[width=...]{figures/nombre-del-archivo}
+\newcommand{\marcador}[3][0.45\textwidth]{%
+    \begin{tikzpicture}
+        \node[draw=black!45, dashed, thick, rounded corners=3pt, fill=black!4,
+              minimum width=#1, minimum height=#2, align=center, inner sep=4pt,
+              font=\footnotesize\itshape, text=black!55] {#3};
+    \end{tikzpicture}%
+}
+
+% Captura de pantalla de la app, con un borde fino que la delimita del fondo
+% de la p\'agina. Alineada al tope para que conviva en la misma fila con los
+% \marcador que a\'un esperan material.
+%   Uso: \mockup{ancho}{ruta/sin/extension}
+% El ancho pedido incluye el marco: se descuentan el grosor y el padding del
+% \fcolorbox para que \mockup{\textwidth}{...} no se pase del margen.
+\newcommand{\mockup}[2]{%
+    \raisebox{0pt}[\height][0pt]{%
+        \fcolorbox{black!30}{white}{%
+            \includegraphics[width=\dimexpr#1-2\fboxsep-2\fboxrule\relax]{#2}%
+        }%
+    }%
+}
+
+% TikZ para los diagramas del dise\~no (C4, casos de uso, secuencia, despliegue, DER)
+\usepackage{tikz}
+\usetikzlibrary{positioning, arrows.meta, shapes.geometric, shapes.multipart, fit, backgrounds, calc}
+\tikzset{
+    c4person/.style={draw, rounded corners=2pt, fill=RoyalBlue!15, minimum width=2.3cm, minimum height=1cm, align=center, font=\footnotesize},
+    c4system/.style={draw, rounded corners=7pt, fill=ForestGreen!18, minimum width=3cm, minimum height=1.3cm, align=center, font=\footnotesize},
+    c4container/.style={draw, rounded corners=3pt, fill=RoyalBlue!10, minimum width=2.9cm, minimum height=1.2cm, align=center, font=\footnotesize},
+    c4ext/.style={draw, rounded corners=2pt, fill=black!8, minimum width=2.5cm, minimum height=1cm, align=center, font=\footnotesize},
+    c4store/.style={draw, dashed, rounded corners=2pt, fill=ForestGreen!10, minimum width=2.5cm, minimum height=1cm, align=center, font=\footnotesize},
+    c4db/.style={draw, cylinder, shape border rotate=90, aspect=0.25, fill=black!8, minimum width=2.3cm, minimum height=1.3cm, align=center, font=\footnotesize, inner sep=3pt},
+    c4arrow/.style={-{Stealth[length=2mm]}, thick},
+    c4lbl/.style={font=\scriptsize, fill=white, inner sep=1pt, midway},
+    ucase/.style={draw, ellipse, align=center, font=\scriptsize, fill=Goldenrod!20, minimum width=3.1cm, minimum height=0.9cm, inner sep=1pt},
+    boundary/.style={draw, thick, rounded corners=4pt},
+    entity/.style={draw, rectangle split, rectangle split parts=2, fill=RoyalBlue!8, font=\scriptsize, align=left, minimum width=2.6cm},
+}
+% Actor UML (figura de palotes) como pic reutilizable
+\tikzset{
+    actor/.pic={
+        \draw[thick] (0,0) circle (2.4mm);
+        \draw[thick] (0,-2.4mm) -- (0,-1cm);
+        \draw[thick] (-4.5mm,-6mm) -- (4.5mm,-6mm);
+        \draw[thick] (0,-1cm) -- (-3.5mm,-1.6cm);
+        \draw[thick] (0,-1cm) -- (3.5mm,-1.6cm);
+    }
+}
 \usepackage[spanish,es-nodecimaldot]{babel}
 \usepackage{csquotes}
 \addto\captionsspanish{
@@ -196,17 +261,17 @@
 \titleformat{\section}
   {\bfseries\fontsize{14pt}{14pt}\selectfont}
   {\thesection}{1em}{}
-\titlespacing*{\section}{0pt}{12pt}{6pt}
+\titlespacing*{\section}{0pt}{20pt plus 6pt minus 4pt}{8pt}
 
 \titleformat{\subsection}
   {\bfseries\fontsize{14pt}{14pt}\selectfont}
   {\thesubsection}{1em}{}
-\titlespacing*{\subsection}{0pt}{12pt}{6pt}
+\titlespacing*{\subsection}{0pt}{17pt plus 5pt minus 3pt}{6pt}
 
 \titleformat{\subsubsection}
   {\bfseries\fontsize{14pt}{14pt}\selectfont}
   {\thesubsubsection}{1em}{}
-\titlespacing*{\subsubsection}{0pt}{12pt}{6pt}
+\titlespacing*{\subsubsection}{0pt}{14pt plus 4pt minus 2pt}{6pt}
 
 % -> Acá se empieza a modificar el tamaño de los títulos autogenerados, como los de las listas de figuras y tablas
 \usepackage{tocloft}
@@ -271,6 +336,8 @@
 	\input{chapters/chapter01}
 	\input{chapters/chapter02}
 	\input{chapters/chapter03}
+	\input{chapters/chapter04}
+	\input{chapters/chapter05}
 	\input{chapters/conclusion}
 
 	\printbibliography[heading=bibintoc]

@@ -1,7 +1,7 @@
 \chapter{Antecedentes}
 
 % ═════════════════════════════════════════════════════════════════════════════
-\section{Marco Teórico}
+\section{Marco teórico}
 
 El desarrollo de una plataforma de logística urbana colaborativa requiere integrar conceptos provenientes de distintas áreas: logística de última milla, modelos de transporte colaborativo, mecanismos de asignación entre oferta y demanda e inteligencia artificial.
 
@@ -13,7 +13,7 @@ Estos conceptos constituyen la base teórica sobre la cual se construye la propu
 
 El \emph{crowdsourced delivery} (CSD) es un modelo logístico que delega la entrega de última milla a personas no profesionales que integran pedidos en sus propios desplazamientos, a cambio de una compensación económica, en lugar de recurrir a una flota dedicada. A diferencia de los sistemas tradicionales de reparto, no genera viajes nuevos: aprovecha los desplazamientos que ya existen en la ciudad.
 
-Este modelo surge como respuesta a una ineficiencia estructural de la logística urbana. La entrega al destinatario final concentra una fracción desproporcionada del costo logístico total y genera congestión vehicular y emisiones en ciudades densas \parencite{YangEtAl2022}. En el AMBA, esa ineficiencia se agrava: una PyME o un particular que necesita enviar algo enfrenta pocas opciones reales, pagar una tarifa alta por un flete dedicado, resignarse a los tiempos de un \emph{courier} masivo pensado para \emph{e-commerce} de gran volumen, o directamente no enviarlo. Al mismo tiempo, hay vehículos circulando por la ciudad con espacio disponible todos los días y personas que necesitan mandar cosas, y los dos grupos rara vez se cruzan.
+Este modelo surge como respuesta a una ineficiencia estructural de la logística urbana. La entrega al destinatario final concentra una fracción desproporcionada del costo logístico total y genera congestión vehicular y emisiones en ciudades densas \parencite{YangEtAl2022}. En el AMBA, esa ineficiencia se agrava: una PyME o un particular que necesita enviar algo enfrenta pocas opciones reales: pagar una tarifa alta por un flete dedicado, resignarse a los tiempos de un \emph{courier} masivo pensado para \emph{e-commerce} de gran volumen, o directamente no enviarlo. Al mismo tiempo, hay vehículos circulando por la ciudad con espacio disponible todos los días y personas que necesitan mandar cosas, y los dos grupos rara vez se cruzan.
 
 Yang \textit{et al.}\ formalizan la lógica del CSD distinguiendo entre vehículos dedicados (DVs), que viajan exclusivamente para hacer entregas, y vehículos personales compartidos (SPVs), cuyos conductores integran pedidos en viajes que ya tenían planificados \parencite{YangEtAl2022}. La diferencia no es solo operativa: define dos modelos logísticos con costos, emisiones y dinámicas de participación completamente distintos, y es la base sobre la que se construye cualquier comparación rigurosa entre el modelo colaborativo y el dedicado.
 
@@ -65,17 +65,17 @@ La literatura revisada sobre IA aplicada a logística colaborativa se concentra 
 % ─────────────────────────────────────────────────────────────────────────────
 \subsection{Datos para el entrenamiento del clasificador}
 
-El clasificador de carga descrito requiere un conjunto de imágenes etiquetadas según las cuatro categorías de carga definidas (paquete pequeño o documento, mediano, grande o voluminoso, y mudanza o flete). El conjunto se construye a partir de dos orígenes complementarios. El primero es un \emph{dataset} público de gran escala con anotaciones verificadas, Google Open Images, de uso extendido y validado por la comunidad de visión computacional, condición que respalda la confiabilidad y la trazabilidad de su procedencia. El segundo son fotografías propias de objetos representativos del contexto argentino, es decir, datos crudos generados por el equipo, incorporadas para reducir el sesgo de dominio que introduciría entrenar únicamente con imágenes de repositorios internacionales. Se estima un volumen total del orden de 1.500 imágenes, distribuidas de forma equilibrada entre las categorías. Se trata de una cifra preliminar, sujeta a ajuste según la disponibilidad de ejemplares adecuados por clase y los resultados de las primeras evaluaciones del modelo.
+\nuevo{El clasificador de carga descrito requiere un conjunto de imágenes etiquetadas según las cuatro categorías de carga definidas (paquete pequeño o documento, mediano, grande o voluminoso, y mudanza o flete). El conjunto se construye a partir de dos \emph{datasets} complementarios. El primero es el \emph{Open Images Dataset V7} de Google \parencite{OpenImagesV7}, un repositorio público de gran escala (del orden de nueve millones de imágenes con anotaciones verificadas por objeto), de uso extendido y validado por la comunidad de visión computacional, condición que respalda la confiabilidad y la trazabilidad de su procedencia; de él se extraen las categorías de objeto pertinentes a las clases de carga definidas. El segundo es un \emph{dataset} propio, generado por el equipo, compuesto por fotografías de objetos representativos del contexto argentino (datos crudos capturados en condiciones reales de uso), incorporado para reducir el sesgo de dominio que introduciría entrenar únicamente con imágenes de repositorios internacionales. Se estima un volumen total del orden de 1.500 imágenes, distribuidas de forma equilibrada entre las categorías. Se trata de una cifra preliminar, sujeta a ajuste según la disponibilidad de ejemplares adecuados por clase y los resultados de las primeras evaluaciones del modelo.}
 
 El plan de tratamiento de los datos contempla, de manera preliminar, las siguientes etapas orientadas a garantizar la consistencia del conjunto antes de su uso. La primera es el saneamiento: descarte de imágenes corruptas, duplicadas, de baja resolución o visualmente ambiguas, así como de aquellas cuyo contenido no corresponde a ninguna categoría. La segunda es el etiquetado y la codificación: asignación consistente de cada imagen a una única categoría volumétrica y codificación de las clases al formato numérico que requiere el entrenamiento; las imágenes sin etiqueta confiable, equivalente a los valores nulos en datos tabulares, se reetiquetan manualmente o se excluyen. La tercera es la normalización: unificación de dimensiones, espacio de color (RGB) y rango de valores de los píxeles, para asegurar un formato homogéneo. La cuarta es el balanceo y la partición: equilibrado de la cantidad de ejemplares por clase y división estratificada en subconjuntos de entrenamiento, validación y prueba, evitando la filtración de imágenes entre ellos. La quinta es el aumento de datos (\emph{data augmentation}): generación controlada de variantes (rotaciones, recortes, cambios de iluminación) para ampliar la diversidad del conjunto sin introducir inconsistencias. La evaluación del modelo resultante contemplará, además del \emph{accuracy} y la matriz de confusión, un análisis de sesgos asociados a condiciones de iluminación, ángulo y fondo de las fotografías, en línea con las limitaciones de la visión computacional móvil señaladas por Naumann \textit{et al.}\ \parencite{NaumannEtAl2023}.
 % ─────────────────────────────────────────────────────────────────────────────
 
-Los cinco conceptos desarrollados en este marco forman un sistema de fundamentación coherente: cada uno responde a una de las preguntas de diseño que enfrenta DePaso. El modelo CSD y la lógica de flotas híbridas justifican por qué tiene sentido aprovechar desplazamientos existentes en lugar de operar flota propia; la distinción OD/GW explica por qué ese modelo requiere dos modalidades con flujos de registro distintos y no puede reducirse a una sola. El diseño de mercados de \emph{matching} delimita el problema de asignación y justifica el alcance del prototipo; la visión computacional y el aprendizaje por transferencia fundamentan la decisión de inferir la categoría de carga desde una imagen. El plan de datos detallado en el apartado precedente completa esta fundamentación al declarar la procedencia, el volumen y el tratamiento del conjunto con que se entrenará ese clasificador. El Estado del Arte que sigue evalúa en qué medida las soluciones existentes abordan este conjunto de dimensiones.
+Los cinco conceptos desarrollados en este marco forman un sistema de fundamentación coherente: cada uno responde a una de las preguntas de diseño que enfrenta DePaso. El modelo CSD y la lógica de flotas híbridas justifican por qué tiene sentido aprovechar desplazamientos existentes en lugar de operar flota propia; la distinción OD/GW explica por qué ese modelo requiere dos modalidades con flujos de registro distintos y no puede reducirse a una sola. El diseño de mercados de \emph{matching} delimita el problema de asignación y justifica el alcance del prototipo; la visión computacional y el aprendizaje por transferencia fundamentan la decisión de inferir la categoría de carga desde una imagen. El plan de datos detallado en el apartado precedente completa esta fundamentación al declarar la procedencia, el volumen y el tratamiento del conjunto con que se entrenará ese clasificador. El estado del arte que sigue evalúa en qué medida las soluciones existentes abordan este conjunto de dimensiones.
 
 % ═════════════════════════════════════════════════════════════════════════════
-\section{Estado del Arte}
+\section{Estado del arte}
 
-Esta sección sistematiza las soluciones comerciales y la investigación académica relevantes para DePaso, adoptando lineamientos de revisión sistemática de la literatura \parencite{KitchenhamCharters2007}. La búsqueda se realizó en bases de datos como Google Scholar, IEEE Xplore, Scopus y arXiv, combinando términos en inglés y español con operadores booleanos. Se aplicó un filtro temporal de 2022--2026 para la literatura académica, con la excepción del informe técnico de la OIT de 2020 \parencite{OIT2020}, incluido fuera de ese rango por ser el principal trabajo con foco específico en el mercado de plataformas en Argentina. Las versiones preliminares disponibles en repositorios de acceso abierto (arXiv) se admitieron únicamente cuando no existía una versión formal posterior; tal es el caso de la revisión de Naumann \textit{et al.}\ \parencite{NaumannEtAl2023}, incorporada por constituir la única revisión sistemática de la literatura dedicada específicamente a la visión computacional en logística identificada en la búsqueda. No se aplicó restricción temporal para el análisis de los competidores comerciales.
+Esta sección sistematiza las soluciones comerciales y la investigación académica relevantes para DePaso, adoptando lineamientos de revisión sistemática de la literatura \parencite{KitchenhamCharters2007}. La búsqueda se realizó en bases de datos como Google Scholar, IEEE Xplore, Scopus y arXiv. Se aplicó un filtro temporal de 2022--2026 para la literatura académica, con la excepción del informe técnico de la OIT de 2020 \parencite{OIT2020}, incluido fuera de ese rango por ser el principal trabajo con foco específico en el mercado de plataformas en Argentina. Las versiones preliminares disponibles en repositorios de acceso abierto (arXiv) se admitieron únicamente cuando no existía una versión formal posterior; tal es el caso de la revisión de Naumann \textit{et al.}\ \parencite{NaumannEtAl2023}, incorporada por constituir la única revisión sistemática de la literatura dedicada específicamente a la visión computacional en logística identificada en la búsqueda. No se aplicó restricción temporal para el análisis de los competidores comerciales.
 
 Se priorizaron trabajos que cumplieran al menos uno de los siguientes criterios de inclusión: que propongan un modelo o algoritmo para \emph{crowdsourced delivery}, que analicen plataformas de logística urbana en América Latina, o que apliquen inteligencia artificial a la clasificación de carga o al \emph{scheduling} logístico.
 
@@ -96,11 +96,13 @@ En el AMBA coexisten dos grandes categorías de soluciones, analizadas a continu
 
 \textbf{Plataformas de envíos bajo demanda.} Rappi Favor, PedidosYa Envíos, Uber Flash y DiDi Entrega conectan remitentes con repartidores para envíos puntuales de objetos pequeños (documentos, bolsas, paquetes livianos). Operan bajo un modelo rígidamente dedicado de \emph{gig-workers}, gestionado algorítmicamente mediante sistemas de puntaje que penalizan el rechazo de pedidos o la desconexión \parencite{OIT2020}. Además de las limitaciones que este modelo impone al trabajador, desde el punto de vista logístico no contemplan cargas medianas, grandes ni mudanzas, no calculan el impacto ambiental y no ofrecen una modalidad colaborativa basada en aprovechar los trayectos habituales preexistentes del conductor.
 
+\nuevo{La rigidez de ese modelo no es solo una limitación de diseño, sino también una fragilidad de negocio ya observada en el mercado argentino. En 2020 Uber discontinuó Uber Eats en el país y Glovo vendió su operación regional a Delivery Hero, la matriz de PedidosYa, consolidando el segmento de envíos bajo demanda en un puñado de jugadores dominantes. La dependencia exclusiva de vehículos dedicados, sin aprovechar trayectos preexistentes que reduzcan el costo marginal por entrega, eleva el costo operativo hasta comprimir los márgenes al punto de forzar salidas de mercado incluso en actores con financiamiento internacional. El enfoque híbrido de DePaso, que reduce el costo operativo aprovechando la capacidad ociosa de trayectos que de todos modos iban a ocurrir, responde directamente a esa fragilidad estructural en lugar de competir únicamente por escala.}
+
 \textbf{Servicios de \emph{courier} y agregadores B2B.} OCA y Andreani ofrecen logística tradicional con tarifas fijas por peso y zona, orientadas al \emph{e-commerce} y envíos masivos; no tienen \emph{matching} inteligente ni clasificación asistida por IA. Por otro lado, empresas como Moova y Treggo apuntan al segmento B2B con flota propia o tercerizada y cobertura en el AMBA, pero requieren un volumen mínimo de envíos, excluyendo a usuarios particulares y no habilitando modalidades colaborativas ocasionales. Shipit funciona como un agregador que cotiza entre múltiples operadores, pero tampoco implementa trayectos compartidos ni clasificación automática de la carga.
 
 Ninguna de las soluciones relevadas combina un modelo colaborativo basado en trayectorias, clasificación de carga por visión computacional y cálculo de ahorro de CO\textsubscript{2}. La Tabla~\ref{tab:comparativa} sintetiza el posicionamiento de DePaso frente a las plataformas existentes.
 
-\begin{table}[ht]
+\begin{table}[H]
     \caption{Posicionamiento de DePaso frente a plataformas existentes en el AMBA}
     \label{tab:comparativa}
     \centering
@@ -136,7 +138,7 @@ Ninguna de las soluciones relevadas combina un modelo colaborativo basado en tra
 
 La Tabla~\ref{tab:antecedentes} sintetiza los trabajos seleccionados: para cada uno se registran objetivo, enfoque metodológico, tecnologías empleadas, resultados principales, limitaciones reconocidas por los propios autores y aporte concreto para DePaso.
 
-\begin{table}[ht]
+\begin{table}[H]
     \caption{Matriz de antecedentes: trabajos seleccionados}
     \label{tab:antecedentes}
     \centering
@@ -226,3 +228,98 @@ Del análisis precedente emergen cinco características que ninguna solución ex
 \end{enumerate}
 
 La combinación de estos cinco elementos en un prototipo funcional representa la contribución diferencial de DePaso: materializar en software la convergencia de un modelo logístico colaborativo, IA para clasificación de carga y transparencia ambiental, adaptados a la realidad del mercado argentino.
+
+% ═════════════════════════════════════════════════════════════════════════════
+{\color{nuevo}% >>> CONTENIDO NUEVO (entrega 50%) <<<
+\section{Análisis competitivo}
+
+El relevamiento de competidores y la matriz comparativa del estado del arte se complementan con dos herramientas de análisis estratégico que permiten evaluar el atractivo del mercado y la posición relativa de DePaso: el modelo de las cinco fuerzas de Porter y la matriz FODA. Ambas se construyen sobre la evidencia ya presentada en este capítulo, es decir, los hallazgos de la literatura revisada y los resultados de la encuesta del Capítulo~\ref{cap:descripcion}, de modo que las valoraciones no se apoyen en apreciaciones generales del sector sino en datos verificables.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\subsection{Cinco fuerzas de Porter}
+
+El modelo de Porter caracteriza la intensidad competitiva del sector de la logística urbana de última milla en el AMBA. La Tabla~\ref{tab:porter} sintetiza la valoración de cada fuerza.
+
+\begin{table}[H]
+    \caption{Cinco fuerzas de Porter aplicadas a la logística urbana del AMBA}
+    \label{tab:porter}
+    \centering\color{nuevo}
+    \small
+    \begin{tabular}{p{3.1cm}p{1.9cm}p{8.6cm}}
+        \toprule
+        \textbf{Fuerza} & \textbf{Intensidad} & \textbf{Análisis} \\
+        \midrule
+        Rivalidad entre competidores & Alta & Compiten plataformas consolidadas y bien financiadas (Rappi, PedidosYa, Uber, DiDi, Moova, Treggo, OCA, Andreani), pero todas sobre el mismo eje: flota dedicada y velocidad de entrega. La concentración reciente evidencia un sector que castiga al actor subescalado. Ninguna cubre el nicho híbrido colaborativo. \\
+        Amenaza de nuevos entrantes & Media & Clonar la funcionalidad es tecnológicamente accesible, pero alcanzar liquidez en un mercado de dos lados exige masa crítica simultánea en la oferta y en la demanda \parencite{AkamatsuOyama2023}; el efecto de red protege a quien la alcanza primero. \\
+        Poder de los clientes (remitentes) & Alto & Costo de cambio nulo y sensibilidad al precio marcada: el 75~\% elige por costo (n = 116) y el 44~\% de las MiPyMEs señala el costo de entrega o devolución como obstáculo para vender en línea \parencite{ICC2024}. \\
+        Poder de los proveedores (transportistas) & Medio, asimétrico & Difiere según el perfil \parencite{LuyEtAl2023}: el \emph{gig-worker} dedicado presenta alta dependencia (el 95~\% ingresó ante la dificultad de conseguir otro empleo \parencite{OIT2020}), mientras que el conductor ocasional conserva poder real, ya que su participación es voluntaria e intermitente y se retira si el desvío o la compensación no lo favorecen (el 91,8~\% se motiva por obtener un ingreso extra sin desviarse de su rutina). \\
+        Amenaza de sustitutos & Alta & El envío propio, el retiro en el local, el correo tradicional y la mensajería informal compiten a bajo costo. Para la PyME el sustituto extremo es no enviar: absorber el costo o resignar la venta. \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+Las fuerzas dominantes son la rivalidad, el poder de los remitentes y la amenaza de sustitutos, las tres vinculadas al mismo factor: el precio. La respuesta de DePaso no es competir por escala sino por estructura de costos. Yang \textit{et al.}\ demuestran que los vehículos personales compartidos reducen el costo unitario de entrega respecto de los dedicados \parencite{YangEtAl2022}, ventaja estructural inaccesible para quien opera exclusivamente con flota dedicada. Esa diferencia es la que permite atender un segmento que hoy queda fuera del mercado por precio. El poder asimétrico de los transportistas, por su parte, impone una restricción de diseño y no solo comercial: dado que el conductor ocasional puede simplemente no participar, el desvío debe mantenerse acotado, lo que coincide con el umbral que la propia literatura exige para preservar el beneficio ambiental \parencite{YangEtAl2022}.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\subsection{Matriz FODA}
+
+La matriz FODA sintetiza los factores internos (fortalezas y debilidades) y externos (oportunidades y amenazas) que condicionan la viabilidad del proyecto. La Tabla~\ref{tab:foda} presenta los cuatro cuadrantes.
+
+\begin{table}[H]
+    \caption{Matriz FODA de DePaso}
+    \label{tab:foda}
+    \centering\color{nuevo}
+    \small
+    \begin{tabular}{p{6.8cm}p{6.8cm}}
+        \toprule
+        \textbf{Fortalezas} & \textbf{Debilidades} \\
+        \midrule
+        \begin{itemize}[leftmargin=1.2em,topsep=1pt,itemsep=1pt]
+            \item Modelo híbrido dedicado--colaborativo, sin equivalente en el mercado local.
+            \item Desvío acotado por un filtro duro, que preserva el beneficio ambiental.
+            \item Asignación determinística, explicable y operativa sin datos históricos.
+            \item Clasificador de carga propio, viable desde un teléfono móvil.
+            \item Cálculo de CO\textsubscript{2} por envío y propuesta contrastada con la investigación de usuarios propia (n = 145): 69,8~\% de predisposición al modelo colaborativo y 84,5~\% de interés en transportar.
+        \end{itemize}
+        &
+        \begin{itemize}[leftmargin=1.2em,topsep=1pt,itemsep=1pt]
+            \item Arranque en frío: sin masa crítica ni datos históricos propios.
+            \item Dependencia de la adopción simultánea de ambos lados del mercado.
+            \item Mecanismo de cobertura ante daños aún no definido: el encuadre como intermediaria delimita la responsabilidad de la plataforma, pero traslada el riesgo al transportista.
+            \item Tarifa determinística, sin elasticidad dinámica ante desequilibrios entre oferta y demanda.
+            \item Equipo y presupuesto acotados.
+        \end{itemize} \\
+        \midrule
+        \textbf{Oportunidades} & \textbf{Amenazas} \\
+        \midrule
+        \begin{itemize}[leftmargin=1.2em,topsep=1pt,itemsep=1pt]
+            \item Segmento de PyMEs y comercios sin flota propia, desatendido.
+            \item Presión sostenida de los costos logísticos, que empuja a buscar alternativas.
+            \item Crecimiento proyectado de la demanda de última milla hacia 2030.
+            \item Adopción de hábitos de consumo digital que normalizan la entrega a domicilio.
+        \end{itemize}
+        &
+        \begin{itemize}[leftmargin=1.2em,topsep=1pt,itemsep=1pt]
+            \item Que un incumbente replique la modalidad colaborativa sobre su base instalada.
+            \item Incertidumbre regulatoria sobre el trabajo en plataformas y la responsabilidad ante daños.
+            \item Sensibilidad al precio, que comprime el margen disponible para la plataforma.
+            \item Barreras de confianza entre particulares (73,4~\% teme la responsabilidad por daños).
+            \item Sector concentrado, que castiga al actor subescalado.
+        \end{itemize} \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+Los factores externos se apoyan en la evidencia ya citada: la presión de costos corresponde al incremento del 22,2~\% registrado en el primer semestre de 2026 \parencite{CEDOL2025}, el crecimiento proyectado de la demanda al 78~\% hacia 2030 \parencite{WEF2020} y la relevancia ambiental al 14~\% de las emisiones nacionales atribuibles al transporte \parencite{InventarioGEI2024}. La incertidumbre regulatoria abarca tanto el debate sobre el trabajo en plataformas \parencite{OIT2020} como la asignación de responsabilidad por la carga que establece el Código Civil y Comercial \parencite{CCyC2014}.
+
+La lectura cruzada de la matriz orienta la estrategia en tres direcciones. Las fortalezas se apalancan sobre las oportunidades: el modelo híbrido y la transparencia ambiental se dirigen al segmento desatendido de PyMEs, cuya demanda ya está validada. Las debilidades se neutralizan mediante decisiones de diseño explícitas: el arranque en frío se aborda con un \emph{matching} determinístico que opera sin datos históricos, a diferencia de los mecanismos de subasta \parencite{AkamatsuOyama2023} y de aprendizaje por refuerzo \parencite{SalehEtAl2024} que los requieren. La clasificación automática de la carga, por su parte, se complementa con el ingreso manual de la categoría, alternativa prevista desde el diseño y coherente con la dificultad de estimar volúmenes exactos mediante cámaras móviles que señala la literatura \parencite{NaumannEtAl2023}. Finalmente, las amenazas se contrarrestan con la construcción temprana del efecto de red y con la definición precisa de responsabilidades en los términos y condiciones, que atiende la principal preocupación relevada entre los transportistas.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\subsection{Estrategia de diferenciación}
+
+De ambos análisis se desprende una estrategia de diferenciación por foco antes que por escala. DePaso no compite por volumen de envíos ni por velocidad de entrega, los ejes en los que los incumbentes ya alcanzaron economías de escala, sino que atiende una demanda que hoy queda excluida por precio y por tipo de carga: envíos medianos, grandes y voluminosos de PyMEs y particulares, que las plataformas de reparto no contemplan y que los operadores B2B solo aceptan con volúmenes mínimos.
+
+Tres decisiones sostienen esa diferenciación y son, a la vez, barreras de imitación. La primera es el aprovechamiento de trayectos preexistentes, que reduce el costo marginal por entrega \parencite{YangEtAl2022} y no puede replicarse sin rediseñar el modelo operativo. La segunda es el tratamiento del conductor ocasional como un perfil distinto del \emph{gig-worker}, con su propio flujo de registro y su propia lógica de asignación; Luy \textit{et al.}\ señalan que las plataformas existentes asumen que todos sus conductores son \emph{gig-workers}, de modo que incorporar el perfil ocasional exige un cambio estructural y no una funcionalidad adicional \parencite{LuyEtAl2023}. La tercera es la combinación de clasificación automática de la carga y cuantificación del impacto ambiental por envío, ausente tanto en las soluciones comerciales relevadas como en la literatura académica, que asume el tipo y volumen de la carga como dato conocido de antemano.
+
+Esta estrategia también responde a la principal amenaza identificada. Si un incumbente decidiera replicar la modalidad colaborativa, debería hacerlo sobre una base de conductores seleccionada y gestionada bajo el modelo opuesto, con sistemas de puntaje que penalizan el rechazo de pedidos y la desconexión \parencite{OIT2020}, esquema incompatible con la participación voluntaria e intermitente que el conductor ocasional requiere.
+}% <<< FIN CONTENIDO NUEVO (entrega 50%) >>>

@@ -1,4 +1,5 @@
 \chapter{Introducción}
+\label{cap:introduccion}
 
 DePaso es una plataforma digital de logística urbana colaborativa orientada a PyMEs, comercios y clientes particulares del Área Metropolitana de Buenos Aires (AMBA). Su propósito es facilitar la gestión integral de envíos urbanos mediante una solución que permita solicitar, asignar, monitorear y completar entregas de manera eficiente, incorporando además herramientas para estimar el impacto ambiental asociado a cada operación.
 
@@ -13,6 +14,8 @@ La propuesta surge ante una serie de problemáticas presentes en la logística u
     \item Emisiones de CO\textsubscript{2} asociadas a viajes dedicados que podrían evitarse mediante esquemas colaborativos.
     \item Escasas oportunidades para que personas que realizan desplazamientos cotidianos obtengan ingresos adicionales aprovechando sus recorridos habituales.
 \end{itemize}
+
+{\color{nuevo}La magnitud de estas problemáticas se refleja en datos del sector. La entrega de última milla concentra una fracción desproporcionada del costo logístico total y constituye el tramo más ineficiente de la cadena de distribución \parencite{YangEtAl2022}. En Argentina esa presión se intensifica: el Índice de Costos Logísticos elaborado por la Cámara Empresaria de Operadores Logísticos, homologado por la Universidad Tecnológica Nacional, acumuló un incremento del 22,2~\% en el primer semestre de 2026, muy por encima del 14~\% registrado en el mismo período del año anterior \parencite{CEDOL2025}. Esta ineficiencia tiende a agravarse: de mantenerse las tendencias actuales, se proyecta que para 2030 la demanda de entregas urbanas crezca un 78~\%, con un aumento del 36~\% en la cantidad de vehículos de reparto, del 32~\% en las emisiones de CO\textsubscript{2} y del 21~\% en la congestión de las principales ciudades \parencite{WEF2020}. En Argentina, el transporte explica cerca del 14~\% de las emisiones totales de gases de efecto invernadero del país, siendo la segunda fuente de emisiones dentro del sector energético \parencite{InventarioGEI2024}. En el plano local, un relevamiento de la Organización Internacional del Trabajo sobre trabajadores de plataformas de reparto en la Argentina encontró que el 95~\% de quienes habían ingresado recientemente lo hizo ante la dificultad de conseguir otro empleo; hacia fines de 2018, solo tres de las principales aplicaciones de reparto (Glovo, PedidosYa y Rappi) sumaban en conjunto más de 7.100 repartidores independientes registrados, la amplia mayoría bajo la figura de monotributista y sin relación de dependencia \parencite{OIT2020}.}
 
 Frente a este escenario, DePaso busca articular una solución que aproveche la capacidad ociosa existente en los desplazamientos urbanos, al tiempo que ofrece alternativas de envío dedicado para los casos que así lo requieran. El proyecto se circunscribe a dicha área metropolitana y tiene como horizonte temporal el desarrollo de un prototipo funcional para finales de 2026. Esta combinación se traduce en un conjunto de modalidades de servicio que estructuran la operación de la plataforma y que se describen a continuación.
 
@@ -32,7 +35,7 @@ DePaso organiza sus servicios a partir de dos dimensiones: la forma en que se in
 \end{itemize}
 
 Para la operación del sistema se contemplan cuatro categorías generales de carga: paquetes pequeños y documentos, cargas medianas, cargas grandes o voluminosas y mudanzas o fletes. Las restricciones según el tipo de movilidad disponible se presentan en la Tabla~\ref{tab:restricciones}.
-\begin{table}[ht]
+\begin{table}[H]
     \caption{Restricciones de carga por tipo de movilidad}
     \label{tab:restricciones}
     \centering
@@ -53,7 +56,6 @@ Para la operación del sistema se contemplan cuatro categorías generales de car
 Las mudanzas y fletes se asignan siempre en modalidad dedicada; nunca colaborativa.
 
 % ─────────────────────────────────────────────────────────────────────────────
-\vspace{1em}
 \section{Objetivos}
 
 \subsection{Objetivo general}
@@ -62,20 +64,21 @@ Desarrollar, para fines de 2026, un prototipo funcional de plataforma digital de
 
 \subsection{Objetivos específicos}
 
+{\color{nuevo}
 \begin{itemize}[leftmargin=2em]
-    \item Desarrollar e implementar un sistema de visión computacional capaz de clasificar automáticamente el tamaño y volumen de las cargas a partir de imágenes.
-    
-    \item Implementar un mecanismo de asignación inteligente que evalúe la compatibilidad entre pedidos y transportistas considerando características de la carga, trayectorias, ventanas horarias y reputación.
-    
-    \item Incorporar un modelo híbrido de operación que contemple tanto envíos dedicados como envíos colaborativos.
-    
-    \item Desarrollar un mecanismo de estimación del impacto ambiental que permita calcular el ahorro de CO\textsubscript{2} generado por cada envío colaborativo respecto de un escenario equivalente de transporte dedicado.
-    
-    \item Diseñar e implementar una plataforma digital escalable que integre los distintos componentes funcionales necesarios para la gestión de envíos urbanos.
+    \item Desarrollar e implementar un sistema de visión computacional capaz de clasificar automáticamente, a partir de una fotografía, las cargas en las cuatro categorías volumétricas definidas, alcanzando una exactitud (\emph{accuracy}) sobre el conjunto de prueba de al menos el 70~\%, con la exigencia adicional de que los errores se concentren en categorías adyacentes. El umbral responde a dos condiciones del problema: la estimación del volumen a partir de una única imagen es intrínsecamente ambigua, dado que una fotografía no conserva la escala absoluta de la escena \parencite{NaumannEtAl2023}; y la clasificación opera como apoyo a la decisión y no de forma autónoma, ya que el sistema expone la categoría inferida y admite su corrección manual, de modo que un error no deriva en una consecuencia irreversible.
+
+    \item Implementar un mecanismo de asignación inteligente que evalúe la compatibilidad entre pedidos y transportistas considerando características de la carga, trayectorias, ventanas horarias y reputación, y que restrinja el desvío del transportista colaborativo a un máximo del 15~\% del trayecto original mediante un filtro duro, devolviendo un \emph{ranking} de candidatos con su puntaje desglosado y explicable.
+
+    \item Incorporar un modelo híbrido de operación que contemple tanto envíos dedicados como colaborativos, cubriendo las cuatro categorías de carga y los distintos tipos de movilidad definidos.
+
+    \item Desarrollar un mecanismo de estimación del impacto ambiental que calcule el ahorro de CO\textsubscript{2} del 100~\% de los envíos colaborativos completados respecto de un escenario equivalente de transporte dedicado, a partir de factores de emisión estandarizados por tipo de vehículo, verificando el cálculo mediante pruebas automatizadas con coordenadas reales del AMBA.
+
+    \item Diseñar e implementar una plataforma digital con una arquitectura modular preparada para escalar, que integre los distintos componentes funcionales necesarios para la gestión de envíos urbanos, con una cobertura geográfica objetivo del AMBA y con pruebas automatizadas sobre la totalidad de los módulos críticos, incluidos los flujos de integración de punta a punta.
 \end{itemize}
+}
 
 % ─────────────────────────────────────────────────────────────────────────────
-\vspace{1em}
 \section{Alcance}
 
 El proyecto comprende el diseño y desarrollo de un prototipo funcional de plataforma digital para la gestión logística de envíos dentro del AMBA.
@@ -106,4 +109,4 @@ El alcance se restringe geográficamente a operaciones dentro del AMBA, excluyen
 
 \subsection{Estructura del documento}
 
-El presente documento se organiza de la siguiente manera: el Capítulo~1 introduce el problema, las modalidades de servicio, los objetivos y el alcance del proyecto; el Capítulo~2 presenta los antecedentes, compuestos por el marco teórico y el estado del arte; el Capítulo~3 describe la propuesta y la investigación de usuarios realizada; y el Capítulo~4 expone la conclusión parcial y el trabajo futuro. Completan el documento la bibliografía y los anexos, que incluyen el cronograma de actividades y la transcripción de los resultados de la encuesta.
+El presente documento se organiza de la siguiente manera: el Capítulo~1 introduce el problema, las modalidades de servicio, los objetivos y el alcance del proyecto; el Capítulo~2 presenta los antecedentes, compuestos por el marco teórico, el estado del arte y {\color{nuevo}el análisis competitivo}; el Capítulo~3 describe la propuesta y la investigación de usuarios realizada; {\color{nuevo}el Capítulo~4 detalla el análisis de requerimientos, funcionales y no funcionales, junto con los casos de uso; el Capítulo~5 aborda la metodología de desarrollo, la arquitectura y las tecnologías, el modelo de datos y la validación del sistema; y el Capítulo~6} expone la conclusión parcial y el trabajo futuro. Completan el documento la bibliografía y los anexos, que incluyen el cronograma de actividades{\color{nuevo}, la transcripción de los resultados de la encuesta y la de las entrevistas semiestructuradas}.

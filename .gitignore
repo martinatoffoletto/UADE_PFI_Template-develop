@@ -23,3 +23,5 @@ main.pdf
 *.synctex(busy)
 *.bcf-SAVE-ERROR
 build/*
+diff-vs-main.pdf
+diff-error.log
